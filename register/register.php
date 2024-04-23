@@ -12,23 +12,25 @@
 
             <!-- Icon -->
             <div class="fadeIn first">
-                <img src="img/Fundacja-SMK-CMYK-logotyp.jpg" id="icon" alt="User Icon" />
+                Register
             </div>
 
             <!-- Login Form -->
             <form>
-                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+                <input type="text" id="name" class="fadeIn second" name="name" placeholder="name">
+                <input type="text" id="surname" class="fadeIn second" name="surname" placeholder="surname">
+                <input type="text" id="phone" class="fadeIn second" name="phone" placeholder="phone">
+                <input type="text" id="email" class="fadeIn second" name="email" placeholder="email">
                 <input type="text" id="password" class="fadeIn third" name="login" placeholder="password">
-                <input type="submit" class="fadeIn fourth" value="Log In">
+                <input type="text" id="password" class="fadeIn third" name="login" placeholder="Repeat password">
+                <input type="submit" class="fadeIn fourth" value="Register">
             </form>
-
-            <!-- Remind Passowrd -->
             <div id="formFooter">
-                <a class="underlineHover" href="#">Forgot Password?</a>
-                <a class="underlineHover" href="register/register.php">Register</a>
-            </div>
+                <a class="underlineHover" href="../index.php">Do you have account?</a>
+                </div>
 
         </div>
+        
     </div>
 </body>
 </html>
