@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg py-3 ">
     <div class="pe-lg-0 ps-lg-5 container-fluid justify-content-between">
     <a class="navbar-brand" href="#">
-    <img src="../img/Fundacja-SMK-CMYK-logotyp.jpg" height="60" alt="logo">
+    <img src="../img/Fundacja-SMK-CMYK-logotyp.jpg" height="80" alt="logo">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,10 +21,6 @@
     type="button" role="tab" aria-controls="courses" aria-selected="false">Konto</button>
     </div>
     </nav>
-    <div class="position-relative d-inline-block me-lg-4">
-    <input class="search_input ms-5 mb-3 mb-lg-0 ms-lg-0 pe-5 ps-3" type="search" placeholder="Search"
-    aria-label="Search">
-    </div>
     </div>
     </div>
     </div>
