@@ -24,8 +24,8 @@
                 <input type="text" id="surname" class="fadeIn second" name="surname" placeholder="surname">
                 <input type="text" id="phone" class="fadeIn second" name="phone" pattern="[0-9+]+" placeholder="phone">
                 <input type="email" id="email" class="fadeIn second" name="email" placeholder="email" required>
-                <input type="password" id="password1" class="fadeIn second" name="password1" placeholder="password">
-                <input type="password" id="password2" class="fadeIn second" name="password2" placeholder="Repeat password">
+                <input type="password" id="password1" class="fadeIn third" name="password1" placeholder="password">
+                <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Repeat password">
                 <input type="button" onclick="checkPassword()" class="fadeIn fourth" value="Register">
             </form>
             <div id="formFooter">
