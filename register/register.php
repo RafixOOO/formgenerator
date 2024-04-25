@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset ="utf-8" />
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link rel="stylesheet" href="style.css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -19,7 +20,7 @@
             </div>
 
             <!-- Login Form -->
-            <form>
+            <form action="functionregister.php" method="post">
                 <input type="text" id="name" class="fadeIn second" name="name" placeholder="name">
                 <input type="text" id="surname" class="fadeIn second" name="surname" placeholder="surname">
                 <input type="text" id="phone" class="fadeIn second" name="phone" pattern="[0-9+]+" placeholder="phone">
@@ -33,8 +34,26 @@
                 </div>
 
         </div>
-        
+
     </div>
+    <?php
+                // Sprawdzanie czy parametr error jest ustawiony i równy 'email_exists'
+                if(isset($_GET['error']) && $_GET['error'] == 'email_exists') {
+                    echo '<script>toastr.error("Podany email już istnieje.");</script>';
+                }
+                // Sprawdzanie czy parametr error jest ustawiony i równy 'password_error'
+                if(isset($_GET['error']) && $_GET['error'] == 'password_error') {
+                    echo '<script>toastr.error("Błąd podczas dodawania hasła.");</script>';
+                }
+                // Sprawdzanie czy parametr error jest ustawiony i równy 'user_error'
+                if(isset($_GET['error']) && $_GET['error'] == 'user_error') {
+                    echo '<script>toastr.error("Błąd podczas dodawania użytkownika.");</script>';
+                }
+                // Sprawdzanie czy parametr success jest ustawiony i równy 'registration_success'
+                if(isset($_GET['success']) && $_GET['success'] == 'registration_success') {
+                    echo '<script>toastr.success("Rejestracja zakończona sukcesem.");</script>';
+                }
+                ?>
 </body>
     <script>
           function checkPassword() {
