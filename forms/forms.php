@@ -10,7 +10,6 @@
 <head>
     <meta charset ="utf-8" />
     
-    <link rel="stylesheet" href="style.css" >
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <link href="style.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -22,34 +21,33 @@
 <body>
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
-    <div class="table-responsive"></div>
+    <?php if(returnRole()==1) { ?>
+        <a href="../formcreate/formbuilder.php"><input type="button" class="fadeIn fourth" value="Utwórz"></a>
+        <?php } ?>
+    <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
                         <th scope="col">Wniosek</th>
-                        <th scope="col">Opis</th>
+                        <th scope="col">Data utworzenia</th>
                         <th scope="col">Data zakończenia</th>
-                        <th scope="col" data-orderable="false"></th>
+                        <th scope="col" data-orderable="false">Opcje</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>Wniosek 1</th>
-                        <td>Mark</td>
-                        <td>24.05.2025</td>
-                        <td>Otto</td>
-                    </tr>
-                    <tr>
-                        <th>Wniosek 2</th>
-                        <td>Jacob</td>
-                        <td>24.05.2025</td>
-                        <td>Thornton</td>
-                    </tr>
-                    <tr>
-                        <th>Wniosek 3</th>
-                        <td>Larry the Bird</td>
-                        <td>24.05.2025</td>
-                        <td>Thornton</td>
-                    </tr>
-                </tbody>
+                <?php
+                require_once("../dbconnect.php");
+
+                $sql="SELECT * FROM `application` WHERE `deleted`=0 AND `datetimedo`>CURRENT_DATE; ";
+                $result = $conn->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $row["name"] . "</td>";
+                        echo "<td>" . $row["datetime"] . "</td>";
+                        echo "<td>" . $row["datetimedo"] . "</td>";
+                        echo "<td><a href='formsread.php?ID=".$row["applicationID"]."'><input style='width: 30%' type='button' class='fadeIn fourth' value='Wypełnij'></a></td>";
+                        echo "</tr>";
+                    }
+
+?>
 
         </table>
     </div>

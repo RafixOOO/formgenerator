@@ -14,7 +14,7 @@
                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
                             type="button" role="tab" aria-controls="home" aria-selected="true">Strona główna</button>
                         <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about"
-                            type="button" role="tab" aria-controls="about" aria-selected="false">Moje wnioski</button>
+                            type="button" role="tab" aria-controls="about" aria-selected="false">Wnioski</button>
                         <button class="nav-link" id="timing-tab" data-bs-toggle="tab" data-bs-target="#timing"
                             type="button" role="tab" aria-controls="timing" aria-selected="false">Organizacja</button>
                         <div class="dropdown">

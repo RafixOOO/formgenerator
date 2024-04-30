@@ -2,7 +2,7 @@
 $servername = "localhost"; // Nazwa hosta
 $username = "root"; // Nazwa użytkownika
 $password = ""; // Hasło użytkownika
-$database = "formgenerator"; // Nazwa bazy danych
+$database = "formbuilder"; // Nazwa bazy danych
 
 // Tworzenie połączenia
 $conn = mysqli_connect($servername, $username, $password, $database);
