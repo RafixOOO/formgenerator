@@ -27,7 +27,7 @@
         <div class="wrapper fadeInDown">
             <div style="text-align: right;">
         <a href="../forms/forms.php"><input type="button" value="Anuluj" style="background-color: red;"></a>
-            <input type="submit" name="submit_publish" value="Opublikuj">
+            <input type="submit" name="submit_publish" value="Wyślij">
             </div>
             
         </div>
