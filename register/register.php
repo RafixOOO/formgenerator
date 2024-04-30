@@ -36,6 +36,7 @@
         </div>
 
     </div>
+    <?php require_once("../footer.html"); ?>
     <?php
                 // Sprawdzanie czy parametr error jest ustawiony i równy 'email_exists'
                 if(isset($_GET['error']) && $_GET['error'] == 'email_exists') {

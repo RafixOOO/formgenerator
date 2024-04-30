@@ -34,6 +34,7 @@
 
         </div>
     </div>
+    <?php require_once("footer.html"); ?>
     <?php
                     // Sprawdzanie czy parametr error jest ustawiony i równy 'invalid_password'
                     if(isset($_GET['error']) && $_GET['error'] == 'invalid_password') {
