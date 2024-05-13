@@ -70,12 +70,11 @@ if (isset($_GET['ID'])) {
                 echo '</tr>';
 
                 // Wygeneruj 10 wierszy z ukrytą klasą
-                for ($i = 2; $i <= 10; $i++) {
+                for ($i = 2; $i <= 20; $i++) {
                     echo '<tr class="hidden-row">';
                     echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     foreach ($columns as $column) {
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"
-                        ></td>'; // Pole tekstowe w komórkach
+                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
                     }
                     echo '</tr>';
                 }
@@ -98,7 +97,7 @@ if (isset($_GET['ID'])) {
                     echo "<p>";
                 }
                 echo '<div class="form-check">
-        <input class="form-check-input" type="radio" name="' . $row["number"] . '" value="' . $row["number"] . '"';
+        <input class="form-check-input" type="radio" name="' . $row["number"] . '" value="' . $row["questID"] . '"';
 
                 if ($row["req"] == 1) {
                     echo ' required';
@@ -119,7 +118,7 @@ if (isset($_GET['ID'])) {
                     echo "<p>";
                 }
                 echo '<div class="form-check">
-        <input class="form-check-input" type="checkbox" name="' .$row["number"] . '[]" value="' . $row["number"] . '"';
+        <input class="form-check-input" type="checkbox" name="' .$row["number"] . '[]" value="' . $row["questID"] . '"';
 
                 if ($row["req"] == 1) {
                     echo ' required';
@@ -168,6 +167,46 @@ if (isset($_GET['ID'])) {
 
 
         }
+         if ($table_opened) {
+             echo '<table class="table"><thead><tr>';
+            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+            foreach ($columns as $column) {
+                echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+            }
+            echo '</tr></thead><tbody>';
+
+            echo '<tr>';
+            echo '<th scope="row">1</th>'; // Numeracja wierszy
+            foreach ($columns as $column) {
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+
+                if ($req == 1) {
+                echo ' required';
+                }
+
+                echo '
+
+                ></td>'; // Pole tekstowe w komórkach
+            }
+            echo '</tr>';
+
+            // Wygeneruj 10 wierszy z ukrytą klasą
+            for ($i = 2; $i <= 20; $i++) {
+                echo '<tr class="hidden-row">';
+                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
+                foreach ($columns as $column) {
+                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
+                }
+                echo '</tr>';
+            }
+
+            echo '</tbody></table>';
+            echo '<button type="button" id="showMoreRowsBtn" class="btn btn-primary">Dodaj wiersz</button>';
+            echo '<button type="button" class="btn btn-danger remove-row-btn">Usuń wiersz</button>';
+
+            $table_opened = false;
+            unset($columns);
+        }
 
         echo '<input type="hidden" name="number" value="'.$number.'" >';
         echo '<input type="hidden" name="id" value="'.$id.'" >';
@@ -202,21 +241,41 @@ document.addEventListener('DOMContentLoaded', function() {
     // Po kliknięciu przycisku pokaż więcej wierszy
     showMoreRowsBtn.addEventListener('click', function() {
         showNextHiddenRow();
+
+        // Pobierz referencję do nowo dodanego wiersza
+        var newlyAddedRow = hiddenRows[currentIndex - 1];
+
+        // Zmiana nazwy inputów w dodanym wierszu
+        var inputs = newlyAddedRow.querySelectorAll('input[type="text"]');
+        inputs.forEach(function(input) {
+            var currentName = input.getAttribute('name');
+            var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
+            input.setAttribute('name', newName);
+        });
     });
 
     // Dodaj obsługę kliknięcia przycisku usuwania wiersza
     removeRowBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            if(currentIndex<=10){
+            if(currentIndex <= 10) {
                 showMoreRowsBtn.style.display = '';
             }
-            if(currentIndex!==0){
-            --currentIndex;
-            hiddenRows[currentIndex].style.display = 'none';
+            if(currentIndex !== 0) {
+                --currentIndex;
+                hiddenRows[currentIndex].style.display = 'none';
+
+                // Zmiana nazwy inputów w usuwanym wierszu
+                var inputs = hiddenRows[currentIndex].querySelectorAll('input[type="text"]');
+                inputs.forEach(function(input) {
+                    var currentName = input.getAttribute('name');
+                    var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
+                    input.setAttribute('name', newName);
+                });
             }
         });
     });
 });
+
 </script>
 
 

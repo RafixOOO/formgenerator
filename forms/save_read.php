@@ -13,35 +13,140 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userID = returniserid();
     $idapp = $_POST['id'];
     $number = $_POST['number'];
-    $readyID=0;
-    
-     $sql = "INSERT INTO readyapplication (userID, applicationID, status, type) VALUES (?, ?, '0', '0')";
-        
-        // Przygotowanie zapytania
-        $stmt = $conn->prepare($sql);
-        
-        // Sprawdzenie, czy zapytanie zostało poprawnie przygotowane
-        if ($stmt) {
-            // Wiązanie parametrów
-            $stmt->bind_param("ii", $userID, $idapp);
-            
-            // Wykonanie zapytania
-            if ($stmt->execute()) {
-                $readyID = $conn->insert_id;
-            } else {
-                // Błąd podczas wykonywania zapytania
-                echo "Error: " . $conn->error;
-            }
-            
-            // Zamknięcie prepared statement
-            $stmt->close();
+    $readyID = 0;
+
+    $sql = "INSERT INTO readyapplication (userID, applicationID, status, type) VALUES (?, ?, '0', '0')";
+
+    // Przygotowanie zapytania
+    $stmt = $conn->prepare($sql);
+
+    // Sprawdzenie, czy zapytanie zostało poprawnie przygotowane
+    if ($stmt) {
+        // Wiązanie parametrów
+        $stmt->bind_param("ii", $userID, $idapp);
+
+        // Wykonanie zapytania
+        if ($stmt->execute()) {
+            $readyID = $conn->insert_id;
         } else {
-            // Błąd podczas przygotowywania zapytania
+            // Błąd podczas wykonywania zapytania
             echo "Error: " . $conn->error;
         }
-        
-        
+
+        // Zamknięcie prepared statement
+        $stmt->close();
+    } else {
+        // Błąd podczas przygotowywania zapytania
+        echo "Error: " . $conn->error;
+    }
+
+    for($i=1;$i<=$number;$i++){
+        $sel = "SELECT qu.questID, qu.number, q.type FROM `questconnect` qu, quest q WHERE qu.questID=q.questID and qu.applicationID=$idapp and qu.number=$i ORDER BY qu.questID;";
+        $result = $conn->query($sel);
+        while ($row = $result->fetch_assoc()) {
+
+            if ($row['type'] == 1) { // Używamy operatora porównania '=='
+                $fieldvalue = $_POST['' . $i];
+                if ($fieldvalue != '') {
+                    $quest = $row['questID'];
+                    // Używamy zapytania przygotowanego, aby zabezpieczyć się przed SQL Injection
+                    $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`) VALUES (?, ?, ?)";
+                    $stmt = $conn->prepare($ins);
+                    if (!$stmt) {
+                        // Obsługa błędów
+                        echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
+                    } else {
+                        // Przypisanie wartości do zapytania
+                        $stmt->bind_param("iis", $readyID, $quest, $fieldvalue);
+                        // Wykonanie zapytania
+                        $stmt->execute();
+                        if ($stmt->affected_rows === 0) {
+                            // Obsługa błędów
+                            echo "Błąd podczas wykonywania zapytania: " . $stmt->error;
+                        }
+                        // Zamknięcie zapytania
+                        $stmt->close();
+                    }
+                }
+            }
+            else if($row['type'] == 3){
+                $fieldvalue = $_POST['' . $i];
+                if ($fieldvalue != '') {
+                    $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
+                    $stmt = $conn->prepare($ins);
+                    if (!$stmt) {
+                        // Obsługa błędów
+                        echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
+                    } else {
+                        // Przypisanie wartości do zapytania
+                        $stmt->bind_param("ii", $readyID, $fieldvalue );
+                        // Wykonanie zapytania
+                        $stmt->execute();
+                        if ($stmt->affected_rows === 0) {
+                            // Obsługa błędów
+                            echo "Błąd podczas wykonywania zapytania: " . $stmt->error;
+                        }
+                        // Zamknięcie zapytania
+                        $stmt->close();
+                    }
+                }
+            }
+                 else if($row['type'] == 2){
+                     $fieldvalue = $_POST['' . $i];
+                     foreach ($fieldvalue as $value) {
+                         if ($value != '') {
+                             $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
+                             $stmt = $conn->prepare($ins);
+                             if (!$stmt) {
+                                 // Obsługa błędów
+                            echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
+                             } else {
+                                 // Przypisanie wartości do zapytania
+                            $stmt->bind_param("ii", $readyID, $value  );
+                            // Wykonanie zapytania
+                            $stmt->execute();
+                            if ($stmt->affected_rows === 0) {
+                                // Obsługa błędów
+                                echo "Błąd podczas wykonywania zapytania: " . $stmt->error;
+                            }
+                            // Zamknięcie zapytania
+                            $stmt->close();
+                             }
+                         }
+                     }
+
+                 }else if($row['type'] == 4){
+                     $fieldvalue = $_POST['' . $i];
+                     foreach ($fieldvalue as $value) {
+                         if ($value != '') {
+                             $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`,`tablerow`) VALUES (?,?,?,?)";
+                             $stmt = $conn->prepare($ins);
+                             if (!$stmt) {
+                                 // Obsługa błędów
+                            echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
+                             } else {
+                                 // Przypisanie wartości do zapytania
+                            $stmt->bind_param("iisi", $readyID, $quest, $fieldvalue, $j);
+                            // Wykonanie zapytania
+                            $stmt->execute();
+                            if ($stmt->affected_rows === 0) {
+                                // Obsługa błędów
+                                echo "Błąd podczas wykonywania zapytania: " . $stmt->error;
+                            }
+                            // Zamknięcie zapytania
+                            $stmt->close();
+                             }
+                         }
+                     }
+
+                 }
+
+        }
+
+
+    }
+
+
 }
 
 
-?>

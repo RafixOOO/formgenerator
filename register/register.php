@@ -21,16 +21,16 @@
 
             <!-- Login Form -->
             <form action="functionregister.php" method="post">
-                <input type="text" id="name" class="fadeIn second" name="name" placeholder="name">
-                <input type="text" id="surname" class="fadeIn second" name="surname" placeholder="surname">
-                <input type="text" id="phone" class="fadeIn second" name="phone" pattern="[0-9+]+" placeholder="phone">
-                <input type="email" id="email" class="fadeIn second" name="email" placeholder="email" required>
-                <input type="password" id="password1" class="fadeIn third" name="password1" placeholder="password">
-                <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Repeat password">
-                <input type="button" onclick="checkPassword()" class="fadeIn fourth" value="Register">
+                <input type="text" id="name" class="fadeIn second" name="name" placeholder="Imię">
+                <input type="text" id="surname" class="fadeIn second" name="surname" placeholder="Nazwisko">
+                <input type="text" id="phone" class="fadeIn second" name="phone" pattern="[0-9+]+" placeholder="Telefon">
+                <input type="email" id="email" class="fadeIn second" name="email" placeholder="Email" required>
+                <input type="password" id="password1" class="fadeIn third" name="password1" placeholder="Hasło">
+                <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Powtórz Hasło">
+                <input type="button" onclick="checkPassword()" class="fadeIn fourth" value="Zarejestruj się">
             </form>
             <div id="formFooter">
-                <a class="underlineHover" href="../index.php">Do you have account?</a>
+                <a class="underlineHover" href="../index.php">Posiadasz konto?</a>
                 </div>
 
         </div>
