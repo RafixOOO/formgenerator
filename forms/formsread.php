@@ -40,7 +40,7 @@ if (isset($_GET['ID'])) {
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id order by number; ";
+        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
         $columns = array();

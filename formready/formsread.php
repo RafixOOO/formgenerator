@@ -154,9 +154,9 @@ if (isset($_GET['ID'])) {
                 }
 
                 echo '>
-        <label class="form-check-label" for="' . $row["number"] . '">
+        <div class="form-check-label" for="' . $row["number"] . '>
             ' . $row["quest"] . '
-        </label>
+        </div>
       </div>';
             } else if ($row["type"] == 0) {
                 if ($number != $row["number"] and $number != 0) {
@@ -167,7 +167,7 @@ if (isset($_GET['ID'])) {
                 if ($number != $row["number"]) {
                     echo "<p>";
                 }
-                echo $row["quest"];
+                echo "<div>".$row["quest"];
             } else if ($row["type"] == 1) {
                 $quest=$row['questID'];
                 $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and questID=$quest";
