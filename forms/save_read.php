@@ -40,9 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $conn->error;
     }
 
-    $pause=false;
-    $pause1=false;
-
     for($i=1;$i<=$number;$i++){
         $sel = "SELECT qu.questID, qu.number, q.type FROM `questconnect` qu, quest q WHERE qu.questID=q.questID and qu.applicationID=$idapp and qu.number=$i ORDER BY qu.questID;";
         $result = $conn->query($sel);
@@ -74,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $pause1=false;
                 }
             }
-            else if($row['type'] == 3 and $pause1==false){
+            else if($row['type'] == 3){
                 $fieldvalue = $_POST['' . $i];
                 if ($fieldvalue != '') {
                     $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
@@ -94,11 +91,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // Zamknięcie zapytania
                         $stmt->close();
                     }
-                    $pause1=true;
-                    $pause=false;
                 }
+                break;
             }
-                 else if($row['type'] == 2 and $pause==false){
+                 else if($row['type'] == 2){
                      $fieldvalue = $_POST['' . $i];
                      foreach ($fieldvalue as $value) {
                          if ($value != '') {
@@ -120,16 +116,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $stmt->close();
                              }
                          }
-                         $pause=true;
-                         $pause1=false;
 
                      }
+                     break;
 
                  }else if($row['type'] == 4){
                      $fieldvalue = $_POST['' . $i];
                      $count=0;
                      $min=0;
-                     $sel = "SELECT COUNT(*) AS record_count, min(qu.questID) as minquest FROM `questconnect` qu, quest q WHERE qu.questID=q.questID AND qu.applicationID=31 AND qu.number=4;";
+                     $sel = "SELECT COUNT(*) AS record_count, min(qu.questID) as minquest FROM `questconnect` qu, quest q WHERE qu.questID=q.questID AND qu.applicationID=$idapp AND qu.number=$i;";
                      $result = $conn->query($sel);
                     while ($row = $result->fetch_assoc()) {
                         $count=$row["record_count"];
@@ -167,10 +162,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                          }
                          $k++;
                          $quest1++;
-                         $pause=false;
-                         $pause1=false;
+
 
                      }
+                     break;
 
                  }
 
