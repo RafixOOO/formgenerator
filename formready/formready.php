@@ -60,7 +60,6 @@
 
         </table>
     </div>
-    <?php require_once("../footer.html"); ?>
 </body>
     <script>
         $(document).ready(function() {
