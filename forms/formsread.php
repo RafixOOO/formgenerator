@@ -49,7 +49,7 @@ if (isset($_GET['ID'])) {
         while ($row = $result->fetch_assoc()) {
 
             if ($row["type"] != 4 and $table_opened) {
-                echo '<table class="table"><thead><tr>';
+                echo '<table class="table m'.$number.'"><thead><tr>';
                 echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
                 foreach ($columns as $column) {
                     echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
@@ -73,7 +73,7 @@ if (isset($_GET['ID'])) {
 
                 // Wygeneruj 10 wierszy z ukrytą klasą
                 for ($i = 2; $i <= 20; $i++) {
-                    echo '<tr class="hidden-row">';
+                    echo '<tr class="hidden-row m'.$number.'">';
                     echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     foreach ($columns as $column) {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
@@ -82,8 +82,8 @@ if (isset($_GET['ID'])) {
                 }
 
                 echo '</tbody></table>';
-                echo '<button type="button" id="showMoreRowsBtn" class="btn btn-primary">Dodaj wiersz</button>';
-                echo '<button type="button" class="btn btn-danger remove-row-btn">Usuń wiersz</button>';
+                echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
+                echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m'.$number.'">Usuń wiersz</button>';
 
                 $table_opened = false;
                 unset($columns);
@@ -170,48 +170,45 @@ if (isset($_GET['ID'])) {
 
         }
          if ($table_opened) {
-             echo '<table class="table"><thead><tr>';
-            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-            foreach ($columns as $column) {
-                echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-            }
-            echo '</tr></thead><tbody>';
-
-            echo '<tr>';
-            echo '<th scope="row">1</th>'; // Numeracja wierszy
-            foreach ($columns as $column) {
-                echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
-
-                if ($req == 1) {
-                echo ' required';
-                }
-
-                echo '
-
-                ></td>'; // Pole tekstowe w komórkach
-            }
-            echo '</tr>';
-
-            // Wygeneruj 10 wierszy z ukrytą klasą
-            for ($i = 2; $i <= 20; $i++) {
-                echo '<tr class="hidden-row">';
-                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
+             echo '<table class="table m'.$number.'"><thead><tr>';
+             echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
                 foreach ($columns as $column) {
-                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
+                    echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                }
+                echo '</tr></thead><tbody>';
+
+                echo '<tr>';
+                echo '<th scope="row">1</th>'; // Numeracja wierszy
+                foreach ($columns as $column) {
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+
+                    if ($req == 1) {
+                        echo ' required';
+                    }
+
+                    echo '
+
+                    ></td>'; // Pole tekstowe w komórkach
                 }
                 echo '</tr>';
-            }
 
-            echo '</tbody></table>';
-            echo '<button type="button" id="showMoreRowsBtn" class="btn btn-primary">Dodaj wiersz</button>';
-            echo '<button type="button" class="btn btn-danger remove-row-btn">Usuń wiersz</button>';
+                // Wygeneruj 10 wierszy z ukrytą klasą
+                for ($i = 2; $i <= 20; $i++) {
+                    echo '<tr class="hidden-row m'.$number.'">';
+                    echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
+                    foreach ($columns as $column) {
+                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
+                    }
+                    echo '</tr>';
+                }
 
-            $table_opened = false;
-            unset($columns);
-        }
+                echo '</tbody></table>';
+                echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
+                echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m'.$number.'">Usuń wiersz</button>';
 
-        echo '<input type="hidden" name="number" value="'.$number.'" >';
-        echo '<input type="hidden" name="id" value="'.$id.'" >';
+                $table_opened = false;
+                unset($columns);
+         }
         ?>
 
 
@@ -224,59 +221,64 @@ if (isset($_GET['ID'])) {
 </body>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var showMoreRowsBtn = document.getElementById('showMoreRowsBtn');
-    var removeRowBtns = document.querySelectorAll('.remove-row-btn');
-    var hiddenRows = document.querySelectorAll('.hidden-row');
-    var currentIndex = 0; // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
+    var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
+    showMoreRowsBtns.forEach(function(btn) {
+        var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
+        var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
+        var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
+        var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
+        var currentIndex = 0; // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
 
-    // Funkcja do pokazywania ukrytego wiersza
-    function showNextHiddenRow() {
-        if (currentIndex < hiddenRows.length) {
-            hiddenRows[currentIndex].style.display = 'table-row';
-            currentIndex++;
-            if (currentIndex >= hiddenRows.length) {
-                showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
+        // Funkcja do pokazywania ukrytego wiersza
+        function showNextHiddenRow() {
+            if (currentIndex < hiddenRows.length) {
+                hiddenRows[currentIndex].style.display = 'table-row';
+                currentIndex++;
+                if (currentIndex >= hiddenRows.length) {
+                    showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
+                }
             }
         }
-    }
 
-    // Po kliknięciu przycisku pokaż więcej wierszy
-    showMoreRowsBtn.addEventListener('click', function() {
-        showNextHiddenRow();
+        // Po kliknięciu przycisku pokaż więcej wierszy
+        showMoreRowsBtn.addEventListener('click', function() {
+            showNextHiddenRow();
 
-        // Pobierz referencję do nowo dodanego wiersza
-        var newlyAddedRow = hiddenRows[currentIndex - 1];
+            // Pobierz referencję do nowo dodanego wiersza
+            var newlyAddedRow = hiddenRows[currentIndex - 1];
 
-        // Zmiana nazwy inputów w dodanym wierszu
-        var inputs = newlyAddedRow.querySelectorAll('input[type="text"]');
-        inputs.forEach(function(input) {
-            var currentName = input.getAttribute('name');
-            var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
-            input.setAttribute('name', newName);
+            // Zmiana nazwy inputów w dodanym wierszu
+            var inputs = newlyAddedRow.querySelectorAll('input[type="text"]');
+            inputs.forEach(function(input) {
+                var currentName = input.getAttribute('name');
+                var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
+                input.setAttribute('name', newName);
+            });
         });
-    });
 
-    // Dodaj obsługę kliknięcia przycisku usuwania wiersza
-    removeRowBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            if(currentIndex <= 10) {
-                showMoreRowsBtn.style.display = '';
-            }
-            if(currentIndex !== 0) {
-                --currentIndex;
-                hiddenRows[currentIndex].style.display = 'none';
+        // Dodaj obsługę kliknięcia przycisku usuwania wiersza
+        removeRowBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                if(currentIndex <= 10) {
+                    showMoreRowsBtn.style.display = '';
+                }
+                if(currentIndex !== 0) {
+                    --currentIndex;
+                    hiddenRows[currentIndex].style.display = 'none';
 
-                // Zmiana nazwy inputów w usuwanym wierszu
-                var inputs = hiddenRows[currentIndex].querySelectorAll('input[type="text"]');
-                inputs.forEach(function(input) {
-                    var currentName = input.getAttribute('name');
-                    var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
-                    input.setAttribute('name', newName);
-                });
-            }
+                    // Zmiana nazwy inputów w usuwanym wierszu
+                    var inputs = hiddenRows[currentIndex].querySelectorAll('input[type="text"]');
+                    inputs.forEach(function(input) {
+                        var currentName = input.getAttribute('name');
+                        var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
+                        input.setAttribute('name', newName);
+                    });
+                }
+            });
         });
     });
 });
+
 
 </script>
 

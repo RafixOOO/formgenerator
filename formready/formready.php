@@ -52,7 +52,7 @@
                             echo $row["type"]."/100";
                         }
                         echo "</td>";
-                        echo "<td><a href='formsread.php?ID=".$row["readyID"]."'><input style='width: 30%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=".$row["readyID"]."'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
+                        echo "<td><a href='formsread.php?ID=".$row["readyID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=".$row["readyID"]."'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
                         echo "</tr>";
                     }
 
