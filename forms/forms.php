@@ -46,8 +46,8 @@
                         echo "<td>" . $row["datetime"] . "</td>";
                         echo "<td>" . $row["datetimedo"] . "</td>";
                         echo "<td><a href='formsread.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Wypełnij'></a>
-                        <a href='formsread.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>
-                        <a href='formsread.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Usuń'></a></td>";
+                        <a href='../formcreate/formedit.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>
+                        <a href='formsdelete.php?ID=".$row["applicationID"]."'><input style='width: 25%; background-color: red;' type='button' class='fadeIn fourth' value='Usuń'></a></td>";
                         echo "</tr>";
                     }
 
