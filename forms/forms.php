@@ -19,6 +19,8 @@
     <title>Generator | Strona główna</title>
 </head>
 <body>
+<!-- 2024 Created by: Rafał Pezda-->
+<!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
     <?php if(returnRole()==1) { ?>
@@ -51,7 +53,6 @@
 
         </table>
     </div>
-    <?php require_once("../footer.html"); ?>
 </body>
     <script>
         $(document).ready(function() {

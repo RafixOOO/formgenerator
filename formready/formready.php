@@ -19,6 +19,8 @@
     <title>Generator | Wnioski</title>
 </head>
 <body>
+<!-- 2024 Created by: Rafał Pezda-->
+<!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
     <div class="table-responsive d-flex justify-content-center"></div>

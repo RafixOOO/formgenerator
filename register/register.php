@@ -10,6 +10,8 @@
     <title>Generator | Rejestracja</title>
 </head>
 <body>
+<!-- 2024 Created by: Rafał Pezda-->
+<!-- link: https://github.com/RafixOOO -->
     <div class="wrapper fadeInDown">
         <div id="formContent">
             <!-- Tabs Titles -->
@@ -36,7 +38,6 @@
         </div>
 
     </div>
-    <?php require_once("../footer.html"); ?>
     <?php
                 // Sprawdzanie czy parametr error jest ustawiony i równy 'email_exists'
                 if(isset($_GET['error']) && $_GET['error'] == 'email_exists') {

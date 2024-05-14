@@ -13,6 +13,8 @@ function redirectToNewPage1() {
     }
     </script>
 <nav class="navbar navbar-expand-lg py-3">
+<!-- 2024 Created by: Rafał Pezda-->
+<!-- link: https://github.com/RafixOOO -->
     <div class="pe-lg-0 ps-lg-5 container-fluid justify-content-between">
         <a class="navbar-brand" href="#">
             <img src="../img/Fundacja-SMK-CMYK-logotyp.jpg" height="80" alt="logo">

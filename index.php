@@ -10,6 +10,8 @@
     <title>Generator | Logowanie</title>
 </head>
 <body>
+<!-- 2024 Created by: Rafał Pezda-->
+<!-- link: https://github.com/RafixOOO -->
     <div class="wrapper fadeInDown">
         <div id="formContent">
             <!-- Tabs Titles -->
@@ -34,7 +36,6 @@
 
         </div>
     </div>
-    <?php require_once("footer.html"); ?>
     <?php
                     // Sprawdzanie czy parametr error jest ustawiony i równy 'invalid_password'
                     if(isset($_GET['error']) && $_GET['error'] == 'invalid_password') {
