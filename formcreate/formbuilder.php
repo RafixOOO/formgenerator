@@ -58,6 +58,7 @@ function addRow() {
             <option value="1">Tekst</option>\
             <option value="0">Tekstarea</option>\
             <option value="4">Tabela</option>\
+            <option value="5">Suma</option>\
         </select>\
         <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
             <option value="1">Wymagane</option>\
@@ -151,6 +152,14 @@ function showFields(select) {
                     
                 });
 
+            break;
+    case "5": // suma
+            var textField = document.createElement('input');
+            textField.setAttribute("type", "text");
+            textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField.setAttribute("name", "field_" + columnCounter + "[]");
+            textField.setAttribute("placeholder", "Pole tekstowe");
+            specificFieldsDiv.appendChild(textField);
             break;
         default:
             break;

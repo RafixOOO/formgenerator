@@ -209,6 +209,8 @@ if (isset($_GET['ID'])) {
                 $table_opened = false;
                 unset($columns);
          }
+         echo "<input type='hidden' name='id' value='".$id."' >";
+         echo "<input type='hidden' name='number' value='".$number."' >"
         ?>
 
 
