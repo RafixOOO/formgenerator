@@ -32,7 +32,7 @@
                         </div>
                         <br />
                         <input type="hidden" name="columnCounterInput" id="columnCounterInput" value="0">                        
-                        <button class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full" onclick="addRow(); return false">Add Item</button>
+                        <button class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full" onclick="columnCounter++;addRow(); return false;">Add Item</button>
                         <div style="text-align: right;">
                             <a href="../forms/forms.php"><input type="button" value="Anuluj" style="background-color: red;"></a>
                             <input type="submit" name="submit_draft" value="Szkic" style="background-color: green;">
@@ -47,18 +47,18 @@
 
    var columnCounter = 0;
 function addRow() {
-    columnCounter++;
     var newColumn = document.createElement('div');
     newColumn.setAttribute("class", "column");
     newColumn.innerHTML = '<br />\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this)">\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
             <option value="2">Jednokrotny wybór</option>\
             <option value="3">Wielokrotny wybór</option>\
             <option value="1">Tekst</option>\
-            <option value="0">Tekstarea</option>\
+            <option value="0">Tekst bez pola</option>\
             <option value="4">Tabela</option>\
-            <option value="5">Suma</option>\
+            <option value="5">Tabela Suma</option>\
+            <option value="6">Tabela Róźnica</option>\
         </select>\
         <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
             <option value="1">Wymagane</option>\
@@ -87,7 +87,7 @@ function removeRow(node) {
 return node.remove()
 }
 
-function showFields(select) {
+function showFields(select, clasa) {
     var selectedValue = select.value;
     var specificFieldsDiv = select.nextElementSibling.nextElementSibling; // Znajdujemy element div po select
 
@@ -103,17 +103,19 @@ function showFields(select) {
             var textField = document.createElement('input');
             textField.setAttribute("type", "text");
             textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-            textField.setAttribute("name", "field_" + columnCounter + "[]");
+            textField.setAttribute("name", clasa);
             textField.setAttribute("placeholder", "Pole tekstowe");
             specificFieldsDiv.appendChild(textField);
             break;
         case "2":
         case "3":// Jednokrotny wybór
         case "4": // Tabela
+         case "5": // Tabela suma
+        case "6": // Tabela różnica
             var textField = document.createElement('input');
             textField.setAttribute("type", "text");
             textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-            textField.setAttribute("name", "field_" + columnCounter + "[]");
+            textField.setAttribute("name", clasa);
             textField.setAttribute("placeholder", "Pole tekstowe");
 
             var addButton = document.createElement('button');
@@ -140,7 +142,7 @@ function showFields(select) {
                 var newTextField = document.createElement('input');
                 newTextField.setAttribute("type", "text");
                 newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                newTextField.setAttribute("name", "field_" + columnCounter + "[]");
+                newTextField.setAttribute("name", clasa);
                 newTextField.setAttribute("placeholder", "Pole tekstowe");
                 fieldsDiv.insertBefore(newTextField, addButton);
             });
@@ -152,14 +154,6 @@ function showFields(select) {
                     
                 });
 
-            break;
-    case "5": // suma
-            var textField = document.createElement('input');
-            textField.setAttribute("type", "text");
-            textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-            textField.setAttribute("name", "field_" + columnCounter + "[]");
-            textField.setAttribute("placeholder", "Pole tekstowe");
-            specificFieldsDiv.appendChild(textField);
             break;
         default:
             break;

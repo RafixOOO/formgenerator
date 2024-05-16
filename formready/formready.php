@@ -50,6 +50,9 @@
                         echo "<td>";
                         if($row["status"] == 0) {
                             echo "Wysłane";
+                        } else if($row["status"] == 1){
+                            echo "Sprawdzone";
+
                         }
                         echo "</td>";
 

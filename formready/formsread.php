@@ -202,45 +202,8 @@ if (isset($_GET['ID'])) {
                 $number = $row["number"];
                 $table_opened = true;
                 $columns[] = $row["quest"]; // Dodajemy nazwę kolumny do tablicy
-            } else if($row["type"]==5){
-                $quest=$row['questID'];
-                $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and questID=$quest";
-                $result1 = $conn->query($sql1);
-                $selected = 0;
-                while ($row1 = $result1->fetch_assoc()) {
-                    $selected = $row1["answer"];
-                    break;
-                }
-                if ($number != $row["number"] and $number != 0) {
-                    echo "</p>";
-                } else {
-                    $number = $row["number"];
-                }
-                if ($number != $row["number"]) {
-                    echo "<p>";
-                }
-                $number1 = $row["number"]-1;
-                $fragments = explode(",", $row["quest"]);
-                $suma=0;
-                foreach ($fragments as $fragment) {
-                $sql2= "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE q.questID=a.questID and qu.questID=q.questID and q.quest='$fragment' and qu.number=$number1 and a.readyID=$id";
-                $result2 = $conn->query($sql2);
-                while ($row2 = $result2->fetch_assoc()) {
-                    $suma=$suma+intval($row2["answer"]);
-                    }
-
-                }
-                echo '<div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-        <input type="text" class="form-control" name="' . $row["number"] . ' " value="'.$suma.'" disabled';
-
-                if ($row["req"] == 1) {
-                    echo ' required';
-                }
-
-                echo '>
-    </div>';
             }
+            
 
 
         }

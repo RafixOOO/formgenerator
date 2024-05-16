@@ -41,8 +41,8 @@ $number=1;
 $idlastfield='';
 $columnCounterValue = $_POST['columnCounterInput'];
 echo $columnCounterValue+1;
-
-    for ($i=0;$i<=$columnCounterValue;++$i) {
+    $i=0;
+    for ($i=0;$i<=$columnCounterValue;$i++) {
         if (isset($_POST[$type . $i])) {
             
             $typeValue = $_POST[$type . $i];
