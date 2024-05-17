@@ -152,7 +152,7 @@ if (isset($_GET['ID'])) {
                 }
 
                 if ($selected != '0') {
-                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked i disabled
+                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked
                 }
 
                 echo '>
