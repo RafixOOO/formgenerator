@@ -265,7 +265,7 @@ if (isset($_GET['ID'])) {
                                                 }else if($i==1) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
                                                 } else if($i==2) {
-                                            echo '<td><input id="input2_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                            echo '<td><input id="input2_99_' . $number . '" placeholder="Nie więcej niż '.$procent.'% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
 
                                                 } else if($i==0){
                                                     echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
@@ -308,7 +308,7 @@ if (isset($_GET['ID'])) {
                                             }
                                             echo '</tbody>
                                             <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="" readonly>
-                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="" readonly></td>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" placeholder="Nie więcej niż '.$kwota.'" class="form-control" value="" readonly></td>
                                                    <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="" readonly></td></tfoot>
                                             </table>';
                                             echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
@@ -623,7 +623,7 @@ if (isset($_GET['ID'])) {
                                                 }else if($i==1) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
                                                 } else if($i==2) {
-                                            echo '<td><input id="input2_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                            echo '<td><input id="input2_99_' . $number . '" placeholder="Nie więcej niż '.$procent.'% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
 
                                                 } else if($i==0){
                                                     echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
@@ -666,7 +666,7 @@ if (isset($_GET['ID'])) {
                                             }
                                             echo '</tbody>
                                             <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="" readonly>
-                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="" readonly></td>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" placeholder="Nie więcej niż '.$kwota.'" type="text" class="form-control" value="" readonly></td>
                                                    <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="" readonly></td></tfoot>
                                             </table>';
                                             echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
