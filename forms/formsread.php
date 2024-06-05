@@ -47,6 +47,7 @@ if (isset($_GET['ID'])) {
         $table_opened4 = false;
         $table_opened5 = false;
         $table_opened6 = false;
+        $table_opened7 = false;
         $req=0;
         while ($row = $result->fetch_assoc()) {
 
@@ -236,6 +237,86 @@ if (isset($_GET['ID'])) {
                 $table_opened6 = false;
                 unset($columns);
             }
+            else if($row["type"] != 7 and $table_opened7){
+                $procent=0;
+             $kwota=0;
+                            echo '<table class="table m'.$number.'"><thead><tr>';
+                                            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                                            $count = count($columns);
+                                            for ($i = 0; $i < $count; $i++) {
+                                                if(($i == 4)){
+                                                    $procent= $columns[$i];// Wypisujemy nazwy kolumn z tablicy $columns
+                                                }else if($i == 5){
+                                                    $kwota=$columns[$i];
+                                                }else{
+                                                    echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                                                }
+
+
+                                            }
+                                            echo '</tr></thead><tbody>';
+
+                                            echo '<tr>';
+                                            echo '<th scope="row">1</th>'; // Numeracja wierszy
+                                            $random_number = rand(100, 999);
+                                            for ($i = 0; $i < $count-2; $i++) {
+                                                if($i==3){
+                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" oninput="updateSumByTableClass('.$number.')" readonly';
+                                                }else if($i==1) {
+                                            echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                                } else if($i==2) {
+                                            echo '<td><input id="input2_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+
+                                                } else if($i==0){
+                                                    echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
+                                                }else{
+                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+
+                                                }
+                                                if ($req == 1) {
+                                                    echo ' required';
+                                                    }
+
+                                                    echo '
+
+                                                    ></td>';
+
+
+                                            }
+                                            echo '</tr>';
+                                            $i=0;
+                                            // Wygeneruj 10 wierszy z ukrytą klasą
+                                            for ($i = 2; $i <= 20; $i++) {
+                                                echo '<tr class="hidden-row m'.$number.'">';
+                                                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
+                                                $random_number = rand(100, 999);
+                                                for ($j = 0; $j < $count-2; $j++) {
+                                                if($j==3){
+                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
+                                                }else if($j==1) {
+                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
+                                                } else if($j==2) {
+                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+
+                                                } else{
+                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                                                } echo '
+
+                                                ></td>'; // Pole tekstowe w komórkach
+                                                }
+                                                echo '</tr>';
+                                            }
+                                            echo '</tbody>
+                                            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="" readonly>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="" readonly></td>
+                                                   <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="" readonly></td></tfoot>
+                                            </table>';
+                                            echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
+                                            echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m'.$number.'">Usuń wiersz</button>';
+
+                                            $table_opened7 = false;
+                                            unset($columns);
+            }
 
             if ($row["type"] == 3) {
                 if ($number != $row["number"] and $number != 0) {
@@ -308,7 +389,7 @@ if (isset($_GET['ID'])) {
 
                 echo '>
       </div>';
-            } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6) {
+            } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7) {
                 $req=$row["req"];
                 $number=$row["number"];
                 if($row["type"]==4){
@@ -317,6 +398,8 @@ if (isset($_GET['ID'])) {
                     $table_opened5 = true;
                 }else if($row["type"]==6){
                     $table_opened6 = true;
+                    }else if($row["type"]==7){
+                    $table_opened7 = true;
                     }
                 $columns[] = $row["quest"]; // Dodajemy nazwę kolumny do tablicy
             }
@@ -511,6 +594,87 @@ if (isset($_GET['ID'])) {
                         $table_opened6 = false;
                         unset($columns);
                     }
+
+         if($table_opened7){
+             $procent=0;
+             $kwota=0;
+                            echo '<table class="table m'.$number.'"><thead><tr>';
+                                            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                                            $count = count($columns);
+                                            for ($i = 0; $i < $count; $i++) {
+                                                if(($i == 4)){
+                                                    $procent= $columns[$i];// Wypisujemy nazwy kolumn z tablicy $columns
+                                                }else if($i == 5){
+                                                    $kwota=$columns[$i];
+                                                }else{
+                                                    echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                                                }
+
+
+                                            }
+                                            echo '</tr></thead><tbody>';
+
+                                            echo '<tr>';
+                                            echo '<th scope="row">1</th>'; // Numeracja wierszy
+                                            $random_number = rand(100, 999);
+                                            for ($i = 0; $i < $count-2; $i++) {
+                                                if($i==3){
+                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" oninput="updateSumByTableClass('.$number.')" readonly';
+                                                }else if($i==1) {
+                                            echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                                } else if($i==2) {
+                                            echo '<td><input id="input2_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+
+                                                } else if($i==0){
+                                                    echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
+                                                }else{
+                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+
+                                                }
+                                                if ($req == 1) {
+                                                    echo ' required';
+                                                    }
+
+                                                    echo '
+
+                                                    ></td>';
+
+
+                                            }
+                                            echo '</tr>';
+                                            $i=0;
+                                            // Wygeneruj 10 wierszy z ukrytą klasą
+                                            for ($i = 2; $i <= 20; $i++) {
+                                                echo '<tr class="hidden-row m'.$number.'">';
+                                                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
+                                                $random_number = rand(100, 999);
+                                                for ($j = 0; $j < $count-2; $j++) {
+                                                if($j==3){
+                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
+                                                }else if($j==1) {
+                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
+                                                } else if($j==2) {
+                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+
+                                                } else{
+                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                                                } echo '
+
+                                                ></td>'; // Pole tekstowe w komórkach
+                                                }
+                                                echo '</tr>';
+                                            }
+                                            echo '</tbody>
+                                            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="" readonly>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="" readonly></td>
+                                                   <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="" readonly></td></tfoot>
+                                            </table>';
+                                            echo '<button type="button" id="showMoreRowsBtn_m'.$number.'" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
+                                            echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m'.$number.'">Usuń wiersz</button>';
+
+                                            $table_opened7 = false;
+                                            unset($columns);
+         }
          echo "<input type='hidden' name='id' value='".$id."' >";
          echo "<input type='hidden' name='number' value='".$number."' >"
         ?>
@@ -602,7 +766,7 @@ function addInputs(index, number) {
     }
 }
 
-    function delInputs(index, number) {
+    function delInputs(index, number, kwota, procent) {
         // Pobierz wartości z obu pól tekstowych
         var input1Value = parseFloat(document.getElementById("input1_" + index + "_" + number).value);
         var input2Value = parseFloat(document.getElementById("input2_" + index + "_" + number).value);
@@ -613,9 +777,27 @@ function addInputs(index, number) {
             var result = input1Value - input2Value;
             // Ustaw wynik jako wartość pola tekstowego wynikowego
             document.getElementById("inputwyn_" + index + "_" + number).value = result;
-            updateSumByTableClass(number);
         }
     }
+
+        function delInputs1(index, number, kwota, procent) {
+            // Pobierz wartości z obu pól tekstowych
+            var input1Value = parseFloat(document.getElementById("input1_" + index + "_" + number).value);
+            var input2Value = parseFloat(document.getElementById("input2_" + index + "_" + number).value);
+
+            // Upewnij się, że wartości są liczbami, a nie NaN
+            if (!isNaN(input1Value) && !isNaN(input2Value)) {
+                // Dodaj wartość z input1 do wartości w input2
+                var result = input1Value - input2Value;
+                // Ustaw wynik jako wartość pola tekstowego wynikowego
+                document.getElementById("inputwyn_" + index + "_" + number).value = result;
+                updateSumByTableClass(number);
+                updateSumByTableClass1(number);
+                updateSumByTableClass2(number);
+                checkkwota(kwota, number);
+                checksum(procent, number);
+            }
+        }
 
     function updateSumByTableClass(index) {
         // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
@@ -631,7 +813,67 @@ function addInputs(index, number) {
         });
 
         // Ustaw sumę w inpucie na dole
-        document.getElementById('inputres_' + index).value = totalSum;
+        document.getElementById('inputres1_' + index).value = totalSum;
+    }
+
+    function updateSumByTableClass1(index) {
+        // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
+        var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="input1_"]');
+        var totalSum = 0;
+
+        // Iteruj przez wszystkie pola inputwyn i sumuj ich wartości
+        inputwynFields.forEach(function(inputwynField) {
+            var value = parseFloat(inputwynField.value);
+            if (!isNaN(value)) {
+                totalSum += value;
+            }
+        });
+
+        // Ustaw sumę w inpucie na dole
+        document.getElementById('inputres3_' + index).value = totalSum;
+    }
+    function updateSumByTableClass2(index) {
+        // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
+        var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="input2_"]');
+        var totalSum = 0;
+
+        // Iteruj przez wszystkie pola inputwyn i sumuj ich wartości
+        inputwynFields.forEach(function(inputwynField) {
+            var value = parseFloat(inputwynField.value);
+            if (!isNaN(value)) {
+                totalSum += value;
+            }
+        });
+
+        // Ustaw sumę w inpucie na dole
+        document.getElementById('inputres2_' + index).value = totalSum;
+    }
+
+    function checkkwota(kwota, index) {
+        var input = document.getElementById('inputres2_' + index);
+        var value=parseFloat(input.value);
+
+        if (value > kwota) {
+            // Jeśli wartość jest większa niż kwota, ustaw kolor tła na czerwono
+            input.style.backgroundColor = 'red';
+        } else {
+            // W przeciwnym razie ustaw kolor tła na biało
+            input.style.backgroundColor = '';
+        }
+    }
+
+    function checksum(procent, number) {
+        var input1 = parseFloat(document.getElementById("input2_99_" + number).value);
+        var input2 = parseFloat(document.getElementById('inputres2_' + number).value);
+        var inputField1 = document.getElementById("input2_99_" + number);
+            var result = input1 / input2 * 100;
+            // Sprawdzenie, czy wynik dzielenia jest większy od procent
+            if (result > procent) {
+                inputField1.style.backgroundColor = 'red';
+            } else {
+                inputField1.style.backgroundColor = '';
+            }
+
     }
 </script>
 

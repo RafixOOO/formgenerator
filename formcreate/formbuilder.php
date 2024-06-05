@@ -156,6 +156,83 @@ function showFields(select, clasa) {
                 });
 
             break;
+    case "7": // Tabela budżetowa
+            var textField = document.createElement('input');
+            textField.setAttribute("type", "text");
+            textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField.setAttribute("name", clasa);
+            textField.setAttribute("placeholder", "Nazwa");
+
+    var textField1 = document.createElement('input');
+            textField1.setAttribute("type", "text");
+            textField1.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField1.setAttribute("name", clasa);
+            textField1.setAttribute("placeholder", "Pole");
+
+    var textField2 = document.createElement('input');
+            textField2.setAttribute("type", "text");
+            textField2.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField2.setAttribute("name", clasa);
+            textField2.setAttribute("placeholder", "Pole");
+
+    var textField3 = document.createElement('input');
+            textField3.setAttribute("type", "text");
+            textField3.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField3.setAttribute("name", clasa);
+            textField3.setAttribute("placeholder", "Pole");
+
+    var textField4 = document.createElement('input');
+            textField4.setAttribute("type", "text");
+            textField4.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField4.setAttribute("name", clasa);
+            textField4.setAttribute("placeholder", "Procent");
+
+     var textField5 = document.createElement('input');
+            textField5.setAttribute("type", "text");
+            textField5.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+            textField5.setAttribute("name", clasa);
+            textField5.setAttribute("placeholder", "Kwota");
+
+            var addButton = document.createElement('button');
+            addButton.setAttribute("type", "button");
+            addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
+            addButton.textContent = "+ Dodaj pole";
+
+            var removeButton = document.createElement('button');
+            removeButton.setAttribute("type", "button");
+            removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
+            removeButton.textContent = "- Usuń pole";
+
+            var fieldsDiv = document.createElement('div');
+            fieldsDiv.setAttribute("class", "flex flex-col");
+
+            fieldsDiv.appendChild(textField);
+             fieldsDiv.appendChild(textField1);
+            fieldsDiv.appendChild(textField2);
+            fieldsDiv.appendChild(textField3);
+            fieldsDiv.appendChild(textField4);
+    fieldsDiv.appendChild(textField5);
+
+            specificFieldsDiv.appendChild(fieldsDiv);
+
+            // Dodanie obsługi zdarzeń dla przycisków dodawania/usuwania pól w tabeli
+            addButton.addEventListener("click", function() {
+                var newTextField = document.createElement('input');
+                newTextField.setAttribute("type", "text");
+                newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                newTextField.setAttribute("name", clasa);
+                newTextField.setAttribute("placeholder", "Pole tekstowe");
+                fieldsDiv.insertBefore(newTextField, addButton);
+            });
+
+        removeButton.addEventListener("click", function() {
+                        if (fieldsDiv.childNodes.length > 3) { // Sprawdzamy, czy jest więcej niż dwa elementy w divie (pola tekstowe i przyciski)
+                            fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]); // Usuwamy ostatnie dodane pole tekstowe
+                        }
+
+                });
+
+            break;
         default:
             break;
     }
