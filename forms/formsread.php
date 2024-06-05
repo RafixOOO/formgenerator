@@ -142,12 +142,12 @@ if (isset($_GET['ID'])) {
                     if($j>=count($columns)){
                         echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')"';
                     }else if($j==$inne) {
-                echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')" ';
+                echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')" ';
                     } else if($j==$inne1) {
-                  echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+                  echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
 
                     } else{
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                     } echo '
 
                     ></td>'; // Pole tekstowe w komórkach
@@ -215,12 +215,12 @@ if (isset($_GET['ID'])) {
                     if($j>=count($columns)){
                         echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')"';
                     }else if($j==$inne) {
-                echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
+                echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                     } else if($j==$inne1) {
-                  echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
+                  echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
 
                     } else{
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                     } echo '
 
                     ></td>'; // Pole tekstowe w komórkach
@@ -294,12 +294,12 @@ if (isset($_GET['ID'])) {
                                                 if($j==3){
                                                     echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($j==1) {
-                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
+                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
                                                 } else if($j==2) {
-                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
 
                                                 } else{
-                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                                                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                                                 } echo '
 
                                                 ></td>'; // Pole tekstowe w komórkach
@@ -498,12 +498,12 @@ if (isset($_GET['ID'])) {
                 if($j>=count($columns)){
                     echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" onchange="updateSumByTableClass('.$number.')"';
                 }else if($j==$inne) {
-            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
                 } else if($j==$inne1) {
-            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
 
                 } else{
-                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                 } echo '
 
                 ></td>'; // Pole tekstowe w komórkach
@@ -572,12 +572,12 @@ if (isset($_GET['ID'])) {
                             if($j>=count($columns)){
                                 echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')"';
                             }else if($j==$inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
+                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                             } else if($j==$inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
+                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
 
                             } else{
-                                echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                                echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                             } echo '
 
                             ></td>'; // Pole tekstowe w komórkach
@@ -652,12 +652,12 @@ if (isset($_GET['ID'])) {
                                                 if($j==3){
                                                     echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($j==1) {
-                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
+                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
                                                 } else if($j==2) {
-                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
 
                                                 } else{
-                                                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                                                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                                                 } echo '
 
                                                 ></td>'; // Pole tekstowe w komórkach
