@@ -261,7 +261,7 @@ if (isset($_GET['ID'])) {
                                             $random_number = rand(100, 999);
                                             for ($i = 0; $i < $count-2; $i++) {
                                                 if($i==3){
-                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" oninput="updateSumByTableClass('.$number.')" readonly';
+                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($i==1) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
                                                 } else if($i==2) {
@@ -292,7 +292,7 @@ if (isset($_GET['ID'])) {
                                                 $random_number = rand(100, 999);
                                                 for ($j = 0; $j < $count-2; $j++) {
                                                 if($j==3){
-                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
+                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" name="a' . $number . '[]" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($j==1) {
                                             echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
                                                 } else if($j==2) {
@@ -619,7 +619,7 @@ if (isset($_GET['ID'])) {
                                             $random_number = rand(100, 999);
                                             for ($i = 0; $i < $count-2; $i++) {
                                                 if($i==3){
-                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" oninput="updateSumByTableClass('.$number.')" readonly';
+                                                    echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($i==1) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
                                                 } else if($i==2) {
@@ -650,7 +650,7 @@ if (isset($_GET['ID'])) {
                                                 $random_number = rand(100, 999);
                                                 for ($j = 0; $j < $count-2; $j++) {
                                                 if($j==3){
-                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
+                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" name="a' . $number . '[]" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($j==1) {
                                             echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
                                                 } else if($j==2) {
@@ -762,11 +762,12 @@ function addInputs(index, number) {
         var result = input1Value + input2Value;
         // Ustaw wynik jako wartość pola tekstowego wynikowego
         document.getElementById("inputwyn_" + index + "_" + number).value = result;
-        updateSumByTableClass(number);
+
     }
+    updateSumByTableClass4(number);
 }
 
-    function delInputs(index, number, kwota, procent) {
+    function delInputs(index, number) {
         // Pobierz wartości z obu pól tekstowych
         var input1Value = parseFloat(document.getElementById("input1_" + index + "_" + number).value);
         var input2Value = parseFloat(document.getElementById("input2_" + index + "_" + number).value);
@@ -777,6 +778,7 @@ function addInputs(index, number) {
             var result = input1Value - input2Value;
             // Ustaw wynik jako wartość pola tekstowego wynikowego
             document.getElementById("inputwyn_" + index + "_" + number).value = result;
+            updateSumByTableClass4(number);
         }
     }
 
@@ -799,6 +801,24 @@ function addInputs(index, number) {
             }
         }
 
+    function updateSumByTableClass4(index) {
+        // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
+        var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="inputwyn_"]');
+        var totalSum = 0;
+
+        // Iteruj przez wszystkie pola inputwyn i sumuj ich wartości
+        inputwynFields.forEach(function(inputwynField) {
+            var value = parseFloat(inputwynField.value);
+            if (!isNaN(value)) {
+                console.log(totalSum);
+                totalSum += value;
+            }
+        });
+
+        // Ustaw sumę w inpucie na dole
+        document.getElementById('inputres_' + index).value = totalSum;
+    }
+
     function updateSumByTableClass(index) {
         // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
         var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="inputwyn_"]');
@@ -808,6 +828,7 @@ function addInputs(index, number) {
         inputwynFields.forEach(function(inputwynField) {
             var value = parseFloat(inputwynField.value);
             if (!isNaN(value)) {
+                console.log(totalSum);
                 totalSum += value;
             }
         });

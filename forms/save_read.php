@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                      }
                      break;
 
-                 }else if($row['type'] == 4){
+                 }else if($row['type'] == 4 or $row['type'] == 5 or $row['type'] == 6){
                      $fieldvalue = $_POST['' . $i];
                      $count=0;
                      $min=0;
