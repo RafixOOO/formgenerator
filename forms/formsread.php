@@ -30,7 +30,9 @@ if (isset($_GET['ID'])) {
         display: none;
     }
     </style>
-
+	<!-- Toastr -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
@@ -624,7 +626,6 @@ if (isset($_GET['ID'])) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
                                                 } else if($i==2) {
                                             echo '<td><input id="input2_99_' . $number . '" placeholder="Nie więcej niż '.$procent.'% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-
                                                 } else if($i==0){
                                                     echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
                                                 }else{
@@ -877,6 +878,8 @@ function addInputs(index, number) {
         if (value > kwota) {
             // Jeśli wartość jest większa niż kwota, ustaw kolor tła na czerwono
             input.style.backgroundColor = 'red';
+            toastr.options.timeOut = 5000;
+            toastr.error("Suma dotacji przekracza próg "+kwota+"zł", "aktualnie jest "+value+"zł");
         } else {
             // W przeciwnym razie ustaw kolor tła na biało
             input.style.backgroundColor = '';
@@ -891,8 +894,11 @@ function addInputs(index, number) {
             // Sprawdzenie, czy wynik dzielenia jest większy od procent
             if (result > procent) {
                 inputField1.style.backgroundColor = 'red';
+                toastr.options.timeOut = 5000;
+                toastr.error("Procent kosztów administracyjnych przekracza próg "+procent+"%", "aktualnie jest "+result+"%");
             } else {
                 inputField1.style.backgroundColor = '';
+                tooltipText.parentElement.classList.remove('show');
             }
 
     }
