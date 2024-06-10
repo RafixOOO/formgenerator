@@ -879,13 +879,16 @@ function addInputs(index, number) {
     function checkkwota(kwota, index) {
         var input = document.getElementById('inputres2_' + index);
         var value=parseFloat(input.value);
+        var submitButton = document.getElementsByName('submit_publish')[0];
 
         if (value > kwota) {
             // Jeśli wartość jest większa niż kwota, ustaw kolor tła na czerwono
+            submitButton.disabled = true;
             input.style.backgroundColor = 'red';
             toastr.options.timeOut = 5000;
             toastr.error("Suma dotacji przekracza próg "+kwota+"zł", "aktualnie jest "+value+"zł");
         } else {
+            submitButton.disabled = false;
             // W przeciwnym razie ustaw kolor tła na biało
             input.style.backgroundColor = '';
         }
@@ -895,13 +898,16 @@ function addInputs(index, number) {
         var input1 = parseFloat(document.getElementById("input2_99_" + number).value);
         var input2 = parseFloat(document.getElementById('inputres2_' + number).value);
         var inputField1 = document.getElementById("input2_99_" + number);
+        var submitButton = document.getElementsByName('submit_publish')[0];
             var result = input1 / input2 * 100;
             // Sprawdzenie, czy wynik dzielenia jest większy od procent
             if (result > procent) {
                 inputField1.style.backgroundColor = 'red';
+                submitButton.disabled = true;
                 toastr.options.timeOut = 5000;
                 toastr.error("Procent kosztów administracyjnych przekracza próg "+procent+"%", "aktualnie jest "+result+"%");
             } else {
+                submitButton.disabled = false;
                 inputField1.style.backgroundColor = '';
                 tooltipText.parentElement.classList.remove('show');
             }

@@ -44,11 +44,14 @@ if (isset($_GET['ID'])) {
         $result = $conn->query($sql);
         $number = 0;
         $columns = array();
-        $table_opened = false;
+        $table_opened4 = false;
+        $table_opened5 = false;
+        $table_opened6 = false;
+        $table_opened7 = false;
         $req = 0;
         while ($row = $result->fetch_assoc()) {
 
-            if ($row["type"] != 4 and $table_opened) {
+            if ($row["type"] != 4 and $table_opened4) {
                 $quest=$row['questID'];
                 $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
                 $result1 = $conn->query($sql1);
@@ -87,7 +90,52 @@ if (isset($_GET['ID'])) {
                 }
                 echo '</tbody></table>';
 
-                $table_opened = false;
+                $table_opened4 = false;
+                unset($columns);
+            } else if($row["type"] != 7 and $table_opened7){
+                 $quest=$row['questID'];
+                $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
+                $result1 = $conn->query($sql1);
+                $table=0;
+                echo '<table class="table"><thead><tr>';
+                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                foreach ($columns as $column) {
+                    if (!ctype_digit($column)) {
+    echo '<th scope="col">' . htmlspecialchars($column) . '</th>';
+                    } // Wypisujemy nazwy kolumn z tablicy $columns
+                }
+                echo '</tr></thead><tbody>';
+                $up=0;
+                $down=1;
+
+                while ($row1 = $result1->fetch_assoc()) {
+                    if($down!=$row1["tablerow"]){
+                        echo '</tr>';
+                        $down=$row1["tablerow"];
+                    }
+
+                    if($up!=$row1["tablerow"]){
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up=$row1["tablerow"];
+                    }
+
+                 // Numeracja wierszy
+                 if($row1["answer"]!="brak"){
+                     echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled';
+
+                     if ($req == 1) {
+                         echo ' required';
+                     }
+
+                    echo '
+
+                    ></td>'; // Pole tekstowe w komórkach
+                 }
+                }
+                echo '</tbody></table>';
+
+                $table_opened7 = false;
                 unset($columns);
             }
 
@@ -197,17 +245,25 @@ if (isset($_GET['ID'])) {
 
                 echo '>
       </div>';
-            } else if ($row["type"] == 4) {
+            } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7) {
                 $req = $row["req"];
                 $number = $row["number"];
-                $table_opened = true;
+                if($row["type"]==4){
+                    $table_opened4 = true;
+                } else if($row["type"]==5){
+                    $table_opened5 = true;
+                }else if($row["type"]==6){
+                    $table_opened6 = true;
+                    }else if($row["type"]==7){
+                    $table_opened7 = true;
+                    }
                 $columns[] = $row["quest"]; // Dodajemy nazwę kolumny do tablicy
             }
             
 
 
         }
-        if ($table_opened) {
+        if ($table_opened4) {
             $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
             $result1 = $conn->query($sql1);
             $table=0;
@@ -243,6 +299,63 @@ if (isset($_GET['ID'])) {
                     ></td>'; // Pole tekstowe w komórkach
                 }
                 echo '</tbody></table>';
+                $table_opened4 = false;
+                unset($columns);
+        }
+        if($table_opened7){
+            $sum1=0;
+            $sum2=0;
+            $sum3=0;
+            $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
+            $result1 = $conn->query($sql1);
+            $table=0;
+            echo '<table class="table"><thead><tr>';
+            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+             $count = count($columns)-2;
+             for ($i = 0; $i < $count; $i++) {
+                echo '<th scope="col">' . $columns[$i]. '</th>';
+            }
+            echo '</tr></thead><tbody>';
+            $up=0;
+            $i=1;
+            while ($row1 = $result1->fetch_assoc()) {
+                if($up==0){
+                    echo '<tr>';
+                    echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                    $up++;
+                }
+                if($i>$count){
+                    $i=1;
+                    if($up!==1){
+                        echo '</tr>';
+                    }
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up++;
+
+
+                }
+                if($i==2){
+                    $sum1 += (int) $row1["answer"];
+                }else if($i==3){
+                        $sum2 += (int) $row1["answer"];
+                    } else if($i==4){
+                        $sum3 += (int) $row1["answer"];
+                    }
+
+            // Numeracja wierszy
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
+                $i++;
+            }
+            echo '</tbody>
+            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="'.$sum1.'" readonly>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="'.$sum2.'" readonly></td>
+                                                <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
+
+            </table>';
+
+            $table_opened7 = false;
+            unset($columns);
         }
 
         ?>
