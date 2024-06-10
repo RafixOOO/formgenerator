@@ -413,7 +413,7 @@ if (isset($_GET['ID'])) {
 
         }
         if ($table_opened4) {
-            $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
+            $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
             $result1 = $conn->query($sql1);
             $table=0;
             echo '<table class="table"><thead><tr>';
