@@ -26,19 +26,22 @@
     <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
+                        <th scope="col">Imię, nazwisko, telefon</th>
                         <th scope="col">Wniosek</th>
                         <th scope="col">Punkty</th>
-                        <th scope="col">Status</th>
                         <th scope="col" data-orderable="false">Opcje</th>
                 </thead>
                 <tbody>
                 <?php
                 require_once("../dbconnect.php");
-
-                $sql="SELECT r.status, r.type, a.name, r.readyID FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=1 and r.status!=1; ";
+                $id=returniserid();
+                $sql="SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id; ";
                 $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
+                        echo "<td>"
+                        . $row["nazwa"]." ".$row["surname"]." ".$row["phone"].
+                         "</td>";
                         echo "<td>" . $row["name"] . "</td>";
                         echo "<td>";
                         if($row["type"] == 0 and $row["status"] == 0) {
@@ -47,16 +50,14 @@
                             echo $row["type"]."/100";
                         }
                         echo "</td>";
-                        echo "<td>";
-                        if($row["status"] == 0) {
-                            echo "Wysłane";
-                        } else if($row["status"] == 2){
-                            echo "Sprawdzone";
+                        
+                        if($row["type"] != 0){
+                            echo "<td><a href='formscheck.php?ID=".$row["readyID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Sprawdzone' disabled></a>";
+                        } else {
+                            echo "<td><a href='formscheck.php?ID=".$row["readyID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Sprawdź'></a>";
 
                         }
-                        echo "</td>";
-
-                        echo "<td><a href='formsread.php?ID=".$row["readyID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=".$row["readyID"]."'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
+                        
                         echo "</tr>";
                     }
 

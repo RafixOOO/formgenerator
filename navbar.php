@@ -11,6 +11,13 @@ function redirectToNewPage1() {
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
+
+function redirectToNewPage2() {
+    // Ustawienie adresu URL nowej strony
+    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/tocheck.php";
+    // Przekierowanie użytkownika
+    window.location.href = newPageURL1;
+    }
     </script>
 <nav class="navbar navbar-expand-lg py-3">
 <!-- 2024 Created by: Rafał Pezda-->
@@ -28,8 +35,22 @@ function redirectToNewPage1() {
                 <nav>
                     <div class="nav d-block d-lg-flex nav-tabs" id="nav-tab" role="tablist">
                             <button <?php $url = $_SERVER['REQUEST_URI']; if(strpos($url, '/forms/forms.php') !== false){ echo 'class="nav-link active"'; } else{echo 'class="nav-link"'; } ?> id="home-tab" type="button" onclick="redirectToNewPage()">Strona główna</button>
+                            <?php if(returnRole()==1 or returnRole()==2) { ?>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle nav-link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Wnioski
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" onclick="redirectToNewPage1()">Wnioski</a></li>
+                                 <?php if(returnRole()==2) { ?>
+                                <li><a class="dropdown-item" onclick="redirectToNewPage2()">Do sprawdzenia</a></li>
+                                <?php } ?>
+                                <li><a class="dropdown-item" href="">Szkice</a></li>
+                            </ul>
+                        </div>
+                        <?php } else{ ?>
                         <button <?php $url = $_SERVER['REQUEST_URI']; if(strpos($url, '/formready/formready.php') !== false){ echo 'class="nav-link active"'; } else{echo 'class="nav-link"'; } ?> id="about-tab" data-bs-toggle="tab" data-bs-target="#about"
-                            type="button" role="tab" aria-controls="about" aria-selected="false" onclick="redirectToNewPage1()">Wnioski</button>
+                            type="button" role="tab" aria-controls="about" aria-selected="false" onclick="redirectToNewPage1()">Wnioski</button><?php } ?>
                         <button class="nav-link" id="timing-tab" data-bs-toggle="tab" data-bs-target="#timing"
                             type="button" role="tab" aria-controls="timing" aria-selected="false">Organizacja</button>
                         <div class="dropdown">

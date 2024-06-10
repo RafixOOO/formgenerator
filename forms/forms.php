@@ -23,8 +23,8 @@
 <!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
-    <?php if(returnRole()==1) { ?>
-        <a href="../formcreate/formbuilder.php"><input type="button" class="fadeIn fourth" value="Utwórz"></a>
+    <?php if(returnRole()==1 or returnRole()==2) { ?>
+        <a href="../formcreate/formbuilder.php" style="width: 15%"><input type="button" class="fadeIn fourth" value="Utwórz" style="width: 100%"></a>
         <?php } ?>
     <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
