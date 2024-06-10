@@ -18,6 +18,13 @@ function redirectToNewPage2() {
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
+
+function redirectToNewPage3() {
+    // Ustawienie adresu URL nowej strony
+    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/szkic.php";
+    // Przekierowanie użytkownika
+    window.location.href = newPageURL1;
+    }
     </script>
 <nav class="navbar navbar-expand-lg py-3">
 <!-- 2024 Created by: Rafał Pezda-->
@@ -45,7 +52,7 @@ function redirectToNewPage2() {
                                  <?php if(returnRole()==2) { ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage2()">Do sprawdzenia</a></li>
                                 <?php } ?>
-                                <li><a class="dropdown-item" href="">Szkice</a></li>
+                                <li><a class="dropdown-item" onclick="redirectToNewPage3()">Szkice</a></li>
                             </ul>
                         </div>
                         <?php } else{ ?>
