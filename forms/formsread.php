@@ -619,8 +619,11 @@ if (isset($_GET['ID'])) {
                                             echo '<tr>';
                                             echo '<th scope="row">1</th>'; // Numeracja wierszy
                                             $random_number = rand(100, 999);
-                                            for ($i = 0; $i < $count-2; $i++) {
-                                                if($i==3){
+                                            for ($i = 0; $i < $count; $i++) {
+                                                if($i==4 or $i==5){
+                                                    echo '<td><input type="hidden" value="brak" class="form-control" name="' . $number . '[]"';
+                                                }
+                                                else if($i==3){
                                                     echo '<td><input id="inputwyn_99_'.$number.'" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass('.$number.')" readonly';
                                                 }else if($i==1) {
                                             echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
@@ -649,19 +652,21 @@ if (isset($_GET['ID'])) {
                                                 echo '<tr class="hidden-row m'.$number.'">';
                                                 echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                                                 $random_number = rand(100, 999);
-                                                for ($j = 0; $j < $count-2; $j++) {
-                                                if($j==3){
-                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" name="a' . $number . '[]" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly';
+                                                for ($j = 0; $j < $count; $j++) {
+                                                    if($j==4 or $j==5){
+                                                    echo '<td><input type="hidden" value="brak" class="form-control" name="a' . $number . '[]"';
+                                                }
+                                                else if($j==3){
+                                                    echo '<td><input id="inputwyn_' . $random_number . '_'.$number.'" name="a' . $number . '[]" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass('.$number.')" readonly></td>';
                                                 }else if($j==1) {
-                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
+                                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ></td>';
                                                 } else if($j==2) {
-                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
+                                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"></td>';
 
                                                 } else{
-                                                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
-                                                } echo '
+                                                    echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>';
+                                                } // Pole tekstowe w komórkach
 
-                                                ></td>'; // Pole tekstowe w komórkach
                                                 }
                                                 echo '</tr>';
                                             }
@@ -717,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var newlyAddedRow = hiddenRows[currentIndex - 1];
 
             // Zmiana nazwy inputów w dodanym wierszu
-            var inputs = newlyAddedRow.querySelectorAll('input[type="text"]');
+            var inputs = newlyAddedRow.querySelectorAll('input');
             inputs.forEach(function(input) {
                 var currentName = input.getAttribute('name');
                 var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
@@ -736,7 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     hiddenRows[currentIndex].style.display = 'none';
 
                     // Zmiana nazwy inputów w usuwanym wierszu
-                    var inputs = hiddenRows[currentIndex].querySelectorAll('input[type="text"]');
+                    var inputs = hiddenRows[currentIndex].querySelectorAll('input');
                     inputs.forEach(function(input) {
                         var currentName = input.getAttribute('name');
                         var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
