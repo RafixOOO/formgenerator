@@ -53,7 +53,7 @@ if (isset($_GET['ID'])) {
 
             if ($row["type"] != 4 and $table_opened4) {
                 $quest=$row['questID'];
-                $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
+                $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
                 $result1 = $conn->query($sql1);
                 $table=0;
                 echo '<table class="table"><thead><tr>';
@@ -92,51 +92,200 @@ if (isset($_GET['ID'])) {
 
                 $table_opened4 = false;
                 unset($columns);
-            } else if($row["type"] != 7 and $table_opened7){
-                 $quest=$row['questID'];
-                $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null order by tablerow, questid;";
+            }else if($row["type"] != 5 and $table_opened5){
+                $answer1=0;
+                $answer2=0;
+                $sum1=0;
+                $sum3=0;
+                $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
                 $result1 = $conn->query($sql1);
                 $table=0;
                 echo '<table class="table"><thead><tr>';
                 echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                foreach ($columns as $column) {
-                    if (!ctype_digit($column)) {
-    echo '<th scope="col">' . htmlspecialchars($column) . '</th>';
-                    } // Wypisujemy nazwy kolumn z tablicy $columns
+                $count = count($columns)+1;
+                 for ($i = 0; $i < $count; $i++) {
+                if(($i >= count($columns))){
+                    echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                }else{
+                    echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 }
+
+
+            }
                 echo '</tr></thead><tbody>';
                 $up=0;
-                $down=1;
-
+                $i=1;
+                $ac1=count($columns)-1;
+                $ac2=count($columns);
                 while ($row1 = $result1->fetch_assoc()) {
-                    if($down!=$row1["tablerow"]){
-                        echo '</tr>';
-                        $down=$row1["tablerow"];
-                    }
-
-                    if($up!=$row1["tablerow"]){
+                    if($ac1==$i){
+                        $answer1= (int) $row1["answer"];
+                    }else if($ac2==$i){
+                        $answer2= (int) $row1["answer"];
+                        }
+                    if($i==$count){
+                        $a = (int)$answer1 + (int)$answer2;
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                        $sum3 += $a;
+                        }
+                    if($up==0){
                         echo '<tr>';
                         echo '<th scope="row">'.$row1["tablerow"].'</th>';
-                        $up=$row1["tablerow"];
+                        $up++;
+                    }
+                    if($i>=$count){
+                        $i=1;
+                        if($up!==1){
+                            echo '</tr>';
+                        }
+                            echo '<tr>';
+                            echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                            $up++;
+
+
                     }
 
-                 // Numeracja wierszy
-                 if($row1["answer"]!="brak"){
-                     echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled';
 
-                     if ($req == 1) {
-                         echo ' required';
-                     }
+                // Numeracja wierszy
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
 
-                    echo '
-
-                    ></td>'; // Pole tekstowe w komórkach
-                 }
+                    $i++;
                 }
-                echo '</tbody></table>';
+                $a = (int)$answer1 + (int)$answer2;
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                $sum3 += $a;
+                echo '</tbody>
+                <tfoot><td style="text-align:right;" colspan="'.$count.'">Suma: </td><td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
 
-                $table_opened7 = false;
+                </table>';
+
+                $table_opened5 = false;
                 unset($columns);
+
+            }else if($row["type"] != 6 and $table_opened6){
+                $answer1=0;
+                $answer2=0;
+                $sum1=0;
+                $sum3=0;
+                $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
+                $result1 = $conn->query($sql1);
+                $table=0;
+                echo '<table class="table"><thead><tr>';
+                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                $count = count($columns)+1;
+                for ($i = 0; $i < $count; $i++) {
+                if(($i >= count($columns))){
+                    echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                }else{
+                    echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                }
+
+
+            }
+                echo '</tr></thead><tbody>';
+                $up=0;
+                $i=1;
+                $ac1=count($columns)-1;
+                $ac2=count($columns);
+                while ($row1 = $result1->fetch_assoc()) {
+                    if($ac1==$i){
+                        $answer1= (int) $row1["answer"];
+                    }else if($ac2==$i){
+                        $answer2= (int) $row1["answer"];
+                        }
+                    if($i==$count){
+                        $a = (int)$answer1 - (int)$answer2;
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                        $sum3 += $a;
+                        }
+                    if($up==0){
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up++;
+                    }
+                    if($i>=$count){
+                        $i=1;
+                        if($up!==1){
+                            echo '</tr>';
+                        }
+                            echo '<tr>';
+                            echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                            $up++;
+
+
+                    }
+
+
+                // Numeracja wierszy
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
+
+                    $i++;
+                }
+                $a = (int)$answer1 - (int)$answer2;
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                $sum3 += $a;
+                echo '</tbody>
+                <tfoot><td style="text-align:right;" colspan="'.$count.'">Suma: </td><td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
+
+                </table>';
+
+                $table_opened5 = false;
+                unset($columns);
+
+            } else if($row["type"] != 7 and $table_opened7){
+                $sum1=0;
+            $sum2=0;
+            $sum3=0;
+            $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
+            $result1 = $conn->query($sql1);
+            $table=0;
+            echo '<table class="table"><thead><tr>';
+            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+             $count = count($columns)-2;
+             for ($i = 0; $i < $count; $i++) {
+                echo '<th scope="col">' . $columns[$i]. '</th>';
+            }
+            echo '</tr></thead><tbody>';
+            $up=0;
+            $i=1;
+            while ($row1 = $result1->fetch_assoc()) {
+                if($up==0){
+                    echo '<tr>';
+                    echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                    $up++;
+                }
+                if($i>$count){
+                    $i=1;
+                    if($up!==1){
+                        echo '</tr>';
+                    }
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up++;
+
+
+                }
+                if($i==2){
+                    $sum1 += (int) $row1["answer"];
+                }else if($i==3){
+                        $sum2 += (int) $row1["answer"];
+                    } else if($i==4){
+                        $sum3 += (int) $row1["answer"];
+                    }
+
+            // Numeracja wierszy
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
+                $i++;
+            }
+            echo '</tbody>
+            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_'.$number.'" type="text" class="form-control" value="'.$sum1.'" readonly>
+                                                  </td><td><input style="text-align:right;" id="inputres2_'.$number.'" type="text" class="form-control" value="'.$sum2.'" readonly></td>
+                                                <td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
+
+            </table>';
+
+            $table_opened7 = false;
+            unset($columns);
             }
 
             if ($row["type"] == 3) {
@@ -301,6 +450,147 @@ if (isset($_GET['ID'])) {
                 echo '</tbody></table>';
                 $table_opened4 = false;
                 unset($columns);
+        }if($table_opened6){
+            $answer1=0;
+            $answer2=0;
+            $sum1=0;
+            $sum3=0;
+            $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
+            $result1 = $conn->query($sql1);
+            $table=0;
+            echo '<table class="table"><thead><tr>';
+            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+            $count = count($columns)+1;
+            for ($i = 0; $i < $count; $i++) {
+            if(($i >= count($columns))){
+                echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+            }else{
+                echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+            }
+
+
+        }
+            echo '</tr></thead><tbody>';
+            $up=0;
+            $i=1;
+            $ac1=count($columns)-1;
+            $ac2=count($columns);
+            while ($row1 = $result1->fetch_assoc()) {
+                if($ac1==$i){
+                    $answer1= (int) $row1["answer"];
+                }else if($ac2==$i){
+                    $answer2= (int) $row1["answer"];
+                    }
+                if($i==$count){
+                    $a = (int)$answer1 - (int)$answer2;
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                    $sum3 += $a;
+                    }
+                if($up==0){
+                    echo '<tr>';
+                    echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                    $up++;
+                }
+                if($i>=$count){
+                    $i=1;
+                    if($up!==1){
+                        echo '</tr>';
+                    }
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up++;
+
+
+                }
+
+
+            // Numeracja wierszy
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
+
+                $i++;
+            }
+            $a = (int)$answer1 - (int)$answer2;
+            echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+            $sum3 += $a;
+            echo '</tbody>
+            <tfoot><td style="text-align:right;" colspan="'.$count.'">Suma: </td><td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
+
+            </table>';
+
+            $table_opened5 = false;
+            unset($columns);
+
+        }
+        if($table_opened5){
+            $answer1=0;
+            $answer2=0;
+            $sum1=0;
+            $sum3=0;
+            $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
+            $result1 = $conn->query($sql1);
+            $table=0;
+            echo '<table class="table"><thead><tr>';
+            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+            $count = count($columns)+1;
+            for ($i = 0; $i < $count; $i++) {
+            if(($i >= count($columns))){
+                echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+            }else{
+                echo '<th scope="col">' . $columns[$i]. '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+            }
+
+
+        }
+            echo '</tr></thead><tbody>';
+            $up=0;
+            $i=1;
+            $ac1=count($columns)-1;
+            $ac2=count($columns);
+            while ($row1 = $result1->fetch_assoc()) {
+                if($ac1==$i){
+                    $answer1= (int) $row1["answer"];
+                }else if($ac2==$i){
+                    $answer2= (int) $row1["answer"];
+                    }
+                if($i==$count){
+                    $a = (int)$answer1 + (int)$answer2;
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+                    $sum3 += $a;
+                    }
+                if($up==0){
+                    echo '<tr>';
+                    echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                    $up++;
+                }
+                if($i>=$count){
+                    $i=1;
+                    if($up!==1){
+                        echo '</tr>';
+                    }
+                        echo '<tr>';
+                        echo '<th scope="row">'.$row1["tablerow"].'</th>';
+                        $up++;
+
+
+                }
+
+
+            // Numeracja wierszy
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$row1["answer"].'" disabled></td>';
+
+                $i++;
+            }
+            $a = (int)$answer1 + (int)$answer2;
+            echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$a.'" disabled></td>';
+            $sum3 += $a;
+            echo '</tbody>
+            <tfoot><td style="text-align:right;" colspan="'.$count.'">Suma: </td><td ><input style="text-align:right;" id="inputres1_'.$number.'" type="text" class="form-control" value="'.$sum3.'" readonly></td></tfoot>
+
+            </table>';
+
+            $table_opened5 = false;
+            unset($columns);
+
         }
         if($table_opened7){
             $sum1=0;
