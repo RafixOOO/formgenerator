@@ -26,7 +26,7 @@
     <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
-                        <th scope="col">Imię, nazwisko, telefon</th>
+                        <th scope="col">Imię, nazwisko</th>
                         <th scope="col">Wniosek</th>
                         <th scope="col">Data utworzenia</th>
                         <th scope="col" data-orderable="false">Opcje</th>
