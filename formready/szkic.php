@@ -49,6 +49,7 @@
                         
                        
                             echo "<td><a href='szkicedit.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>";
+                            echo "<a href='szkicread.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
                         
                         echo "</tr>";
                     }

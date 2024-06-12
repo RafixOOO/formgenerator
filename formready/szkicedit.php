@@ -73,7 +73,8 @@ if (isset($_GET['ID'])) {
     echo '</select>';
     echo '<div class="specificFields">';
                     }
-
+                       echo " <input type='text' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='".$row['quest']."'>";
+                    $num=$row['number'];
 
 
 
@@ -99,7 +100,7 @@ if (isset($_GET['ID'])) {
 </body>
 <script>
 
-    var columnCounter = 0;
+    var columnCounter = <?php echo $num; ?>;
 
     function addRow() {
         var newColumn = document.createElement('div');
