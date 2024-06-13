@@ -46,41 +46,88 @@ if (isset($_GET['ID'])) {
                 $sql = "SELECT q.quest, q.type, qu.number, qu.applicationID, qu.req from application a, questconnect qu, quest q where a.applicationID=qu.applicationID and qu.questID=q.questID and a.applicationID=$id order by qu.number, qu.questconnectID; ";
                 $result = $conn->query($sql);
                 $num=0;
-                while ($row = $result->fetch_assoc()) {
+                $check=0;
+                               while ($row = $result->fetch_assoc()) {
 
-                    if($num!=$row['number']){
+                    if ($num != $row['number']) {
+                        if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6) {
+                           echo "<script>
+    var fieldsDiv = document.getElementById('" . $num . "');
 
-                        if($num!=0){
+    var addButton = document.createElement('button');
+    addButton.setAttribute('type', 'button');
+    addButton.setAttribute('class', 'btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded');
+
+    addButton.textContent = '+ Dodaj pole';
+
+    var removeButton = document.createElement('button');
+    removeButton.setAttribute('type', 'button');
+    removeButton.setAttribute('class', 'btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded');
+    addButton.setAttribute('id', 'addButton_".$num."'); // Dodanie atrybutu id
+    removeButton.textContent = '- Usuń pole';
+
+    fieldsDiv.appendChild(addButton);
+    fieldsDiv.appendChild(removeButton);
+
+    addButton.addEventListener('click', function () {
+        var newTextField = document.createElement('input');
+        newTextField.setAttribute('type', 'text');
+        newTextField.setAttribute('class', 'py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600');
+        newTextField.setAttribute('name', 'field_" . $num . "[]');
+        newTextField.setAttribute('placeholder', 'Pole tekstowe');
+
+        var lastTextField = document.querySelector('input[name=\"field_" . $num . "[]\"]:last-of-type');
+
+        // Wstawiamy nowe pole tekstowe przed addButton lub jego następnym rodzeństwem
+
+            lastTextField.parentNode.insertBefore(newTextField, lastTextField.nextSibling);
+        
+    });
+
+    removeButton.addEventListener('click', function () {
+        var lastTextField = document.querySelector('input[name=\"field_" . $num . "[]\"]:last-of-type');
+        if (lastTextField) {
+            lastTextField.parentNode.removeChild(lastTextField);
+        }
+    });
+</script>";
+
+
+                        }
+                        $check = $row['type'];
+                        if ($num != 0) {
+                            echo '</div>';
                             echo '</div>';
                             echo '</div>';
                         }
-                        $num=$row['number'];
-                      echo '<div class="column"><br />';
-    echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
-    echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')">';
-    echo '<option value="2"' . ($row['type'] == 2 ? ' selected' : '') . '>Jednokrotny wybór</option>';
-    echo '<option value="3"' . ($row['type'] == 3 ? ' selected' : '') . '>Wielokrotny wybór</option>';
-    echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Tekst</option>';
-    echo '<option value="0"' . ($row['type'] == 0 ? ' selected' : '') . '>Tekst bez pola</option>';
-    echo '<option value="4"' . ($row['type'] == 4 ? ' selected' : '') . '>Tabela</option>';
-    echo '<option value="5"' . ($row['type'] == 5 ? ' selected' : '') . '>Tabela Suma</option>';
-    echo '<option value="6"' . ($row['type'] == 6 ? ' selected' : '') . '>Tabela Róźnica</option>';
-    echo '<option value="7"' . ($row['type'] == 7 ? ' selected' : '') . '>Tabela Budżetowa</option>';
-    echo '</select>';
-    echo '<select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' . $row['number'] . '">';
-    echo '<option value="1"' . ($row['req'] == 1 ? ' selected' : '') . '>Wymagane</option>';
-    echo '<option value="0"' . ($row['req'] == 0 ? ' selected' : '') . '>Opcjonalne</option>';
-    echo '</select>';
-    echo '<div class="specificFields">';
+                        $num = $row['number'];
+                        echo '<div class="column"><br />';
+                        echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
+                        echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')">';
+                        echo '<option value="2"' . ($row['type'] == 2 ? ' selected' : '') . '>Jednokrotny wybór</option>';
+                        echo '<option value="3"' . ($row['type'] == 3 ? ' selected' : '') . '>Wielokrotny wybór</option>';
+                        echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Tekst</option>';
+                        echo '<option value="0"' . ($row['type'] == 0 ? ' selected' : '') . '>Tekst bez pola</option>';
+                        echo '<option value="4"' . ($row['type'] == 4 ? ' selected' : '') . '>Tabela</option>';
+                        echo '<option value="5"' . ($row['type'] == 5 ? ' selected' : '') . '>Tabela Suma</option>';
+                        echo '<option value="6"' . ($row['type'] == 6 ? ' selected' : '') . '>Tabela Róźnica</option>';
+                        echo '<option value="7"' . ($row['type'] == 7 ? ' selected' : '') . '>Tabela Budżetowa</option>';
+                        echo '</select>';
+                        echo '<select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' . $row['number'] . '">';
+                        echo '<option value="1"' . ($row['req'] == 1 ? ' selected' : '') . '>Wymagane</option>';
+                        echo '<option value="0"' . ($row['req'] == 0 ? ' selected' : '') . '>Opcjonalne</option>';
+                        echo '</select>';
+                        echo '<div class="specificFields">';
+                        echo '<div id="'.$num.'" class="flex flex-col">';
                     }
-                       echo " <input type='text' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='".$row['quest']."'>";
-                    $num=$row['number'];
-
+                    echo " <input type='text' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='" . $row['quest'] . "'>";
+                    $num = $row['number'];
 
 
                 }
                 ?>
             </div>
+        </div>
         </div>
             </div>
             <br/>
@@ -290,10 +337,40 @@ if (isset($_GET['ID'])) {
 
                 break;
             default:
+
+                var fieldsDiv = document.querySelector('.flex.flex-col');
+
+                var addButton = document.createElement('button');
+                addButton.setAttribute("type", "button");
+                addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
+                addButton.textContent = "+ Dodaj pole";
+
+                var removeButton = document.createElement('button');
+                removeButton.setAttribute("type", "button");
+                removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
+                removeButton.textContent = "- Usuń pole";
+
+                fieldsDiv.appendChild(addButton);
+                fieldsDiv.appendChild(removeButton);
+
+            addButton.addEventListener("click", function () {
+                    var newTextField = document.createElement('input');
+                    newTextField.setAttribute("type", "text");
+                    newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                    newTextField.setAttribute("name", clasa);
+                    newTextField.setAttribute("placeholder", "Pole tekstowe");
+                    fieldsDiv.insertBefore(newTextField, addButton);
+                });
+
+                removeButton.addEventListener("click", function () {
+                    if (fieldsDiv.childNodes.length > 3) { // Sprawdzamy, czy jest więcej niż dwa elementy w divie (pola tekstowe i przyciski)
+                        fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]); // Usuwamy ostatnie dodane pole tekstowe
+                    }
+
+                });
                 break;
         }
     }
-
 
 </script>
 </html>
