@@ -12,28 +12,73 @@ require_once("../dbconnect.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $date = $_POST['date'];
+    $applicationID = $_POST['ID'];
     $userID = returniserid();
-    $applicationID='';
+    $sql='';
 
     if (isset($_POST['submit_draft'])) {
+    $sql = "UPDATE `application`
+            SET `name` = ?,
+                `userID` = ?,
+                `datetime` = CURRENT_DATE,
+                `datetimedo` = ?,
+                `deleted` = '2'
+            WHERE `applicationID` = ?";
+} elseif (isset($_POST['submit_publish'])) {
+    $sql = "UPDATE `application`
+            SET `name` = ?,
+                `userID` = ?,
+                `datetime` = CURRENT_DATE,
+                `datetimedo` = ?,
+                `deleted` = '0'
+            WHERE `applicationID` = ?";
+}
 
-        $sql = "INSERT INTO `application`(`name`, `userID`, `datetimedo`, `deleted`) VALUES ('$name','$userID','$date','2');";
+// Przygotowanie i wykonanie zapytania UPDATE
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sisi", $name, $userID, $date, $applicationID);
 
-        if ($conn->query($sql) === TRUE) {
-            $applicationID = $conn->insert_id;
-        } else {
-            echo "Błąd: " . $sql . "<br>" . $conn->error;
-        }
-    } elseif (isset($_POST['submit_publish'])) {
+if ($stmt->execute()) {
+    echo "Rekord został pomyślnie zaktualizowany.";
+} else {
+    echo "Błąd: " . $stmt->error;
+}
 
-        $sql = "INSERT INTO `application`(`name`, `userID`, `datetimedo`, `deleted`) VALUES ('$name','$userID','$date','0');";
+   $delsql = "DELETE FROM quest
+           WHERE questID IN (
+               SELECT q.questID
+               FROM quest q
+               JOIN questconnect qc ON q.questID = qc.questID
+               WHERE qc.applicationID = ?
+           );";
 
-        if ($conn->query($sql) === TRUE) {
-            $applicationID = $conn->insert_id;
-        } else {
-            echo "Błąd: " . $sql . "<br>" . $conn->error;
-        }
-    }
+// Przygotowanie i wykonanie zapytania usuwającego questy
+$stmt = $conn->prepare($delsql);
+$stmt->bind_param("i", $applicationID);
+
+$conn->begin_transaction();
+
+try {
+    $stmt->execute();
+
+    // Przygotowanie zapytania usuwającego dane z tabeli questconnect
+    $delsql1 = "DELETE FROM questconnect WHERE applicationID = ?;";
+
+    // Przygotowanie i wykonanie zapytania usuwającego questconnect
+    $stmt1 = $conn->prepare($delsql1);
+    $stmt1->bind_param("i", $applicationID);
+    $stmt1->execute();
+
+    // Zatwierdzenie transakcji, jeśli wszystko przebiegło pomyślnie
+    $conn->commit();
+
+    echo "Dane zostały pomyślnie usunięte";
+} catch (Exception $e) {
+    // W przypadku błędu cofnięcie transakcji
+    $conn->rollback();
+    echo "Błąd: " . $e->getMessage();
+}
+
    $type = "type_";
 $req = "required_";
 $field = "field_";
@@ -75,8 +120,8 @@ echo $columnCounterValue+1;
 
 
 
-  header("Location: ../forms/forms.php");
-  exit;   // Zakończenie połączenia z bazą danych
+  header("Location: ../formready/szkic.php");
+ exit;   // Zakończenie połączenia z bazą danych
 
 }
 ?>

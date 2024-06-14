@@ -34,15 +34,24 @@ if (isset($_GET['ID'])) {
 <div class="wrapper fadeInDown">
     <div class="container px-4 mx-auto">
         <form id="invoice" method="post" action="save_szkic.php">
-            <input
-                class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
-                type="text" name="name" placeholder="Nazwa wniosku" required>
-            <input
-                class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
-                type="date" name="date" required><br/>
+        <?php
+        require_once("../dbconnect.php");
+                $sql1 ="SELECT `name`, `datetimedo` FROM `application` WHERE `applicationID` = $id";
+                $result1 = $conn->query($sql1);
+                while ($row1 = $result1->fetch_assoc()) {
+                    $date = substr($row1['datetimedo'], 0, 10); // Wyodrębnienie części daty w formacie YYYY-MM-DD
+        echo '<input
+            class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
+            type="text" name="name" value="' . htmlspecialchars($row1['name']) . '" placeholder="Nazwa wniosku" required>';
+
+        echo '<input
+            class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
+            type="date" name="date" value="' . htmlspecialchars($date) . '" required><br/>';
+                }
+                ?>
             <div id="inRows" class="row">
                 <?php
-                                require_once("../dbconnect.php");
+
                 $sql = "SELECT q.quest, q.type, qu.number, qu.applicationID, qu.req from application a, questconnect qu, quest q where a.applicationID=qu.applicationID and qu.questID=q.questID and a.applicationID=$id order by qu.number, qu.questconnectID; ";
                 $result = $conn->query($sql);
                 $num=0;
@@ -125,13 +134,59 @@ if (isset($_GET['ID'])) {
 
 
                 }
-                ?>
-            </div>
-        </div>
-        </div>
+
+                if ($num == 2 or $num == 3 or $num == 4 or $num == 5 or $num == 6) {
+                    echo "<script>
+    var fieldsDiv = document.getElementById('" . $num . "');
+
+    var addButton = document.createElement('button');
+    addButton.setAttribute('type', 'button');
+    addButton.setAttribute('class', 'btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded');
+
+    addButton.textContent = '+ Dodaj pole';
+
+    var removeButton = document.createElement('button');
+    removeButton.setAttribute('type', 'button');
+    removeButton.setAttribute('class', 'btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded');
+    addButton.setAttribute('id', 'addButton_".$num."'); // Dodanie atrybutu id
+    removeButton.textContent = '- Usuń pole';
+
+    fieldsDiv.appendChild(addButton);
+    fieldsDiv.appendChild(removeButton);
+
+    addButton.addEventListener('click', function () {
+        var newTextField = document.createElement('input');
+        newTextField.setAttribute('type', 'text');
+        newTextField.setAttribute('class', 'py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600');
+        newTextField.setAttribute('name', 'field_" . $num . "[]');
+        newTextField.setAttribute('placeholder', 'Pole tekstowe');
+
+        var lastTextField = document.querySelector('input[name=\"field_" . $num . "[]\"]:last-of-type');
+
+        // Wstawiamy nowe pole tekstowe przed addButton lub jego następnym rodzeństwem
+
+            lastTextField.parentNode.insertBefore(newTextField, lastTextField.nextSibling);
+
+    });
+
+    removeButton.addEventListener('click', function () {
+        var lastTextField = document.querySelector('input[name=\"field_" . $num . "[]\"]:last-of-type');
+        if (lastTextField) {
+            lastTextField.parentNode.removeChild(lastTextField);
+        }
+    });
+</script>";
+                }
+            if ($num != 0) {
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
+?>
             </div>
             <br/>
-            <input type="hidden" name="columnCounterInput" id="columnCounterInput" value="0">
+            <input type="hidden" name="columnCounterInput" id="columnCounterInput" value="<?php echo $num; ?>">
+            <input type="hidden" name="ID" id="ID" value="<?php echo $id; ?>">
             <button class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
                     onclick="columnCounter++;addRow(); return false;">Add Item
             </button>
