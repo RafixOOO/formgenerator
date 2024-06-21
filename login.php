@@ -22,15 +22,21 @@ if ($result->num_rows > 0) {
     $userID = $row["userID"]; // Pobranie ID użytkownika
     $_SESSION["imie_nazwisko"] = $row["name"] . " " . $row["surname"];
     $_SESSION["role"]=$row["role"];
-    $sql = "SELECT password FROM password WHERE passwordID = $userID"; // Poprawione zapytanie SQL
+    $sql = "SELECT p.password, u.verify FROM password p, user u WHERE p.passwordID = $userID and u.userID=$userID"; // Poprawione zapytanie SQL
     $result_password = $conn->query($sql); // Wykonanie zapytania
     if ($result_password->num_rows > 0) {
         $row_password = $result_password->fetch_assoc();
         if (password_verify($password, $row_password["password"])) {
             // Poprawne logowanie
             $_SESSION["user_id"] = $row["userID"]; // Zapisanie ID użytkownika do sesji
-            header("Location: forms/forms.php"); // Przekierowanie na stronę po zalogowaniu
+            if($row["verify"]==1){
+                header("Location: forms/forms.php"); // Przekierowanie na stronę po zalogowaniu
             exit; // Warto dodać exit, aby zapobiec dalszemu wykonywaniu kodu
+            } else{
+                header("Location: index.php?error=verify");
+                exit;
+            }
+
         } else {
             // Nieprawidłowe hasło
             header("Location: index.php?error=invalid_password");
