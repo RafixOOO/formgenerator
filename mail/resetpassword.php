@@ -4,16 +4,16 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require_once("../auth.php");
 require '../vendor/autoload.php';
 require_once("../dbconnect.php");
 
-$id=returniserid();
+$id='';
+$link='';
+$e=$_POST['email'];
 $email1='';
-if (isset($_POST['verification_code'])) {
   $user_id = $_POST['user_id'];
   $verification_code = $_POST['verification_code'];
-   $sql = "SELECT * FROM `user` WHERE `userID` = ?";
+   $sql = "SELECT * FROM `user` WHERE `email` = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -22,13 +22,17 @@ if (isset($_POST['verification_code'])) {
         // Użytkownik istnieje, pobierz email
         $row = $result->fetch_assoc();
         $email1 = $row['email'];
+        $id=$row['userID'];
     }else{
         echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters.". $id]);
     }
-} else {
-    // Jeśli brakuje wymaganych parametrów, zwróć odpowiedź błędu
-    echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters."]);
-}
+
+    if($email1===$e){
+        $link='http://10.100.101.14/programs/formgenerator/register/editpassword.php?ID='.$id;
+    }else{
+        $email1='';
+        $e='';
+    }
 
 //Create an instance; passing `true` enables exceptions
 $mail = new PHPMailer(true);
@@ -69,7 +73,7 @@ $mail->SMTPSecure = 'tls';                                    //SMTPS uses TLS c
 
     //Content
     $mail->isHTML(true); // Ustawienie formatu e-maila na HTML
-$mail->Subject = "Kod weryfikacyjny"; // Temat e-maila
+$mail->Subject = "Link resetu hasła"; // Temat e-maila
 $mail->CharSet = 'UTF-8';
 // Treść e-maila w HTML
 $mail->Body = '<!DOCTYPE html>
@@ -233,7 +237,7 @@ $mail->Body = '<!DOCTYPE html>
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Kod który znajduje się poniżej, należy go wpisać na stronie </p>
+              <p style="margin: 0;">Link pozwalający zresetować hasło użytkownika: </p>
             </td>
           </tr>
           <!-- end copy -->
@@ -247,7 +251,7 @@ $mail->Body = '<!DOCTYPE html>
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                          <a target="_blank" style="display: inline-block; padding: 16px 36px; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">'.$verification_code.'</a>
+                          <a target="_blank" href="'.$link.'" style="display: inline-block; padding: 16px 36px; font-family: Source Sans Pro, Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Zresetuj hasło</a>
                         </td>
                       </tr>
                     </table>

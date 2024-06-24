@@ -18,7 +18,7 @@
 
             <!-- Icon -->
             <div class="fadeIn first">
-                Register
+                Reset Hasła
             </div>
 
             <!-- Login Form -->
@@ -28,9 +28,6 @@
                 <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Powtórz Nowe Hasło">
                 <input type="button" onclick="checkPassword()" class="fadeIn fourth" value="Zmień">
             </form>
-            <div id="formFooter">
-                <a class="underlineHover" href="../index.php">Posiadasz konto?</a>
-                </div>
 
         </div>
 
