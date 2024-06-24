@@ -1,10 +1,10 @@
 <html>
 <head>
     <meta charset="utf-8"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link href="style.css" rel="stylesheet">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
             integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -69,7 +69,6 @@
     aria-hidden="true"
 >
     <div class="modal-dialog" role="document">
-        <form method="post" action="xx">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="editModalLabel">Weryfikacja emaila</h4>
@@ -91,16 +90,14 @@
                      <button type="button" class="btn btn-default" id="resendButton">
         Wyślij kod
     </button>
-                    <button type="submit" name="submit" class="btn btn-success">
-                        <i class="fas fa-location-arrow " style="margin-right:5px"></i> Zweryfikuj
+                    <button type="button" id="verifyButton" class="btn btn-success">
+                        <i class="fas fa-location-arrow" style="margin-right:5px"></i> Zweryfikuj
                     </button>
                 </div>
             </div>
-        </form>
     </div>
 </div>
 <?php
-
 $show_modal = false;
 if (isset($_GET['error']) && $_GET['error'] === 'verify') {
     $show_modal = true;
@@ -115,7 +112,6 @@ if (isset($_GET['error']) && $_GET['error'] == 'user_not_found') {
     echo '<script>toastr.error("Użytkownik o podanym loginie nie istnieje.");</script>';
 }
 ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -130,36 +126,88 @@ if (isset($_GET['error']) && $_GET['error'] == 'user_not_found') {
 
 </body>
     <script>
-     $(document).ready(function(){
-         $("#resendButton").click(function(){
-             var button = $(this);
-             var countdown = 60;
-             var originalText = 'Wyślij kod';
+   var verifycode; // Zmienna przechowująca wygenerowany kod weryfikacyjny
 
-             // Disable the button
-             button.prop("disabled", true).addClass('btn-disabled');
+$(document).ready(function(){
+    // Obsługa kliknięcia przycisku "Wyślij kod"
+    $("#resendButton").click(function(){
+        var button = $(this);
+        var countdown = 60;
+        var originalText = 'Wyślij kod';
 
-             // Update the button text every second
-             var timer = setInterval(function(){
-                 if (countdown > 0) {
-                     countdown--;
-                     button.html('Wyślij ponownie za ' + countdown + 's');
-                 } else {
-                     clearInterval(timer);
-                     button.prop("disabled", false).removeClass('btn-disabled').html(originalText);
-                 }
-             }, 1000);
+        // Wyłącz przycisk
+        button.prop("disabled", true).addClass('btn-disabled');
 
-             // $.ajax({
-             //     url: '../mail/verifymail.php',
-             //     method: 'POST',
-             //     data: { user_id: userId },
-             //     success: function(response) {
-             //         // Handle success
-             //     }
-             // });
-         });
-     });
+        // Aktualizuj tekst przycisku co sekundę
+        var timer = setInterval(function(){
+            if (countdown > 0) {
+                countdown--;
+                button.html('Wyślij ponownie za ' + countdown + 's');
+            } else {
+                clearInterval(timer);
+                button.prop("disabled", false).removeClass('btn-disabled').html(originalText);
+            }
+        }, 1000);
+
+        // Wygeneruj kod weryfikacyjny
+        verifycode = Math.floor(100000 + Math.random() * 900000);
+
+        // Przykład użycia $.ajax do wysłania kodu weryfikacyjnego
+        $.ajax({
+            url: 'mail/verifyemail.php',
+            method: 'POST',
+            data: {
+                verification_code: verifycode
+            },
+            success: function(response) {
+                console.log("Sukces:", response);
+                // Dodaj kod obsługi sukcesu, na przykład odświeżenie interfejsu użytkownika
+            },
+            error: function(xhr, status, error) {
+                console.error("Błąd:", error);
+                // Dodaj kod obsługi błędu, na przykład informacja użytkownikowi o problemie
+            }
+        });
+    });
+
+    // Obsługa kliknięcia przycisku "Zweryfikuj"
+    $("#verifyButton").click(function() {
+        // Pobierz wartości kodów z pól
+        var code1 = $("#code1").val();
+        var code2 = $("#code2").val();
+        var code3 = $("#code3").val();
+        var code4 = $("#code4").val();
+        var code5 = $("#code5").val();
+        var code6 = $("#code6").val();
+
+        // Połącz wszystkie kody w jedną zmienną
+        var codefull = code1 + code2 + code3 + code4 + code5 + code6;
+        console.log(codefull);
+        console.log(verifycode);
+        // Sprawdź czy wprowadzony kod weryfikacyjny jest poprawny
+        if (verifycode == codefull) {
+            // Wykonaj żądanie AJAX do skryptu PHP 'verify.php' w celu zapisania danych
+            $.ajax({
+                url: 'verify.php', // Zmień na odpowiedni adres URL do skryptu PHP zapisującego dane
+                method: 'POST',
+                success: function(response) {
+                    console.log("Sukces:", response);
+                    // Przekieruj użytkownika na stronę "forms/forms.php"
+                    window.location.href = "forms/forms.php";
+                    toastr.success('Dane zapisano pomyślnie!');
+                },
+                error: function(xhr, status, error) {
+                    console.error("Błąd:", error);
+                    // Dodaj kod obsługi błędu - na przykład, wyświetlenie komunikatu toastr z błędem
+                    toastr.error('Wystąpił błąd podczas zapisywania danych.');
+                }
+            });
+        } else {
+            // Wyświetl komunikat o błędnym kodzie weryfikacyjnym za pomocą Toastr
+            toastr.error('Zły kod weryfikacyjny.');
+        }
+    });
+});
 
     document.addEventListener('DOMContentLoaded', function() {
         var inputs = document.querySelectorAll('.code-input');

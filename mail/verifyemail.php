@@ -4,7 +4,31 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
+require_once("../auth.php");
 require '../vendor/autoload.php';
+require_once("../dbconnect.php");
+
+$id=returniserid();
+$email1='';
+if (isset($_POST['verification_code'])) {
+  $user_id = $_POST['user_id'];
+  $verification_code = $_POST['verification_code'];
+   $sql = "SELECT * FROM `user` WHERE `userID` = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        // Użytkownik istnieje, pobierz email
+        $row = $result->fetch_assoc();
+        $email1 = $row['email'];
+    }else{
+        echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters.". $id]);
+    }
+} else {
+    // Jeśli brakuje wymaganych parametrów, zwróć odpowiedź błędu
+    echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters."]);
+}
 
 //Create an instance; passing `true` enables exceptions
 $mail = new PHPMailer(true);
@@ -32,8 +56,7 @@ try {
 
 //Set From Email ID and NAME
     $mail->setFrom('tarkonprograms@outlook.com', 'Tarkon Programs');
-
-    $email = 'rafal.pezda@tarkon.pl';;
+    $email=$email1;
     $mail->addAddress($email);
 
 
@@ -224,7 +247,7 @@ $mail->Body = '<!DOCTYPE html>
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                          <a target="_blank" style="display: inline-block; padding: 16px 36px; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">123456</a>
+                          <a target="_blank" style="display: inline-block; padding: 16px 36px; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">'.$verification_code.'</a>
                         </td>
                       </tr>
                     </table>
