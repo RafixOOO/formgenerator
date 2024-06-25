@@ -12,6 +12,15 @@ $link='';
 $e=$_POST['email'];
 $email1='';
   $user_id = $_POST['user_id'];
+  function encrypt_id($id, $key) {
+            $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
+            $iv = openssl_random_pseudo_bytes($ivlen);
+            $ciphertext = openssl_encrypt($id, $cipher, $key, $options=0, $iv);
+            return base64_encode($iv.$ciphertext);
+        }
+        $key = "e1f7e2b9a8b4d5e7c6a9d4b7e1f7a2b9";  // Upewnij się, że klucz jest bezpieczny i długi
+        $encrypted_id = '';
+
   $verification_code = $_POST['verification_code'];
    $sql = "SELECT * FROM `user` WHERE `email` = ?";
     $stmt = $conn->prepare($sql);
@@ -23,12 +32,14 @@ $email1='';
         $row = $result->fetch_assoc();
         $email1 = $row['email'];
         $id=$row['userID'];
+        $encrypted_id=encrypt_id($id, $key);
+
     }else{
         echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters.". $id]);
     }
 
     if($email1===$e){
-        $link='http://10.100.101.14/programs/formgenerator/register/editpassword.php?ID='.$id;
+        $link='http://10.100.101.14/programs/formgenerator/register/editpassword.php?ID='.$encrypted_id;
     }else{
         $email1='';
         $e='';

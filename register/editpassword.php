@@ -23,7 +23,8 @@
 
             <!-- Login Form -->
             <form action="save_editpassword.php" method="post">
-                <input type="password" id="password1" class="fadeIn third" name="password1" placeholder="Noew Hasło">
+            <input type="hidden" value ="" />
+                <input type="password" id="password1" class="fadeIn third" name="password1" placeholder="Nowe Hasło">
                 <input type="password" id="password2" class="fadeIn third" name="password2" placeholder="Powtórz Nowe Hasło">
                 <input type="button" onclick="checkPassword()" class="fadeIn fourth" value="Zmień">
             </form>
