@@ -1,0 +1,141 @@
+/* 2024 Created by: Rafał Pezda */
+/* Link: https://github.com/RafixOOO */
+
+
+body {
+	font-family: "Poppins", sans-serif;
+	height: 94vh;
+}
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 80%;
+	padding: 40px;
+	-webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+	margin-left: auto;
+	margin-right: auto;
+	border-radius:20px;
+}
+.fadeInDown {
+	-webkit-animation-name: fadeInDown;
+	animation-name: fadeInDown;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+
+}
+
+input[type=button], input[type=submit], input[type=reset]  {
+	background-color: #f19159;
+	border: none;
+	color: white;
+	padding: 15px;
+	width:14%;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	text-transform: uppercase;
+	font-size: 13px;
+	-webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+	box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	margin: 5px 20px 40px 20px;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+	background-color: #ff8137;
+}
+
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+	-moz-transform: scale(0.95);
+	-webkit-transform: scale(0.95);
+	-o-transform: scale(0.95);
+	-ms-transform: scale(0.95);
+	transform: scale(0.95);
+}
+
+.nav_left {
+	          background-color: #f19159;
+	          border-top-left-radius: 48px;
+	          border-bottom-left-radius: 48px;
+		}
+		
+		.nav-tabs .nav-link.active {
+		background-color: transparent;
+		border-color: transparent;
+		border-top: 4px solid #fff;
+		color: #fff;
+		}
+		
+		.nav-tabs .nav-link {
+		border: none;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		margin: 0 30px 0 40px;
+		}
+		
+		.nav-tabs {
+		border-bottom: none;
+		}
+		
+		.nav-link {
+		padding: 1rem 0.5rem;
+		color: #fff;
+		}
+		
+		.nav-link:focus,
+		.nav-link:hover {
+		color: #fff;
+		}
+		
+		.search_input {
+		width:100%;
+		border-radius: 10px;
+		border: none;
+		line-height: initial;
+		padding-top: 4px;
+		padding-bottom: 4px;
+
+		}
+		
+		.search_input:focus-visible {
+		outline: none;
+		}
+		
+		input.search_input::placeholder {
+		color: #cfd2ec;
+		vertical-align: middle;
+		}
+		
+		.search_img {
+		top: 7px;
+		right: 8px;
+		}
+		
+		.navbar-toggler {
+		border: 3px solid #f19159;
+		}
+		
+		.navbar-toggler-icon {
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(35, 76, 203, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+		}
+		
+		.navbar-toggler:focus {
+		box-shadow: none;
+		}
+.table tbody tr {
+	font-size: 18px;
+	height: 70px; /* Ustaw wysokość wierszy na 50 pikseli */
+}
+.table thead tr {
+	font-size: 18px;
+	height: 50px; /* Ustaw wysokość wierszy na 50 pikseli */
+}

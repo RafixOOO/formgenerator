@@ -25,6 +25,18 @@ function redirectToNewPage3() {
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
+function redirectToNewPage4() {
+    // Ustawienie adresu URL nowej strony
+    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/role_user.php";
+    // Przekierowanie użytkownika
+    window.location.href = newPageURL1;
+    }
+function redirectToNewPage5() {
+    // Ustawienie adresu URL nowej strony
+    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/accept.php";
+    // Przekierowanie użytkownika
+    window.location.href = newPageURL1;
+    }
     </script>
 <nav class="navbar navbar-expand-lg py-3">
 <!-- 2024 Created by: Rafał Pezda-->
@@ -42,14 +54,14 @@ function redirectToNewPage3() {
                 <nav>
                     <div class="nav d-block d-lg-flex nav-tabs" id="nav-tab" role="tablist">
                             <button <?php $url = $_SERVER['REQUEST_URI']; if(strpos($url, '/forms/forms.php') !== false){ echo 'class="nav-link active"'; } else{echo 'class="nav-link"'; } ?> id="home-tab" type="button" onclick="redirectToNewPage()">Strona główna</button>
-                            <?php if(returnRole()==1 or returnRole()==2) { ?>
+                            <?php if(returnRole()==1 or returnRole()==2 or returnRole()==3) { ?>
                         <div class="dropdown">
                             <button class="dropdown-toggle nav-link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 Wnioski
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li><a class="dropdown-item" onclick="redirectToNewPage1()">Wnioski</a></li>
-                                 <?php if(returnRole()==2) { ?>
+                                 <?php if(returnRole()==2 or returnRole()==3) { ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage2()">Do sprawdzenia</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage3()">Szkice</a></li>
@@ -65,8 +77,13 @@ function redirectToNewPage3() {
                                 <?php echo returnImieNazwisko(); ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <!--<li><a class="dropdown-item" href="#">Akcja 1</a></li>-->
-                                <!-- <li><a class="dropdown-item" href="#">Akcja 2</a></li>-->
+                            <?php if(returnRole()==3) { ?>
+                                <li><a class="dropdown-item" onclick="redirectToNewPage4()">Role</a></li>
+                                <?php } ?>
+
+                                <?php if(returnRole()==2 or returnRole()==3) { ?>
+                                <li><a class="dropdown-item" onclick="redirectToNewPage5()">Akceptacje</a></li>
+                                <?php } ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="../logout.php">Wyloguj się</a></li>
                             </ul>
