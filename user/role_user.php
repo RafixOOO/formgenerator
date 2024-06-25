@@ -27,9 +27,9 @@
         <table id="myTable" class="table table table-hover">
             <thead>
                         <th scope="col">Imię, nazwisko</th>
-                        <th scope="col">Wniosek</th>
-                        <th scope="col">Data utworzenia</th>
-                        <th scope="col" data-orderable="false">Opcje</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Czy konto zweryfikowane?</th>
+                        <th scope="col" data-orderable="false">Rola</th>
                 </thead>
                 <tbody>
                 <?php
