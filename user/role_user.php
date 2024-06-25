@@ -40,16 +40,16 @@
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>"
-                        . $row["nazwa"]." ".$row["surname"].
+                        .
                         "</td>";
-                    echo "<td>" . $row["name"] . "</td>";
+                    echo "<td>" .  "</td>";
                     echo "<td>";
-                    echo $row["datetime"];
+
                         echo "</td>";
                         
                        
-                            echo "<td><a href='szkicedit.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>";
-                            echo "<a href='szkicread.php?ID=".$row["applicationID"]."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
+                            echo "<td><a href=''><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>";
+
                         
                         echo "</tr>";
                     }
