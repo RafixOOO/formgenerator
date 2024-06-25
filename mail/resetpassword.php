@@ -7,43 +7,46 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php';
 require_once("../dbconnect.php");
 
-$id='';
-$link='';
-$e=$_POST['email'];
-$email1='';
-  $user_id = $_POST['user_id'];
-  function encrypt_id($id, $key) {
-            $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
-            $iv = openssl_random_pseudo_bytes($ivlen);
-            $ciphertext = openssl_encrypt($id, $cipher, $key, $options=0, $iv);
-            return base64_encode($iv.$ciphertext);
-        }
-        $key = "e1f7e2b9a8b4d5e7c6a9d4b7e1f7a2b9";  // Upewnij się, że klucz jest bezpieczny i długi
-        $encrypted_id = '';
+$id = '';
+$link = '';
+$e = $_POST['email'];
+$email1 = '';
+$user_id = $_POST['user_id'];
+function encrypt_data($data, $key)
+{
+    $ivlen = openssl_cipher_iv_length($cipher = "AES-256-CBC");
+    $iv = openssl_random_pseudo_bytes($ivlen);
+    $ciphertext = openssl_encrypt($data, $cipher, $key, $options = 0, $iv);
+    return base64_encode($iv . $ciphertext);
+}
 
-  $verification_code = $_POST['verification_code'];
-   $sql = "SELECT * FROM `user` WHERE `email` = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        // Użytkownik istnieje, pobierz email
-        $row = $result->fetch_assoc();
-        $email1 = $row['email'];
-        $id=$row['userID'];
-        $encrypted_id=encrypt_id($id, $key);
+$key = "e1f7e2b9a8b4d5e7c6a9d4b7e1f7a2b9";
+$expiry_time = time() + 300;// Upewnij się, że klucz jest bezpieczny i długi
+$encrypted_id = '';
 
-    }else{
-        echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters.". $id]);
-    }
+$verification_code = $_POST['verification_code'];
+$sql = "SELECT * FROM `user` WHERE `email` = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    // Użytkownik istnieje, pobierz email
+    $row = $result->fetch_assoc();
+    $email1 = $row['email'];
+    $id = $row['userID'];
 
-    if($email1===$e){
-        $link='http://10.100.101.14/programs/formgenerator/register/editpassword.php?ID='.$encrypted_id;
-    }else{
-        $email1='';
-        $e='';
-    }
+} else {
+    echo json_encode(["status" => "error", "message" => "Invalid request. Missing parameters." . $id]);
+}
+$data = json_encode(['id' => $id, 'expiry' => $expiry_time]);
+$encrypted_data = encrypt_data($data, $key);
+if ($email1 === $e) {
+    $link = 'http://10.100.101.14/programs/formgenerator/register/editpassword.php?ID=' . $encrypted_data;
+} else {
+    $email1 = '';
+    $e = '';
+}
 
 //Create an instance; passing `true` enables exceptions
 $mail = new PHPMailer(true);
@@ -56,27 +59,27 @@ try {
 
 //SMTPOptions for Office 365
     $mail->SMTPOptions = array(
-    'ssl' => array(
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true
-    ));                                                             //Send using SMTP
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        ));                                                             //Send using SMTP
 
 // Office 365 SMTP HOST
-   $mail->Host       = 'smtp.office365.com';
-   $mail->SMTPAuth   = true;                                      //Enable SMTP authentication
-   $mail->Username   = 'tarkonprograms@outlook.com';                      //SMTP username
-   $mail->Password   = 'Tarkon2022##';                         //SMTP password
-   $mail->Port       = 587;                                        //TCP port to connect to; use 587 if
+    $mail->Host = 'smtp.office365.com';
+    $mail->SMTPAuth = true;                                      //Enable SMTP authentication
+    $mail->Username = 'tarkonprograms@outlook.com';                      //SMTP username
+    $mail->Password = 'Tarkon2022##';                         //SMTP password
+    $mail->Port = 587;                                        //TCP port to connect to; use 587 if
 
 //Set From Email ID and NAME
     $mail->setFrom('tarkonprograms@outlook.com', 'Tarkon Programs');
-    $email=$email1;
+    $email = $email1;
     $mail->addAddress($email);
 
 
 // Następnie ustaw SMTPSecure na 'tls'
-$mail->SMTPSecure = 'tls';                                    //SMTPS uses TLS cryptographic protocols for improved security
+    $mail->SMTPSecure = 'tls';                                    //SMTPS uses TLS cryptographic protocols for improved security
 
     //Attachments
 //    $mail->addAttachment('/var/tmp/file.tar.gz');                 //Add attachments
@@ -84,10 +87,10 @@ $mail->SMTPSecure = 'tls';                                    //SMTPS uses TLS c
 
     //Content
     $mail->isHTML(true); // Ustawienie formatu e-maila na HTML
-$mail->Subject = "Link resetu hasła"; // Temat e-maila
-$mail->CharSet = 'UTF-8';
+    $mail->Subject = "Link resetu hasła"; // Temat e-maila
+    $mail->CharSet = 'UTF-8';
 // Treść e-maila w HTML
-$mail->Body = '<!DOCTYPE html>
+    $mail->Body = '<!DOCTYPE html>
 <html>
 <head>
 
@@ -248,7 +251,7 @@ $mail->Body = '<!DOCTYPE html>
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: "Source Sans Pro", Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Link pozwalający zresetować hasło użytkownika: </p>
+              <p style="margin: 0;">Link pozwalający zresetować hasło użytkownika. Po 5 minutach link przestanie działać. </p>
             </td>
           </tr>
           <!-- end copy -->
@@ -262,7 +265,7 @@ $mail->Body = '<!DOCTYPE html>
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                          <a target="_blank" href="'.$link.'" style="display: inline-block; padding: 16px 36px; font-family: Source Sans Pro, Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Zresetuj hasło</a>
+                          <a target="_blank" href="' . $link . '" style="display: inline-block; padding: 16px 36px; font-family: Source Sans Pro, Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Zresetuj hasło</a>
                         </td>
                       </tr>
                     </table>
@@ -308,11 +311,11 @@ $mail->Body = '<!DOCTYPE html>
 
 </body>
 </html>';
-if ($mail->send()) {
-   echo 'Message has been Success';
-}else{
-   echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo} <br> Mailer Debug:".$mail->SMTPDebug = SMTP::DEBUG_SERVER;
-}
+    if ($mail->send()) {
+        echo 'Message has been Success';
+    } else {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo} <br> Mailer Debug:" . $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+    }
 
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";

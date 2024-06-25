@@ -1,19 +1,15 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
     <link href="style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="style.css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"
-            integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css"
-          integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Generator | Logowanie</title>
     <style>
         .code-input-container {
@@ -138,14 +134,24 @@ if (isset($_GET['error']) && $_GET['error'] === 'verify') {
 if (isset($_GET['error']) && $_GET['error'] == 'invalid_password') {
     echo '<script>toastr.error("Nieprawidłowe hasło.");</script>';
 }
+
+if (isset($_GET['error']) && $_GET['error'] == 'expire') {
+    echo '<script>toastr.error("Link wygasł.");</script>';
+}
+
+if (isset($_GET['error']) && $_GET['error'] == 'blad') {
+    echo '<script>toastr.error("Błąd.");</script>';
+}
 // Sprawdzanie czy parametr error jest ustawiony i równy 'user_not_found'
 if (isset($_GET['error']) && $_GET['error'] == 'user_not_found') {
     echo '<script>toastr.error("Użytkownik o podanym loginie nie istnieje.");</script>';
 }
+if (isset($_GET['success']) && $_GET['success'] == 'password_change') {
+    echo '<script>toastr.success("Hasło zostało zmienione.");</script>';
+}
 ?>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 <!-- Script to trigger the modal -->
 <?php if ($show_modal): ?>
     <script type="text/javascript">
