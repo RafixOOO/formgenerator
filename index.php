@@ -246,6 +246,25 @@ if (isset($_GET['success']) && $_GET['success'] == 'password_change') {
         });
 
         $("#resetpassword").click(function () {
+
+            var button = $(this);
+            var countdown = 60;
+            var originalText = 'Resetuj';
+
+            // Wyłącz przycisk
+            button.prop("disabled", true).addClass('btn-disabled');
+
+            // Aktualizuj tekst przycisku co sekundę
+            var timer = setInterval(function () {
+                if (countdown > 0) {
+                    countdown--;
+                    button.html('Wyślij ponownie za ' + countdown + 's');
+                } else {
+                    clearInterval(timer);
+                    button.prop("disabled", false).removeClass('btn-disabled').html(originalText);
+                }
+            }, 1000);
+
             // Pobierz wartości kodów z pól
             var email = $("#email").val();
 
