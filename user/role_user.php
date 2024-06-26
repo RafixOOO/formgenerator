@@ -23,7 +23,13 @@
 <!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
-    <input type="text" placeholder="Wyszukiwanie użytkownika" style="width: 15%"/>
+
+    <?php
+    $query = 'brak';
+    if (isset($_GET['query'])) {
+    $query = urldecode($_GET['query']);
+} ?>
+    <input type="text" id="search" class="code-input" placeholder="Wyszukiwanie użytkownika" style="width: 20%" value="<?php if($query!='brak')echo $query; ?>"/>
     <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
@@ -36,7 +42,14 @@
                 <?php
                 require_once("../dbconnect.php");
                 $id=returniserid();
-                $sql="SELECT * FROM `user` where role IN (1,2,3) order by role desc;";
+                if($query=='brak'){
+                    $sql="SELECT * FROM `user` where role IN (1,2,3) order by role desc;";
+                }else if(strpos($query, '@') !== false){
+                    $sql="SELECT * FROM `user` where email Like '%$query%' order by role desc;";
+                }else{
+                    $sql="SELECT * FROM `user` where CONCAT(name, ' ', surname) LIKE '%$query%' order by role desc;";
+                }
+
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
@@ -73,6 +86,33 @@
     </div>
 </body>
     <script>
+      $(document).ready(function(){
+          const baseUrl = "http://10.100.101.14/programs/formgenerator/user/role_user.php"; // Stały URL
+          let timer;
+          $("#search").on("input", function(){
+            clearTimeout(timer);
+            let query = $(this).val();
+            timer = setTimeout(function() {
+              const url = new URL(baseUrl); // Użycie stałego URL-a
+              if (query.length > 0) {
+                url.searchParams.set('query', query);
+                window.history.pushState({}, '', url);
+
+                $.ajax({
+                  url: url.href,
+                  success: function(data) {
+                    const results = $(data).find("#result").html();
+                    $("#result").html(results);
+                  }
+                });
+              } else {
+                $("#result").html('');
+                window.history.pushState({}, '', baseUrl); // Przywrócenie URL-a bez parametrów
+              }
+                location.reload();
+            }, 1000); // 1-sekundowe opóźnienie
+          });
+        });
         $(document).ready(function() {
             var table = $('#myTable').DataTable({
                 paging: false,
