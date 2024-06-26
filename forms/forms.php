@@ -6,7 +6,8 @@
     endif;
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="PL">
 <head>
     <meta charset ="utf-8" />
     
@@ -23,7 +24,7 @@
 <!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
-    <?php if(returnRole()==1 or returnRole()==2) { ?>
+    <?php if(returnRole()==1 or returnRole()==2 or returnRole()==3) { ?>
         <a href="../formcreate/formbuilder.php" style="width: 15%"><input type="button" class="fadeIn fourth" value="Utwórz" style="width: 100%"></a>
         <?php } ?>
     <div class="table-responsive d-flex justify-content-center"></div>

@@ -11,7 +11,8 @@ if (isset($_GET['ID'])) {
     // Tutaj możesz wykorzystać odczytaną wartość
 }
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="PL">
 <head>
     <meta charset="utf-8"/>
 

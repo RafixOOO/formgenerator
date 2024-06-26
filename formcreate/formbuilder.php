@@ -6,7 +6,8 @@
     endif;
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="PL">
 <head>
     <meta charset ="utf-8" />
         
