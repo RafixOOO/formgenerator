@@ -23,6 +23,7 @@
 <!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
+    <input type="text" placeholder="Wyszukiwanie użytkownika" style="width: 15%"/>
     <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
@@ -54,7 +55,7 @@
                             echo "<form method='POST' action='update_role.php' id='form-" . $row['userID'] . "'>";
                             echo "<input type='hidden' name='user_id' value='" . $row['userID'] . "'>";
                             echo "<select class='form-select form-select-lg mb-3' name='role' onchange='this.form.submit()' ";
-                            if($row['verify']==0){echo "disabled";}
+                            if($row['verify']==0 or $row['userID']==returniserid()){echo "disabled";}
                             echo ">";
     echo "<option value='3'" . ($row['role'] == 3 ? " selected" : "") . ">Administrator</option>";
     echo "<option value='2'" . ($row['role'] == 2 ? " selected" : "") . ">Moderator</option>";
