@@ -66,14 +66,14 @@ try {
         ));                                                             //Send using SMTP
 
 // Office 365 SMTP HOST
-    $mail->Host = 'smtp.office365.com';
+    $mail->Host = 's129.cyber-folks.pl';
     $mail->SMTPAuth = true;                                      //Enable SMTP authentication
-    $mail->Username = 'tarkonprograms@outlook.com';                      //SMTP username
-    $mail->Password = 'Tarkon2022##';                         //SMTP password
-    $mail->Port = 587;                                        //TCP port to connect to; use 587 if
+    $mail->Username = 'generator@fundacjasmk.pl';                      //SMTP username
+    $mail->Password = 'eJ2o8YhOm-U-5JV.';                         //SMTP password
+    $mail->Port = 465;                                        //TCP port to connect to; use 587 if
 
 //Set From Email ID and NAME
-    $mail->setFrom('tarkonprograms@outlook.com', 'Tarkon Programs');
+    $mail->setFrom('generator@fundacjasmk.pl', 'Generator');
     $email = $email1;
     $mail->addAddress($email);
 
