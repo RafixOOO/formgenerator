@@ -35,21 +35,33 @@
                 <?php
                 require_once("../dbconnect.php");
                 $id=returniserid();
-                $sql="SELECT a.name, u.name as nazwa,u.surname, u.phone, u.email, a.datetime, a.`applicationID` FROM application a, user u WHERE u.userID=a.userID and a.deleted=2;  ";
+                $sql="SELECT * FROM `user` where role IN (1,2,3) order by role desc;";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>"
-                        .
+                        .$row['name'].' '. $row['surname'];
                         "</td>";
-                    echo "<td>" .  "</td>";
+                    echo "<td>" .$row['email'].  "</td>";
                     echo "<td>";
-
+                            if($row['verify']==1){
+                                echo "Tak";
+                            }else{
+                                echo "Nie";
+                            }
                         echo "</td>";
-                        
-                       
-                            echo "<td><a href=''><input style='width: 25%' type='button' class='fadeIn fourth' value='Edytuj'></a>";
-
+                            echo "<td>";
+                            echo "<form method='POST' action='update_role.php' id='form-" . $row['userID'] . "'>";
+                            echo "<input type='hidden' name='user_id' value='" . $row['userID'] . "'>";
+                            echo "<select class='form-select form-select-lg mb-3' name='role' onchange='this.form.submit()' ";
+                            if($row['verify']==0){echo "disabled";}
+                            echo ">";
+    echo "<option value='3'" . ($row['role'] == 3 ? " selected" : "") . ">Administrator</option>";
+    echo "<option value='2'" . ($row['role'] == 2 ? " selected" : "") . ">Moderator</option>";
+    echo "<option value='1'" . ($row['role'] == 1 ? " selected" : "") . ">Recenzent</option>";
+    echo "</select>";
+    echo "</form>";
+    echo "</td>";
                         
                         echo "</tr>";
                     }
