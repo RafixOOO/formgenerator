@@ -11,7 +11,7 @@ function decrypt_data($encrypted_data, $key)
 
 $key = "e1f7e2b9a8b4d5e7c6a9d4b7e1f7a2b9";  // Ten sam klucz używany do szyfrowania
 
-$encrypted_data = $_GET['ID'];  // Pobierz zaszyfrowane dane z URL
+$encrypted_data = urldecode($_GET['ID']);  // Pobierz zaszyfrowane dane z URL
 $decrypted_data = decrypt_data($encrypted_data, $key);
 $data = json_decode($decrypted_data, true);
 
