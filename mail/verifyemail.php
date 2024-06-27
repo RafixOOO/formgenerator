@@ -52,7 +52,7 @@ try {
     $mail->SMTPAuth = true;                                      //Enable SMTP authentication
     $mail->Username = 'generator@fundacjasmk.pl';                      //SMTP username
     $mail->Password = 'eJ2o8YhOm-U-5JV.';                         //SMTP password
-    $mail->Port = 465;                                        //TCP port to connect to; use 587 if
+    $mail->Port = 587;                                        //TCP port to connect to; use 587 if
 
 //Set From Email ID and NAME
     $mail->setFrom('generator@fundacjasmk.pl', 'Generator');
