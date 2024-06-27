@@ -24,11 +24,10 @@
 <!-- link: https://github.com/RafixOOO -->
 <?php require_once("../navbar.php"); ?>
     <div class="wrapper fadeInDown">
-    <div class="table-responsive d-flex justify-content-center"></div>
         <table id="myTable" class="table table table-hover">
             <thead>
                         <th scope="col">Grupa</th>
-                        <th scope="col">Imię, nazwisko</th>
+                        <th scope="col">Imię, nazwisko, email</th>
                         <th scope="col">Czy konto zweryfikowane?</th>
                         <th scope="col" data-orderable="false">Rola</th>
                 </thead>
@@ -36,21 +35,25 @@
                 <?php
                 require_once("../dbconnect.php");
                 $id=returniserid();
-                $sql="SELECT a.name, u.name as nazwa,u.surname, u.phone, u.email, a.datetime, a.`applicationID` FROM application a, user u WHERE u.userID=a.userID and a.deleted=2;  ";
+                $sql="SELECT od.OrganizationID,od.Name, oc.role, od.accept, u.name, u.surname, u.email, u.verify from `organizationdata` od, `organizationconnect` oc, `user` u WHERE od.OrganizationID=oc.OrganizationID and oc.UserID=u.userID and oc.role=3 and od.accept=0;;";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
-                    echo "<td>".
-
-                        "</td>";
-                    echo "<td>"  . "</td>";
                     echo "<td>";
-                   
+                    echo $row['Name'].' #'.$row['OrganizationID'];
+                     echo   "</td>";
+                    echo "<td>".$row['name']." ".$row['surname'] .", ". $row['email']  . "</td>";
+                    echo "<td>";
+                            if($row['verify']==1){
+                                echo "Tak";
+                            }else{
+                                echo "Nie";
+                            }
                         echo "</td>";
 
 
-                            echo "<td><a href=''><input style='width: 25%' type='button' class='fadeIn fourth' value='Akceptuj'></a>";
-                            echo "<a href=''><input style='width: 25%' type='button' class='fadeIn fourth' value='Usuń'></a>";
+                            echo "<td><a href='save_accept.php?ID=".$row['OrganizationID']."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Akceptuj'></a>";
+                            echo "<a href='usun_accept.php?ID=".$row['OrganizationID']."'><input style='width: 25%' type='button' class='fadeIn fourth' value='Usuń'></a>";
 
                         echo "</tr>";
                     }
