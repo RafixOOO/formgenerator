@@ -6,10 +6,10 @@ $id=urldecode($_GET['ID']);
 $sql1 = "UPDATE `organizationdata` SET `accept`='2' WHERE OrganizationID=$id";
 
 if ($conn->query($sql1) === TRUE) {
-    header("Location: accept.php");
+    header("Location: organization.php");
     exit;   // Zakończenie połączenia z bazą danych
 } else {
     echo "Błąd: " . $sql1 . "<br>" . $conn->error;
 }
-header("Location: organizationsetting.php");
+header("Location: organization.php");
 exit;
