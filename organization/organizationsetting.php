@@ -30,8 +30,10 @@ endif;
 
     <?php
     $query = 'brak';
+    $role='';
     if (isset($_GET['ID'])) {
         $ID = urldecode($_GET['ID']);
+        $role = urldecode($_GET['ROLE']);
     } ?>
     <div class="table-responsive d-flex justify-content-center"></div>
     <table id="myTable" class="table table table-hover">
@@ -45,7 +47,7 @@ endif;
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT oc.`OrganizationID`,oc.`organizationconnectID`,oc.`role`, oc.`accept`, u.name, u.surname, u.email, u.verify, u.userID FROM `organizationconnect` oc, `user` u where u.userID=oc.UserID and oc.OrganizationID=$ID";
+        $sql = "SELECT oc.`OrganizationID`,oc.`organizationconnectID`,oc.`role`, oc.`accept`, u.name, u.surname, u.email, u.verify, u.userID FROM `organizationconnect` oc, `user` u where u.userID=oc.UserID and oc.OrganizationID=$ID and oc.`accept`!=2";
 
 
         $result = $conn->query($sql);
@@ -68,9 +70,9 @@ endif;
                 echo "disabled";
             }
             echo ">";
-            echo "<option value='3'" . ($row['role'] == 2 ? " selected" : "") . ">Administrator Grupy</option>";
-            echo "<option value='2'" . ($row['role'] == 1 ? " selected" : "") . ">Moderator Grupy</option>";
-            echo "<option value='1'" . ($row['role'] == 0 ? " selected" : "") . ">Członek Grupy</option>";
+            echo "<option value='2'" . ($row['role'] == 2 ? " selected" : "") . ">Administrator Grupy</option>";
+            echo "<option value='1'" . ($row['role'] == 1 ? " selected" : "") . ">Moderator Grupy</option>";
+            echo "<option value='0'" . ($row['role'] == 0 ? " selected" : "") . ">Członek Grupy</option>";
             echo "</select>";
             echo "</form>";
             }
@@ -79,8 +81,15 @@ endif;
             if($row['role']==3 and $row['userID']==returniserid()){
                 echo "<a href='delete_organization.php?ID=".$row["OrganizationID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Usuń całą organizacje'></a>";
 
-            }else{
-                echo "<a href='delete_role_organization.php?ID=".$row["organizationconnectID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Usuń użytkownika z grupy'></a>";
+            }else if($row['accept']==0 and $role==3 or $role==2){
+                echo "<a href='accept_send.php?ID=".$row["organizationconnectID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Akceptuj prośbę'></a>";
+                echo "<a href='delete_user_organization.php?ID=".$row["organizationconnectID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Anuluj prośbę'></a>";
+            }
+            else if(in_array($role, [1, 2, 3])) {
+                echo "<a href='delete_user_organization.php?ID=".$row["organizationconnectID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Usuń użytkownika z grupy'></a>";
+            }else if($row['userID']==returniserid()){
+                echo "<a href='delete_user_organization.php?ID=".$row["organizationconnectID"]."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Opuść grupę'></a>";
+
             }
             echo "</td>";
 

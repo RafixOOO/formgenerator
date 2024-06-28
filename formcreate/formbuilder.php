@@ -61,6 +61,10 @@ function addRow() {
             <option value="5">Tabela Suma</option>\
             <option value="6">Tabela Róźnica</option>\
             <option value="7">Tabela Budżetowa</option>\
+            <option value="8">Dane osobowe(imię, nazwisko, email, numer telefonu)</option>\
+            <option value="9">Organizacja</option>\
+            <option value="10">Organizacja</option>\
+            <option value="11">Tabela punktów</option>\
         </select>\
         <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
             <option value="1">Wymagane</option>\

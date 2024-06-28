@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
     $conn->close();
 }
-header("Location: organizationsetting.php");
-exit;
+$previousPage = $_SERVER['HTTP_REFERER'];
+    header("Location: $previousPage");
+    exit();
 ?>

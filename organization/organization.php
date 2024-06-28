@@ -45,9 +45,9 @@
                 require_once("../dbconnect.php");
                 $id=returniserid();
                 if($query=='brak'){
-                    $sql="SELECT od.OrganizationID,od.Name, oc.role, oc.accept as uz, od.accept as gr from organizationdata od, organizationconnect oc WHERE od.OrganizationID=oc.OrganizationID and oc.UserID=$id and od.accept!=2";
+                    $sql="SELECT od.OrganizationID,od.Name, oc.role, oc.accept as uz, od.accept as gr from organizationdata od, organizationconnect oc WHERE od.OrganizationID=oc.OrganizationID and oc.UserID=$id and od.accept!=2 and oc.accept!=2";
                 }else{
-                    $sql="SELECT od.OrganizationID,od.Name, oc.role, oc.accept as uz, od.accept as gr from organizationdata od, organizationconnect oc WHERE od.OrganizationID=oc.OrganizationID and CONCAT(od.Name, ' #', od.OrganizationID) Like '%$query%' and (od.accept=1 or od.accept=2) and oc.UserID!=$id";
+                    $sql="SELECT od.OrganizationID,od.Name, oc.role, oc.accept as uz, od.accept as gr from organizationdata od, organizationconnect oc WHERE od.OrganizationID=oc.OrganizationID and CONCAT(od.Name, ' #', od.OrganizationID) Like '%$query%' and od.accept=1 and od.accept!=2 and oc.UserID!=$id";
                 }
 
                 $result = $conn->query($sql);
@@ -57,7 +57,7 @@
                     echo $row['Name'].' #'.$row['OrganizationID'];
                     echo  "</td>";
                     echo "<td>";
-                    if($row['uz']==1){
+                    if($row['uz']==1 and $query=='brak'){
                         if($row['role']==3){
                             echo "Właściciel Grupy";
                         }else if($row['role']==2){
@@ -68,8 +68,10 @@
                             echo "Członek Grupy";
                         }
 
-                    }else{
+                    }else if($row['role']==0 and $row['uz']==0){
                         echo "Oczekiwanie";
+                    }else{
+                        echo "Brak";
                     }
                     echo "</td>";
                     echo "<td>";
@@ -81,7 +83,7 @@
                         echo "</td>";
 
                         if($query=="brak"){
-                            echo "<td><a href='organizationsetting.php?ID=".$row['OrganizationID']."'><input style='width: 40%' type='button' class='fadeIn fourth' value='" . ($row['gr'] == 0 ? "Oczekiwanie na akceptacje" : "Zarządzaj") . "' ></a></td>";
+                            echo "<td><a href='organizationsetting.php?ID=".$row['OrganizationID']."&ROLE=".$row['role']."'><input style='width: 40%' type='button' class='fadeIn fourth' value='" . ($row['gr'] == 0 ? "Oczekiwanie na akceptacje" : "Zarządzaj") . "' ></a></td>";
                         }else{
                             echo "<td><a href='send_organization.php?ID=".$row['OrganizationID']."'><input style='width: 40%' type='button' class='fadeIn fourth' value='Wyślij prośbę'></a></td>";
                         }

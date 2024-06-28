@@ -74,7 +74,7 @@ function redirectToNewPage6() {
                             </ul>
                         </div>
                         <?php } else{ ?>
-                        <button  id="about-tab" data-bs-toggle="tab" data-bs-target="#about"
+                        <button  <?php $url = $_SERVER['REQUEST_URI']; if(strpos($url, '/formready/') !== false){ echo 'class="nav-link active"'; } else{echo 'class="nav-link"'; } ?> id="about-tab" data-bs-toggle="tab" data-bs-target="#about"
                             type="button" role="tab" aria-controls="about" aria-selected="false" onclick="redirectToNewPage1()">Wnioski</button><?php } ?>
                         <button <?php $url = $_SERVER['REQUEST_URI']; if(strpos($url, '/organization/') !== false){ echo 'class="nav-link active"'; } else{echo 'class="nav-link"'; } ?> id="timing-tab" data-bs-toggle="tab" data-bs-target="#timing"
                             type="button" role="tab" aria-controls="timing" aria-selected="false" onclick="redirectToNewPage6()">Organizacja</button>
