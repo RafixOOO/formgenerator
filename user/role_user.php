@@ -74,6 +74,7 @@
     echo "<option value='3'" . ($row['role'] == 3 ? " selected" : "") . ">Administrator</option>";
     echo "<option value='2'" . ($row['role'] == 2 ? " selected" : "") . ">Moderator</option>";
     echo "<option value='1'" . ($row['role'] == 1 ? " selected" : "") . ">Recenzent</option>";
+    echo "<option value='0'" . ($row['role'] == 0 ? " selected" : "") . ">Użytkownik</option>";
     echo "</select>";
     echo "</form>";
     echo "</td>";
