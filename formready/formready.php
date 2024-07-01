@@ -46,7 +46,7 @@ endif;
             echo "<td>" . $row["name"] . "</td>";
             echo "<td>";
             if ($row["type"] == 0 and $row["status"] == 0) {
-                echo "Brak";
+                echo "Ocenianie";
             } else {
                 echo $row["type"] . "/100";
             }
