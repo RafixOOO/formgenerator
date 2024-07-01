@@ -60,7 +60,7 @@ if (isset($_GET['ID'])) {
                 while ($row = $result->fetch_assoc()) {
 
                     if ($num != $row['number']) {
-                        if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6) {
+                        if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6 or $check == 11) {
                             echo "<script>
     var fieldsDiv = document.getElementById('" . $num . "');
 
@@ -146,7 +146,7 @@ if (isset($_GET['ID'])) {
 
                 }
 
-                if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6) {
+                if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6 or $check == 11) {
                     echo "<script>
     var fieldsDiv = document.getElementById('" . $num . "');
 
