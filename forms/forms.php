@@ -51,7 +51,7 @@ endif;
             echo "<td>" . $row["datetime"] . "</td>";
             echo "<td>" . $row["datetimedo"] . "</td>";
             echo "<td><a href='formsread.php?ID=" . $row["applicationID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Wypełnij'></a>";
-            if (returnRole() == 2) {
+            if (returnRole() == 2 or returnRole() == 3) {
                 echo "<a href='formsdelete.php?ID=" . $row["applicationID"] . "'><input style='width: 25%; background-color: red;' type='button' class='fadeIn fourth' value='Usuń'></a></td>";
             }
             echo "</tr>";

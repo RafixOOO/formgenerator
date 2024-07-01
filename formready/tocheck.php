@@ -39,7 +39,7 @@ endif;
         <?php
         require_once("../dbconnect.php");
         $id = returniserid();
-        $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id and r.status!=1;; ";
+        $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id and r.status!=1 and a.deleted!=1; ";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";

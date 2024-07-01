@@ -39,7 +39,7 @@ endif;
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT r.status, r.type, a.name, r.readyID FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and r.status!=1; ";
+        $sql = "SELECT r.status, r.type, a.name, r.readyID FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and a.deleted!=1; ";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
@@ -56,6 +56,9 @@ endif;
                 echo "Wysłane";
             } else if ($row["status"] == 2) {
                 echo "Sprawdzone";
+
+            } else if ($row["status"] == 1) {
+                echo "Zakończone";
 
             }
             echo "</td>";
