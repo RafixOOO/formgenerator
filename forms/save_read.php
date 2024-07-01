@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idapp = $_POST['id'];
     $number = $_POST['number'];
     $readyID = 0;
-
     $sql = "INSERT INTO readyapplication (userID, applicationID, status, type) VALUES (?, ?, '0', '0')";
 
     // Przygotowanie zapytania
@@ -40,12 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: " . $conn->error;
     }
 
-    for($i=1;$i<=$number;$i++){
+    for ($i = 1; $i <= $number; $i++) {
         $sel = "SELECT qu.questID, qu.number, q.type FROM `questconnect` qu, quest q WHERE qu.questID=q.questID and qu.applicationID=$idapp and qu.number=$i ORDER BY qu.questID;";
         $result = $conn->query($sel);
         while ($row = $result->fetch_assoc()) {
-
-            if ($row['type'] == 1) { // Używamy operatora porównania '=='
+            if ($row['type'] == 1 or $row['type'] == 9) { // Używamy operatora porównania '=='
                 $fieldvalue = $_POST['' . $i];
                 if ($fieldvalue != '') {
                     $quest = $row['questID'];
@@ -67,11 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // Zamknięcie zapytania
                         $stmt->close();
                     }
-                    $pause=false;
-                    $pause1=false;
+                    $pause = false;
+                    $pause1 = false;
                 }
-            }
-            else if($row['type'] == 3){
+            } else if ($row['type'] == 3) {
                 $fieldvalue = $_POST['' . $i];
                 if ($fieldvalue != '') {
                     $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
@@ -81,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
                     } else {
                         // Przypisanie wartości do zapytania
-                        $stmt->bind_param("ii", $readyID, $fieldvalue );
+                        $stmt->bind_param("ii", $readyID, $fieldvalue);
                         // Wykonanie zapytania
                         $stmt->execute();
                         if ($stmt->affected_rows === 0) {
@@ -93,19 +90,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
                 break;
-            }
-                 else if($row['type'] == 2){
-                     $fieldvalue = $_POST['' . $i];
-                     foreach ($fieldvalue as $value) {
-                         if ($value != '') {
-                             $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
-                             $stmt = $conn->prepare($ins);
-                             if (!$stmt) {
-                                 // Obsługa błędów
+            } else if ($row['type'] == 2) {
+                $fieldvalue = $_POST['' . $i];
+                foreach ($fieldvalue as $value) {
+                    if ($value != '') {
+                        $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`) VALUES (?, ?)";
+                        $stmt = $conn->prepare($ins);
+                        if (!$stmt) {
+                            // Obsługa błędów
                             echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
-                             } else {
-                                 // Przypisanie wartości do zapytania
-                            $stmt->bind_param("ii", $readyID, $value  );
+                        } else {
+                            // Przypisanie wartości do zapytania
+                            $stmt->bind_param("ii", $readyID, $value);
                             // Wykonanie zapytania
                             $stmt->execute();
                             if ($stmt->affected_rows === 0) {
@@ -114,41 +110,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             // Zamknięcie zapytania
                             $stmt->close();
-                             }
-                         }
-
-                     }
-                     break;
-
-                 }else if($row['type'] == 4 or $row['type'] == 5 or $row['type'] == 6 or $row['type'] == 7){
-                     $fieldvalue = $_POST['' . $i];
-                     $count=0;
-                     $min=0;
-                     $sel = "SELECT COUNT(*) AS record_count, min(qu.questID) as minquest FROM `questconnect` qu, quest q WHERE qu.questID=q.questID AND qu.applicationID=$idapp AND qu.number=$i;";
-                     $result = $conn->query($sel);
-                    while ($row = $result->fetch_assoc()) {
-                        $count=$row["record_count"];
-                        $min=$row["minquest"];
-                        $j=1;
-                        $quest1=$min;
-                        $k=1;
+                        }
                     }
-                     foreach ($fieldvalue as $value) {
 
-                         if($k>$count){
-                             $k=1;
-                             $j++;
-                             $quest1=$min;
-                         }
+                }
+                break;
 
-                         if ($value != '') {
-                             $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`,`tablerow`) VALUES (?,?,?,?)";
-                             $stmt = $conn->prepare($ins);
-                             if (!$stmt) {
-                                 // Obsługa błędów
+            } else if ($row['type'] == 4 or $row['type'] == 5 or $row['type'] == 6 or $row['type'] == 7 or $row['type'] == 8) {
+                $fieldvalue = $_POST['' . $i];
+                $count = 0;
+                $min = 0;
+                $sel = "SELECT COUNT(*) AS record_count, min(qu.questID) as minquest FROM `questconnect` qu, quest q WHERE qu.questID=q.questID AND qu.applicationID=$idapp AND qu.number=$i;";
+                $result = $conn->query($sel);
+                while ($row = $result->fetch_assoc()) {
+                    $count = $row["record_count"];
+                    $min = $row["minquest"];
+                    $j = 1;
+                    $quest1 = $min;
+                    $k = 1;
+                }
+                foreach ($fieldvalue as $value) {
+
+                    if ($k > $count) {
+                        $k = 1;
+                        $j++;
+                        $quest1 = $min;
+                    }
+
+                    if ($value != '') {
+                        $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`,`tablerow`) VALUES (?,?,?,?)";
+                        $stmt = $conn->prepare($ins);
+                        if (!$stmt) {
+                            // Obsługa błędów
                             echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
-                             } else {
-                                 // Przypisanie wartości do zapytania
+                        } else {
+                            // Przypisanie wartości do zapytania
                             $stmt->bind_param("iisi", $readyID, $quest1, $value, $j);
                             // Wykonanie zapytania
                             $stmt->execute();
@@ -158,21 +154,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             // Zamknięcie zapytania
                             $stmt->close();
-                             }
-                         }
-                         $k++;
-                         $quest1++;
+                        }
+                    }
+                    $k++;
+                    $quest1++;
 
 
-                     }
-                     break;
+                }
+                break;
 
-                 }
+            }
 
         }
 
 
     }
+
     header("Location: forms.php");
     exit;
 

@@ -9,7 +9,7 @@ if (isset($_GET['ID'])) {
     // Odczytujemy wartość zmiennej
     $id = $_GET['ID'];
     // Tutaj możesz wykorzystać odczytaną wartość
-    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -35,33 +35,33 @@ if (isset($_GET['ID'])) {
 <div class="wrapper fadeInDown">
     <div class="container px-4 mx-auto">
         <form id="invoice" method="post" action="save_szkic.php">
-        <?php
-        require_once("../dbconnect.php");
-                $sql1 ="SELECT `name`, `datetimedo` FROM `application` WHERE `applicationID` = $id";
-                $result1 = $conn->query($sql1);
-                while ($row1 = $result1->fetch_assoc()) {
-                    $date = substr($row1['datetimedo'], 0, 10); // Wyodrębnienie części daty w formacie YYYY-MM-DD
-        echo '<input
+            <?php
+            require_once("../dbconnect.php");
+            $sql1 = "SELECT `name`, `datetimedo` FROM `application` WHERE `applicationID` = $id";
+            $result1 = $conn->query($sql1);
+            while ($row1 = $result1->fetch_assoc()) {
+                $date = substr($row1['datetimedo'], 0, 10); // Wyodrębnienie części daty w formacie YYYY-MM-DD
+                echo '<input
             class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
             type="text" name="name" value="' . htmlspecialchars($row1['name']) . '" placeholder="Nazwa wniosku" required>';
 
-        echo '<input
+                echo '<input
             class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600"
             type="date" name="date" value="' . htmlspecialchars($date) . '" required><br/>';
-                }
-                ?>
+            }
+            ?>
             <div id="inRows" class="row">
                 <?php
 
                 $sql = "SELECT q.quest, q.type, qu.number, qu.applicationID, qu.req from application a, questconnect qu, quest q where a.applicationID=qu.applicationID and qu.questID=q.questID and a.applicationID=$id order by qu.number, qu.questconnectID; ";
                 $result = $conn->query($sql);
-                $num=0;
-                $check=0;
-                               while ($row = $result->fetch_assoc()) {
+                $num = 0;
+                $check = 0;
+                while ($row = $result->fetch_assoc()) {
 
                     if ($num != $row['number']) {
                         if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6) {
-                           echo "<script>
+                            echo "<script>
     var fieldsDiv = document.getElementById('" . $num . "');
 
     var addButton = document.createElement('button');
@@ -73,7 +73,7 @@ if (isset($_GET['ID'])) {
     var removeButton = document.createElement('button');
     removeButton.setAttribute('type', 'button');
     removeButton.setAttribute('class', 'btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded');
-    addButton.setAttribute('id', 'addButton_".$num."'); // Dodanie atrybutu id
+    addButton.setAttribute('id', 'addButton_" . $num . "'); // Dodanie atrybutu id
     removeButton.textContent = '- Usuń pole';
 
     fieldsDiv.appendChild(addButton);
@@ -122,21 +122,31 @@ if (isset($_GET['ID'])) {
                         echo '<option value="5"' . ($row['type'] == 5 ? ' selected' : '') . '>Tabela Suma</option>';
                         echo '<option value="6"' . ($row['type'] == 6 ? ' selected' : '') . '>Tabela Róźnica</option>';
                         echo '<option value="7"' . ($row['type'] == 7 ? ' selected' : '') . '>Tabela Budżetowa</option>';
+                        echo '<option value="8"' . ($row['type'] == 8 ? ' selected' : '') . '>Dane osobowe(imię, nazwisko, email, numer telefonu)</option>';
+                        echo '<option value="9"' . ($row['type'] == 9 ? ' selected' : '') . '>Organizacja</option>';
+                        echo '<option value="10"' . ($row['type'] == 10 ? ' selected' : '') . '>pytanie(Komisja)</option>';
+                        echo '<option value="11"' . ($row['type'] == 11 ? ' selected' : '') . '>Tabela punktów(Komisja)</option>';
                         echo '</select>';
                         echo '<select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' . $row['number'] . '">';
                         echo '<option value="1"' . ($row['req'] == 1 ? ' selected' : '') . '>Wymagane</option>';
                         echo '<option value="0"' . ($row['req'] == 0 ? ' selected' : '') . '>Opcjonalne</option>';
                         echo '</select>';
                         echo '<div class="specificFields">';
-                        echo '<div id="'.$num.'" class="flex flex-col">';
+                        echo '<div id="' . $num . '" class="flex flex-col">';
                     }
-                    echo " <input type='text' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='" . $row['quest'] . "'>";
-                    $num = $row['number'];
+                    if ($check == 8 or $check == 9) {
 
+                        echo " <input type='hidden' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='" . $row['quest'] . "'>";
+                        $num = $row['number'];
+
+                    } else {
+                        echo " <input type='text' class='py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600' name='field_" . $row['number'] . "[]' value='" . $row['quest'] . "'>";
+                        $num = $row['number'];
+                    }
 
                 }
 
-                if ($num == 2 or $num == 3 or $num == 4 or $num == 5 or $num == 6) {
+                if ($check == 2 or $check == 3 or $check == 4 or $check == 5 or $check == 6) {
                     echo "<script>
     var fieldsDiv = document.getElementById('" . $num . "');
 
@@ -149,7 +159,7 @@ if (isset($_GET['ID'])) {
     var removeButton = document.createElement('button');
     removeButton.setAttribute('type', 'button');
     removeButton.setAttribute('class', 'btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded');
-    addButton.setAttribute('id', 'addButton_".$num."'); // Dodanie atrybutu id
+    addButton.setAttribute('id', 'addButton_" . $num . "'); // Dodanie atrybutu id
     removeButton.textContent = '- Usuń pole';
 
     fieldsDiv.appendChild(addButton);
@@ -178,12 +188,12 @@ if (isset($_GET['ID'])) {
     });
 </script>";
                 }
-            if ($num != 0) {
-                            echo '</div>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-?>
+                if ($num != 0) {
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+                ?>
             </div>
             <br/>
             <input type="hidden" name="columnCounterInput" id="columnCounterInput" value="<?php echo $num; ?>">
@@ -203,28 +213,32 @@ if (isset($_GET['ID'])) {
 </body>
 <script>
 
-    var columnCounter = <?php echo $num; ?>;
+    var columnCounter = 0;
 
     function addRow() {
         var newColumn = document.createElement('div');
         newColumn.setAttribute("class", "column");
         newColumn.innerHTML = '<br />\
-        <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-            <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
-                <option value="2">Jednokrotny wybór</option>\
-                <option value="3">Wielokrotny wybór</option>\
-                <option value="1">Tekst</option>\
-                <option value="0">Tekst bez pola</option>\
-                <option value="4">Tabela</option>\
-                <option value="5">Tabela Suma</option>\
-                <option value="6">Tabela Róźnica</option>\
-                <option value="7">Tabela Budżetowa</option>\
-            </select>\
-            <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
-                <option value="1">Wymagane</option>\
-                <option value="0">Opcjonalne</option>\
-            </select>\
-        <div class="specificFields"></div>';
+    <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
+            <option value="2">Jednokrotny wybór</option>\
+            <option value="3">Wielokrotny wybór</option>\
+            <option value="1">Tekst</option>\
+            <option value="0">Tekst bez pola</option>\
+            <option value="4">Tabela</option>\
+            <option value="5">Tabela Suma</option>\
+            <option value="6">Tabela Róźnica</option>\
+            <option value="7">Tabela Budżetowa</option>\
+            <option value="8">Dane osobowe(imię, nazwisko, email, numer telefonu)</option>\
+            <option value="9">Organizacja</option>\
+            <option value="10">pytanie(Komisja)</option>\
+            <option value="11">Tabela punktów(Komisja)</option>\
+        </select>\
+        <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
+            <option value="1">Wymagane</option>\
+            <option value="0">Opcjonalne</option>\
+        </select>\
+    <div class="specificFields"></div>';
 
         document.getElementById('inRows').appendChild(newColumn);
         var inputElement = document.getElementById('columnCounterInput');
@@ -260,6 +274,7 @@ if (isset($_GET['ID'])) {
         switch (selectedValue) {
             case "1": // Tekst
             case "0": // Tekstarea
+            case "10": // Pytanie
                 var textField = document.createElement('input');
                 textField.setAttribute("type", "text");
                 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
@@ -272,6 +287,7 @@ if (isset($_GET['ID'])) {
             case "4": // Tabela
             case "5": // Tabela suma
             case "6": // Tabela różnica
+            case "11": // Tabela punktów
                 var textField = document.createElement('input');
                 textField.setAttribute("type", "text");
                 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
@@ -392,38 +408,29 @@ if (isset($_GET['ID'])) {
                 });
 
                 break;
+            case "8": // dane
+
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "hidden");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("value", "Dane");
+                specificFieldsDiv.appendChild(textField);
+
+                break;
+            case "9": // organizacja
+
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "hidden");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("value", "Organizacja");
+                specificFieldsDiv.appendChild(textField);
+
+                break;
             default:
-
-                var fieldsDiv = document.querySelector('.flex.flex-col');
-
-                var addButton = document.createElement('button');
-                addButton.setAttribute("type", "button");
-                addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
-                addButton.textContent = "+ Dodaj pole";
-
-                var removeButton = document.createElement('button');
-                removeButton.setAttribute("type", "button");
-                removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
-                removeButton.textContent = "- Usuń pole";
-
-                fieldsDiv.appendChild(addButton);
-                fieldsDiv.appendChild(removeButton);
-
-            addButton.addEventListener("click", function () {
-                    var newTextField = document.createElement('input');
-                    newTextField.setAttribute("type", "text");
-                    newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                    newTextField.setAttribute("name", clasa);
-                    newTextField.setAttribute("placeholder", "Pole tekstowe");
-                    fieldsDiv.insertBefore(newTextField, addButton);
-                });
-
-                removeButton.addEventListener("click", function () {
-                    if (fieldsDiv.childNodes.length > 3) { // Sprawdzamy, czy jest więcej niż dwa elementy w divie (pola tekstowe i przyciski)
-                        fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]); // Usuwamy ostatnie dodane pole tekstowe
-                    }
-
-                });
                 break;
         }
     }
