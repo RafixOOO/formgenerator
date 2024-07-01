@@ -743,13 +743,6 @@ if (isset($_GET['ID'])) {
     </form>
     <div style="text-align: right;">
         <a href="../formready/tocheck.php"><input type="button" value="Wróć" style="background-color: red;"></a>
-        <div style="float: left">
-            <form action="save_formcheck.php" method="POST">
-                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                <input type="number" name="inputNumber" min="1" max="100" placeholder="1-100">
-                <input type="submit" name="submit_publish" value="Wyślij" style="width:50%">
-            </form>
-        </div>
     </div>
 </div>
 </body>
