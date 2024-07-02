@@ -376,7 +376,7 @@ if (isset($_GET['ID'])) {
 
                 echo '>
       </div>';
-                    
+
 
             }
 
@@ -739,6 +739,7 @@ if (isset($_GET['ID'])) {
             $table_opened7 = false;
             unset($columns);
         }
+
 
         ?>
     </form>

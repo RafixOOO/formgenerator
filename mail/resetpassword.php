@@ -11,7 +11,6 @@ $id = '';
 $link = '';
 $e = $_POST['email'];
 $email1 = '';
-$user_id = $_POST['user_id'];
 function encrypt_data($data, $key)
 {
     $ivlen = openssl_cipher_iv_length($cipher = "AES-256-CBC");
@@ -24,10 +23,9 @@ $key = "e1f7e2b9a8b4d5e7c6a9d4b7e1f7a2b9";
 $expiry_time = time() + 300;// Upewnij się, że klucz jest bezpieczny i długi
 $encrypted_id = '';
 
-$verification_code = $_POST['verification_code'];
 $sql = "SELECT * FROM `user` WHERE `email` = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
+$stmt->bind_param("s", $e);
 $stmt->execute();
 $result = $stmt->get_result();
 if ($result->num_rows > 0) {
@@ -66,7 +64,7 @@ try {
         ));                                                             //Send using SMTP
 
 // Office 365 SMTP HOST
-   $mail->Host = 's129.cyber-folks.pl';
+    $mail->Host = 's129.cyber-folks.pl';
     $mail->SMTPAuth = true;                                      //Enable SMTP authentication
     $mail->Username = 'generator@fundacjasmk.pl';                      //SMTP username
     $mail->Password = 'eJ2o8YhOm-U-5JV.';                         //SMTP password

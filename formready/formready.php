@@ -48,7 +48,7 @@ endif;
             if ($row["type"] == 0 and $row["status"] == 0) {
                 echo "Ocenianie";
             } else {
-                echo $row["type"] . "/100";
+                echo $row["type"];
             }
             echo "</td>";
             echo "<td>";
@@ -58,7 +58,7 @@ endif;
                 echo "Sprawdzone";
 
             } else if ($row["status"] == 1) {
-                echo "Zakończone";
+                echo "Anulowane";
 
             }
             echo "</td>";

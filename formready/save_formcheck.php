@@ -3,42 +3,96 @@
 require_once("../auth.php");
 
 if (!isLoggedIn()) {
-    header("Location: ../index.php"); // Przekierowanie na stronę po zalogowaniu
+    header("Location: ../index.php"); // Redirect to login page if not logged in
     exit;
 }
 
 require_once("../dbconnect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $inputNumber = intval($_POST["inputNumber"]);
     $id = intval($_POST["id"]);
-    echo $inputNumber;
-    echo $id;
-    // Przygotowanie zapytania
-    $sql = "UPDATE `readyapplication` SET `type` = ? WHERE `readyID` = ?";
-    $stmt = $conn->prepare($sql);
+    if (isset($_POST['b'])) {
+        $answers = $_POST['b'];
+        $apkid = '';
+        $type = '';
+        $i = 1;
+        $points = 0;
 
-    // Sprawdzenie, czy zapytanie zostało poprawnie przygotowane
-    if ($stmt) {
-        // Wiązanie parametrów
-        $stmt->bind_param("ii", $inputNumber, $id);
-
-        // Wykonanie zapytania
-        if ($stmt->execute()) {
-            echo "Dane zostały pomyślnie zaktualizowane";
+        // Get the application ID
+        $sql1 = "SELECT `applicationID` FROM `readyapplication` WHERE `readyID` = ?";
+        $stmt1 = $conn->prepare($sql1);
+        $stmt1->bind_param("i", $id);
+        $stmt1->execute();
+        $result1 = $stmt1->get_result();
+        if ($row1 = $result1->fetch_assoc()) {
+            $apkid = $row1['applicationID'];
         } else {
-            // Błąd podczas wykonywania zapytania
-            echo "Error: " . $stmt->error;
+            // Handle case where readyID does not match any record
+            echo "Invalid readyID.";
+            exit;
+        }
+        $stmt1->close();
+
+        // Prepare insert statements
+        $insertAnswer10 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`) VALUES (?, ?, ?)");
+        $insertAnswer11 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `tablerow`, `answer`) VALUES (?, ?, ?, ?)");
+        $updateStatus = $conn->prepare("UPDATE `readyapplication` SET `status` = 2, `type` = ? WHERE `readyID` = ?");
+
+        foreach ($answers as $key => $value) {
+            // Get the quest ID and type
+            $sql = "SELECT q.`questID`, q.`type` FROM `quest` q JOIN `questconnect` qc ON q.questID = qc.questID WHERE qc.applicationID = ? AND q.quest = ? AND (q.type = 10 OR q.type = 11)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("is", $apkid, $key); // Assuming $key is the quest name or identifier
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $questID = $row['questID'];
+                $type = $row['type'];
+            } else {
+                // Handle case where no matching quest is found
+                echo "No matching quest found for value: " . htmlspecialchars($key);
+                continue;
+            }
+            $stmt->close();
+
+            if ($type == 10) {
+                // Insert answer for type 10
+                $insertAnswer10->bind_param("iis", $id, $questID, $value);
+                if ($insertAnswer10->execute()) {
+                    echo "Updated type 10 answer.";
+                } else {
+                    echo "Error updating type 10 answer: " . $insertAnswer10->error;
+                }
+            } else if ($type == 11) {
+                // Insert answer for type 11
+                $insertAnswer11->bind_param("iiis", $id, $questID, $i, $value);
+                if ($insertAnswer11->execute()) {
+                    echo "Updated type 11 answer.";
+                    $points += (int)$value; // Accumulate points
+                    $i++;
+                } else {
+                    echo "Error updating type 11 answer: " . $insertAnswer11->error;
+                }
+            }
         }
 
-        // Zamknięcie prepared statement
-        $stmt->close();
-    } else {
-        // Błąd podczas przygotowywania zapytania
-        echo "Error: " . $conn->error;
+        // Update status and points for the application
+        $updateStatus->bind_param("ii", $points, $id);
+        if ($updateStatus->execute()) {
+            echo "Updated points and status";
+        } else {
+            echo "Error updating points and status: " . $updateStatus->error;
+        }
+
+        // Close prepared statements
+        $insertAnswer10->close();
+        $insertAnswer11->close();
+        $updateStatus->close();
+
+        // Redirect after processing
+        // header("Location: tocheck.php");
+        // exit;
     }
 }
 
-//header("Location: tocheck.php");
-//exit;
 ?>
