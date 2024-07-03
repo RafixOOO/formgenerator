@@ -30,6 +30,19 @@ if (isset($_GET['ID'])) {
         .hidden-row {
             display: none;
         }
+
+    .auto-resize {
+      overflow: hidden;
+      resize: none;
+      box-sizing: border-box;
+      width: 100%; /* Szerokość textarea, dostosuj w razie potrzeby */
+      min-height: calc(1.5em + 0.75rem + 2px); /* Dostosowanie minimalnej wysokości, aby pasowała do input */
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+    }
     </style>
     <!-- Toastr -->
     <link rel="stylesheet" type="text/css"
@@ -464,14 +477,28 @@ if (isset($_GET['ID'])) {
                 }
                 echo '<div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-        <input type="text" class="form-control" name="' . $row["number"] . '"';
-
+        <textarea rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" type="text" name="' . $row["number"] . '"';
                 if ($row["req"] == 1) {
                     echo ' required';
                 }
 
-                echo '>
+                echo '></textarea>
+                
       </div>';
+      echo '<script>
+document.addEventListener(\'DOMContentLoaded\', function() {
+    const textarea = document.querySelector(\'.res' . $row["number"] . '\');
+    
+    textarea.addEventListener(\'input\', function() {
+        this.style.height = \'auto\'; // Resetowanie wysokości
+        this.style.height = this.scrollHeight + \'px\'; // Ustawianie wysokości na podstawie zawartości
+    });
+
+    // Początkowa zmiana wysokości na podstawie istniejącej zawartości
+    textarea.style.height = \'auto\';
+    textarea.style.height = textarea.scrollHeight + \'px\';
+});
+</script>';
             } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7) {
                 $req = $row["req"];
                 $number = $row["number"];
