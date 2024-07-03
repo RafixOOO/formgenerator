@@ -59,10 +59,13 @@ if (isset($_GET['ID'])) {
         $result = $conn->query($sql);
         $number = 0;
         $columns = array();
+        $columns1 = array();
         $table_opened4 = false;
         $table_opened5 = false;
         $table_opened6 = false;
         $table_opened7 = false;
+        $table_opened11 = false;
+        $table_opened12 = false;
         $req=0;
         while ($row = $result->fetch_assoc()) {
 
@@ -333,6 +336,86 @@ if (isset($_GET['ID'])) {
                                             unset($columns);
             }
 
+            if ($row["type"] == 8) {
+                if ($number != $row["number"] and $number != 0) {
+                    echo "</p>";
+                }
+                if ($number != $row["number"]) {
+                    echo "<p>";
+                    $number = $row["number"];
+                }
+                $userid = returniserid();
+                $sqldata = 'SELECT name, surname, email, phone FROM `user` where userID=' . $userid . '';
+                $result2 = $conn->query($sqldata);
+                while ($row2 = $result2->fetch_assoc()) {
+                    echo '<div class="mb-3" style="float:left;">
+             <label for="exampleFormControlInput1" class="form-label">Imię</label>
+             <input type="text" class="form-control" name="' . $row["number"] . '[]" value="' . $row2['name'] . '" readonly';
+
+                    if ($row["req"] == 1) {
+                        echo ' required';
+                    }
+
+                    echo '>
+           </div> ';
+                    echo '<div class="mb-3" style="float:left; margin-left:2%;">
+             <label for="exampleFormControlInput1" class="form-label">Nazwisko</label>
+             <input type="text" class="form-control" name="' . $row["number"] . '[]" value="' . $row2['surname'] . '"readonly';
+
+                    if ($row["req"] == 1) {
+                        echo ' required';
+                    }
+
+                    echo '>
+           </div><div style="clear:both;"></div>';
+                    echo '<div class="mb-3" style="float:left">
+             <label for="exampleFormControlInput1" class="form-label">Email</label>
+             <input type="text" class="form-control" name="' . $row["number"] . '[]" value="' . $row2['email'] . '"readonly';
+
+                    if ($row["req"] == 1) {
+                        echo ' required';
+                    }
+
+                    echo '>
+           </div>';
+                    echo '<div class="mb-3" style="float:left; margin-left:2%;"">
+             <label for="exampleFormControlInput1" class="form-label">Telefon</label>
+             <input type="text" class="form-control" name="' . $row["number"] . '[]" value="' . $row2['phone'] . '"readonly';
+
+                    if ($row["req"] == 1) {
+                        echo ' required';
+                    }
+
+                    echo '>
+           </div><div style="clear:both;"></div>';
+                }
+
+            }
+
+            if ($row["type"] == 9) {
+
+                if ($number != $row["number"] and $number != 0) {
+                    echo "</p>";
+                }
+                if ($number != $row["number"]) {
+                    echo "<p>";
+                    $number = $row["number"];
+                }
+                $userid = returniserid();
+                echo '<label for="exampleFormControlInput1" class="form-label">Organizacja</label>';
+                $sqldata = 'SELECT o.name, o.OrganizationID FROM `organizationdata` o, organizationconnect oc where o.OrganizationID=oc.OrganizationID and oc.UserID=' . $userid . ' and oc.accept=1 and o.accept=1 ;';
+                $result2 = $conn->query($sqldata);
+                echo '<select class="form-select form-select-lg mb-3" name="' . $row["number"] . '">';
+                echo "<option value='0'>Brak</option>";
+                while ($row2 = $result2->fetch_assoc()) {
+
+                    echo "<option value='" . $row2['OrganizationID'] . "'>" . $row2['name'] . " #" . $row2['OrganizationID'] . "</option>";
+
+                }
+                echo "</select>";
+
+            }
+
             if ($row["type"] == 3) {
                 if ($number != $row["number"] and $number != 0) {
                     echo "</p>";
@@ -418,19 +501,29 @@ document.addEventListener(\'DOMContentLoaded\', function() {
     textarea.style.height = textarea.scrollHeight + \'px\';
 });
 </script>';
-            } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7) {
-                $req=$row["req"];
-                $number=$row["number"];
-                if($row["type"]==4){
+            }  else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7 or $row["type"] == 11 or $row["type"] == 10) {
+                $req = $row["req"];
+                $number = $row["number"];
+                if ($row["type"] == 4) {
                     $table_opened4 = true;
-                } else if($row["type"]==5){
+                    $columns[] = $row["quest"];
+                } else if ($row["type"] == 5) {
                     $table_opened5 = true;
-                }else if($row["type"]==6){
+                    $columns[] = $row["quest"];
+                } else if ($row["type"] == 6) {
                     $table_opened6 = true;
-                    }else if($row["type"]==7){
+                    $columns[] = $row["quest"];
+                } else if ($row["type"] == 7) {
                     $table_opened7 = true;
-                    }
-                $columns[] = $row["quest"]; // Dodajemy nazwę kolumny do tablicy
+                    $columns[] = $row["quest"];
+                } else if ($row["type"] == 11) {
+                    $table_opened11 = true;
+                    $columns[] = $row["quest"];
+                } else if ($row["type"] == 10) {
+                    $table_opened12 = true;
+                    $columns1[] = $row["quest"];
+                }
+                // Dodajemy nazwę kolumny do tablicy
             }
 
 
@@ -708,6 +801,49 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                                             $table_opened7 = false;
                                             unset($columns);
          }
+
+        if ($table_opened11 or $table_opened12) {
+            if ($table_opened12) {
+                foreach ($columns1 as $column) {
+                    echo '<div class="mb-3">';
+                    echo '<label class="form-label">' . $column . '</label>';
+                    echo '<div>';
+
+                    // Wybór "Tak"
+                    echo '<input type="radio" id="yes_' . $column . '" name="b[' . $column . ']" value="Tak">';
+                    echo '<label for="yes_' . $column . '">Tak</label><br />';
+
+                    // Wybór "Nie"
+                    echo '<input type="radio" id="no_' . $column . '" name="b[' . $column . ']" value="Nie">';
+                    echo '<label for="no_' . $column . '">Nie</label>';
+
+                    echo '</div>';
+                    echo '</div>';
+                }
+                $table_opened12 = false;
+                unset($columns1);
+            }
+            if ($table_opened11) {
+                echo '<table class="table"><thead><tr>';
+                echo '<th>Nazwa</th>';
+                echo '<th>Punkty</th>';
+                echo '</tr></thead><tbody>';
+
+                // Każdy element w $columns tworzy nowy wiersz w tabeli
+                foreach ($columns as $column) {
+                    echo '<tr>'; // Otwórz nowy wiersz
+                    echo '<td>' . $column . '</td>'; // Nazwa kolumny
+                    echo '<td><input type="number" name="b[' . $column . ']"></td>'; // Pole do wpisania punktów
+                    echo '</tr>'; // Zamknij wiersz
+                }
+
+                echo '</tbody></table>';
+                $table_opened11 = false;
+                unset($columns);
+            }
+            echo "<input type='hidden' name='id' value='" . $id . "'>";
+        }
+
          echo "<input type='hidden' name='id' value='".$id."' >";
          echo "<input type='hidden' name='number' value='".$number."' >"
         ?>

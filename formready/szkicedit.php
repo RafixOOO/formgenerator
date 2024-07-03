@@ -213,7 +213,7 @@ if (isset($_GET['ID'])) {
 </body>
 <script>
 
-    var columnCounter = 0;
+    var columnCounter = <?php echo $num; ?>;
 
     function addRow() {
         var newColumn = document.createElement('div');
