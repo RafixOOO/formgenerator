@@ -112,6 +112,8 @@ if (isset($_GET['ID'])) {
                         }
                         $num = $row['number'];
                         echo '<div class="column"><br />';
+                        echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>';
+                        echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>';
                         echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
                         echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')">';
                         echo '<option value="2"' . ($row['type'] == 2 ? ' selected' : '') . '>Jednokrotny wybór</option>';
@@ -219,6 +221,8 @@ if (isset($_GET['ID'])) {
         var newColumn = document.createElement('div');
         newColumn.setAttribute("class", "column");
         newColumn.innerHTML = '<br />\
+        <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>\
+        <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
         <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
             <option value="2">Jednokrotny wybór</option>\
@@ -260,6 +264,48 @@ if (isset($_GET['ID'])) {
     function removeRow(node) {
         return node.remove()
     }
+
+    function upnode(button) {
+        var currentColumn = button;
+        var previousColumn = currentColumn.previousElementSibling;
+
+        if (previousColumn !== null) {
+            currentColumn.parentNode.insertBefore(currentColumn, previousColumn);
+            updateFields(currentColumn);
+            updateFields(previousColumn);
+        }
+    }
+
+    function downnode(button) {
+        var currentColumn = button;
+        var nextColumn = currentColumn.nextElementSibling;
+
+        if (nextColumn !== null) {
+            currentColumn.parentNode.insertBefore(nextColumn, currentColumn);
+            updateFields(currentColumn);
+            updateFields(nextColumn);
+        }
+    }
+
+    function updateFields(column) {
+    var select = column.querySelector('select[name^="type_"]');
+    var required = column.querySelector('select[name^="required_"]');
+    var specificFieldsContainer = column.querySelector('.specificFields');
+    var specificFields = specificFieldsContainer.querySelectorAll('input[name^="field_"]');
+
+    if (select) {
+        var index = Array.prototype.indexOf.call(select.parentNode.parentNode.children, select.parentNode) + 1;
+        select.name = 'type_' + index;
+        select.setAttribute('onchange', 'showFields(this, "field_' + index + '[]")');
+    }
+    if (required) {
+        required.name = 'required_' + index;
+    }
+    specificFields.forEach(function (field) {
+        var baseName = field.name.split('_')[0];
+        field.name = baseName + '_' + index + '[]';
+    });
+}
 
     function showFields(select, clasa) {
         var selectedValue = select.value;
