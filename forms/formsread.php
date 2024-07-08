@@ -58,6 +58,14 @@ if (isset($_GET['ID'])) {
         <?php
         require_once("../dbconnect.php");
 
+        $sql1 = "SELECT `name` FROM `application` WHERE`applicationID`=$id and `deleted`!=1 AND `datetimedo`>CURRENT_DATE";
+        $result1 = $conn->query($sql1);
+
+        while ($row = $result1->fetch_assoc()) {
+            echo '<img src="../img/'.$row['name'].'.png" />';
+        }
+
+
         $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
