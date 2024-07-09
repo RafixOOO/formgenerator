@@ -65,8 +65,8 @@ endif;
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
         <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
-            <option value="2">Jednokrotny wybór</option>\
-            <option value="3">Wielokrotny wybór</option>\
+            <option value="3">Jednokrotny wybór</option>\
+            <option value="2">Wielokrotny wybór</option>\
             <option value="1">Tekst</option>\
             <option value="0">Tekst bez pola</option>\
             <option value="4">Tabela</option>\

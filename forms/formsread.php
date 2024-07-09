@@ -62,7 +62,10 @@ if (isset($_GET['ID'])) {
         $result1 = $conn->query($sql1);
 
         while ($row = $result1->fetch_assoc()) {
-            echo '<img class="img-fluid" src="../img/'.$row['name'].'.png" />';
+            $imagePath = '../img/' . $row['name'] . '.png';
+    if (file_exists($imagePath)) {
+        echo '<img class="img-fluid" src="' . $imagePath . '" alt="' . $row['name'] . '">';
+    }
         }
 
 

@@ -34,7 +34,7 @@ endif;
     <div class="table-responsive d-flex justify-content-center"></div>
     <table id="myTable" class="table table table-hover">
         <thead>
-        <th scope="col">Wniosek</th>
+        <th scope="col" style="width:10em;">Wniosek</th>
         <th scope="col">Data utworzenia</th>
         <th scope="col">Data zakończenia</th>
         <th scope="col" data-orderable="false">Opcje</th>

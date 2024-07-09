@@ -31,7 +31,7 @@ endif;
     <table id="myTable" class="table table table-hover">
         <thead>
         <th scope="col">Imię, nazwisko, telefon</th>
-        <th scope="col">Wniosek</th>
+        <th scope="col" style="width:10em;">Wniosek</th>
         <th scope="col">Punkty</th>
         <th scope="col" data-orderable="false">Opcje</th>
         </thead>

@@ -439,6 +439,7 @@ if (isset($_GET['ID'])) {
                     break;
                 }
 
+
                 if ($number != $row["number"] and $number != 0) {
                     echo "</p>";
                 } else {
@@ -448,20 +449,20 @@ if (isset($_GET['ID'])) {
                     echo "<p>";
                 }
                 echo '<div class="form-check">
-        <input class="form-check-input" type="checkbox" name="' . $row["number"] . '[]" value="' . $row["questID"] . '" disabled';
+        <input class="form-check-input" type="checkbox" name="' . $row["number"] . '" value="' . $row["questID"] . '" disabled';
 
                 if ($row["req"] == 1) {
                     echo ' required';
                 }
 
                 if ($selected != '0') {
-                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked
+                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked i disabled
                 }
 
                 echo '>
-        <div class="form-check-label" for="' . $row["number"] . '>
+        <label class="form-check-label" for="' . $row["number"] . '">
             ' . $row["quest"] . '
-        </div>
+        </label>
     </div>';
             } else if ($row["type"] == 0) {
                 if ($number != $row["number"] and $number != 0) {

@@ -90,8 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStatus->close();
 
         // Redirect after processing
-        // header("Location: tocheck.php");
-        // exit;
+         header("Location: tocheck.php");
+         exit;
     }
 }
 

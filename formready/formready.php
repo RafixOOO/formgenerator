@@ -30,16 +30,17 @@ endif;
     <div class="table-responsive d-flex justify-content-center"></div>
     <table id="myTable" class="table table table-hover">
         <thead>
-        <th scope="col">Wniosek</th>
+        <th scope="col" style="width:10em;">Wniosek</th>
         <th scope="col">Punkty</th>
         <th scope="col">Status</th>
+        <th scope="col">Data</th>
         <th scope="col" data-orderable="false">Opcje</th>
         </thead>
         <tbody>
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT r.status, r.type, a.name, r.readyID FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and a.deleted!=1; ";
+        $sql = "SELECT r.status, r.type, a.name, r.readyID, r.createdate FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and a.deleted!=1; ";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
@@ -60,9 +61,12 @@ endif;
             } else if ($row["status"] == 1) {
                 echo "Anulowane";
 
+            } else if ($row["status"] == 4) {
+                echo "Odrzucony";
+
             }
             echo "</td>";
-
+            echo "<td>".$row['createdate']."</td>";
             echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
             echo "</tr>";
         }

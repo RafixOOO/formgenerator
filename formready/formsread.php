@@ -58,7 +58,10 @@ if (isset($_GET['ID'])) {
         $result1 = $conn->query($sql1);
 
         while ($row = $result1->fetch_assoc()) {
-            echo '<img class="img-fluid" src="../img/'.$row['name'].'.png" />';
+            $imagePath = '../img/' . $row['name'] . '.png';
+    if (file_exists($imagePath)) {
+        echo '<img class="img-fluid" src="' . $imagePath . '" alt="' . $row['name'] . '">';
+    }
         }
 
         $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id order by number;";
@@ -418,7 +421,7 @@ if (isset($_GET['ID'])) {
                 if ($number != $row["number"]) {
                     echo "<p>";
                 }
-                echo ' < div class="form-check" >
+                echo ' <div class="form-check">
         <input class="form-check-input" type = "radio" name = "' . $row["number"] . '" value = "' . $row["questID"] . '" disabled';
 
                 if ($row["req"] == 1) {
@@ -444,6 +447,7 @@ if (isset($_GET['ID'])) {
                     break;
                 }
 
+
                 if ($number != $row["number"] and $number != 0) {
                     echo "</p>";
                 } else {
@@ -452,22 +456,22 @@ if (isset($_GET['ID'])) {
                 if ($number != $row["number"]) {
                     echo "<p>";
                 }
-                echo ' < div class="form-check" >
-        <input class="form-check-input" type = "checkbox" name = "' . $row["number"] . '[]" value = "' . $row["questID"] . '" disabled';
+                echo ' <div class="form-check">
+        <input class="form-check-input" type = "checkbox" name = "' . $row["number"] . '" value = "' . $row["questID"] . '" disabled';
 
                 if ($row["req"] == 1) {
                     echo ' required';
                 }
 
                 if ($selected != '0') {
-                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked
+                    echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked i disabled
                 }
 
                 echo ' >
-        <div class="form-check-label" for="' . $row["number"] . '>
+        <label class="form-check-label" for="' . $row["number"] . '">
             ' . $row["quest"] . '
-        </div>
-      </div>';
+            </label >
+      </div > ';
             } else if ($row["type"] == 0) {
                 if ($number != $row["number"] and $number != 0) {
                     echo "</p > ";
