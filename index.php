@@ -86,7 +86,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" id="resendButton">
-                    Wyślij kod
+                    Wyślij kod Ponownie
                 </button>
                 <button type="button" id="verifyButton" class="btn btn-success">
                     <i class="fas fa-location-arrow" style="margin-right:5px"></i> Zweryfikuj
@@ -125,51 +125,9 @@
         </div>
     </div>
 </div>
-<?php
-$show_modal = false;
-if (isset($_GET['error']) && $_GET['error'] === 'verify') {
-    $show_modal = true;
-}
-
-// Sprawdzanie czy parametr error jest ustawiony i równy 'invalid_password'
-if (isset($_GET['error']) && $_GET['error'] == 'invalid_password') {
-    echo '<script>toastr.error("Nieprawidłowe hasło.");</script>';
-}
-
-if (isset($_GET['error']) && $_GET['error'] == 'expire') {
-    echo '<script>toastr.error("Link wygasł.");</script>';
-}
-
-if (isset($_GET['error']) && $_GET['error'] == 'blad') {
-    echo '<script>toastr.error("Błąd.");</script>';
-}
-// Sprawdzanie czy parametr error jest ustawiony i równy 'user_not_found'
-if (isset($_GET['error']) && $_GET['error'] == 'user_not_found') {
-    echo '<script>toastr.error("Użytkownik o podanym loginie nie istnieje.");</script>';
-}
-if (isset($_GET['success']) && $_GET['success'] == 'password_change') {
-    echo '<script>toastr.success("Hasło zostało zmienione.");</script>';
-}
-?>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- Script to trigger the modal -->
-<?php if ($show_modal): ?>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#editModal').modal('show');
-        });
-    </script>
-<?php endif; ?>
-
-</body>
 <script>
-    var verifycode; // Zmienna przechowująca wygenerowany kod weryfikacyjny
-
-    $(document).ready(function () {
-        // Obsługa kliknięcia przycisku "Wyślij kod"
-        $("#resendButton").click(function () {
-            var button = $(this);
+ function verify(){
+        var button = $(this);
             var countdown = 60;
             var originalText = 'Wyślij kod';
 
@@ -206,6 +164,54 @@ if (isset($_GET['success']) && $_GET['success'] == 'password_change') {
                     // Dodaj kod obsługi błędu, na przykład informacja użytkownikowi o problemie
                 }
             });
+    }
+    </script>]
+<?php
+$show_modal = false;
+if (isset($_GET['error']) && $_GET['error'] === 'verify') {
+    $show_modal = true;
+    echo "<script>verify();</script>";
+
+}
+
+// Sprawdzanie czy parametr error jest ustawiony i równy 'invalid_password'
+if (isset($_GET['error']) && $_GET['error'] == 'invalid_password') {
+    echo '<script>toastr.error("Nieprawidłowe hasło.");</script>';
+}
+
+if (isset($_GET['error']) && $_GET['error'] == 'expire') {
+    echo '<script>toastr.error("Link wygasł.");</script>';
+}
+
+if (isset($_GET['error']) && $_GET['error'] == 'blad') {
+    echo '<script>toastr.error("Błąd.");</script>';
+}
+// Sprawdzanie czy parametr error jest ustawiony i równy 'user_not_found'
+if (isset($_GET['error']) && $_GET['error'] == 'user_not_found') {
+    echo '<script>toastr.error("Użytkownik o podanym loginie nie istnieje.");</script>';
+}
+if (isset($_GET['success']) && $_GET['success'] == 'password_change') {
+    echo '<script>toastr.success("Hasło zostało zmienione.");</script>';
+}
+?>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Script to trigger the modal -->
+<?php if ($show_modal): ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#editModal').modal('show');
+        });
+    </script>
+<?php endif; ?>
+
+</body>
+<script>
+    var verifycode; // Zmienna przechowująca wygenerowany kod weryfikacyjny
+    $(document).ready(function () {
+        // Obsługa kliknięcia przycisku "Wyślij kod"
+        $("#resendButton").click(function () {
+            verify();
         });
 
         // Obsługa kliknięcia przycisku "Zweryfikuj"

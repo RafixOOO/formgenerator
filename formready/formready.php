@@ -30,10 +30,10 @@ endif;
     <div class="table-responsive d-flex justify-content-center"></div>
     <table id="myTable" class="table table table-hover">
         <thead>
-        <th scope="col" style="width:10em;">Wniosek</th>
-        <th scope="col">Punkty</th>
-        <th scope="col">Status</th>
-        <th scope="col">Data</th>
+        <th scope="col" style="width:25%;">Wniosek</th>
+        <th scope="col" style="width:10%;">Punkty</th>
+        <th scope="col" style="width:10%;">Status</th>
+        <th scope="col" style="width:10%;">Data</th>
         <th scope="col" data-orderable="false">Opcje</th>
         </thead>
         <tbody>
@@ -67,7 +67,9 @@ endif;
             }
             echo "</td>";
             echo "<td>".$row['createdate']."</td>";
+            if($row["status"] != 1){
             echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
+        }
             echo "</tr>";
         }
 

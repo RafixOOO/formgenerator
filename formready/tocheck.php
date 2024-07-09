@@ -32,8 +32,8 @@ endif;
         <thead>
         <th scope="col" style="width:20%;">Imię, nazwisko, telefon</th>
         <th scope="col" style="width:20%;">Data</th>
-        <th scope="col" style="width:10em;">Wniosek</th>
-        <th scope="col">Punkty</th>
+        <th scope="col" style="width:25%;">Wniosek</th>
+        <th scope="col" style="width:10%;">Punkty</th>
         <th scope="col" data-orderable="false" style="width:10em;">Opcje</th>
         </thead>
         <tbody>
