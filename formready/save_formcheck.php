@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt1 = $conn->prepare($sql1);
         $stmt1->bind_param("i", $id);
         $stmt1->execute();
+        $status=2;
         $result1 = $stmt1->get_result();
         if ($row1 = $result1->fetch_assoc()) {
             $apkid = $row1['applicationID'];
@@ -36,9 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Prepare insert statements
         $insertAnswer10 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`) VALUES (?, ?, ?)");
         $insertAnswer11 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `tablerow`, `answer`) VALUES (?, ?, ?, ?)");
-        $updateStatus = $conn->prepare("UPDATE `readyapplication` SET `status` = 2, `type` = ? WHERE `readyID` = ?");
+        $updateStatus = $conn->prepare("UPDATE `readyapplication` SET `status` = ?, `type` = ? WHERE `readyID` = ?");
 
         foreach ($answers as $key => $value) {
+            if($value=="Nie"){
+                $status=4;
+            }
             // Get the quest ID and type
             $sql = "SELECT q.`questID`, q.`type` FROM `quest` q JOIN `questconnect` qc ON q.questID = qc.questID WHERE qc.applicationID = ? AND q.quest = ? AND (q.type = 10 OR q.type = 11)";
             $stmt = $conn->prepare($sql);
@@ -77,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Update status and points for the application
-        $updateStatus->bind_param("ii", $points, $id);
+        $updateStatus->bind_param("iii", $status,$points, $id);
         if ($updateStatus->execute()) {
             echo "Updated points and status";
         } else {

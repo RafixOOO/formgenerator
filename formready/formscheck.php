@@ -783,19 +783,20 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         echo "<form method='post' action='save_formcheck.php'>";
         if ($table_opened11 or $table_opened12) {
             if ($table_opened12) {
+                $i=1;
                 foreach ($columns1 as $column) {
                     echo '<div class="mb-3">';
                     echo '<label class="form-label">' . $column . '</label>';
                     echo '<div>';
 
                     // Wybór "Tak"
-                    echo '<input type="radio" id="yes_' . $column . '" name="b[' . $column . ']" value="Tak">';
-                    echo '<label for="yes_' . $column . '">Tak</label><br />';
+                    echo '<input type="radio" id="yes_' . $column . '" name="b[' . $i . ']" value="Tak">';
+                    echo '<label for="yes_' . $i . '">Tak</label><br />';
 
                     // Wybór "Nie"
-                    echo '<input type="radio" id="no_' . $column . '" name="b[' . $column . ']" value="Nie">';
-                    echo '<label for="no_' . $column . '">Nie</label>';
-
+                    echo '<input type="radio" id="no_' . $column . '" name="b[' . $i . ']" value="Nie">';
+                    echo '<label for="no_' . $i . '">Nie</label>';
+                    $i++;
                     echo '</div>';
                     echo '</div>';
                 }

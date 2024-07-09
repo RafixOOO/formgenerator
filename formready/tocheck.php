@@ -50,7 +50,9 @@ endif;
             echo "<td>";
             if ($row["type"] == 0 and $row["status"] == 0) {
                 echo "Sprawdzanie";
-            } else {
+            } else if($row["status"]==4) {
+                echo "Odrzucony";
+            } else{
                 echo $row["type"];
             }
             echo "</td>";
