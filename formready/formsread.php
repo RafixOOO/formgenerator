@@ -58,7 +58,7 @@ if (isset($_GET['ID'])) {
         $result1 = $conn->query($sql1);
 
         while ($row = $result1->fetch_assoc()) {
-            echo '<img src="../img/'.$row['name'].'.png" />';
+            echo '<img class="img-fluid" src="../img/'.$row['name'].'.png" />';
         }
 
         $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id order by number;";

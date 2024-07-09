@@ -62,7 +62,7 @@ if (isset($_GET['ID'])) {
         $result1 = $conn->query($sql1);
 
         while ($row = $result1->fetch_assoc()) {
-            echo '<img src="../img/'.$row['name'].'.png" />';
+            echo '<img class="img-fluid" src="../img/'.$row['name'].'.png" />';
         }
 
 
