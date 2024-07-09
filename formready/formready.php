@@ -67,9 +67,11 @@ endif;
             }
             echo "</td>";
             echo "<td>".$row['createdate']."</td>";
-            if($row["status"] != 1){
-            echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a><a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
+            echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
+            if($row["status"] = 1){
+            echo "<a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a></td>";
         }
+        echo "</td>";
             echo "</tr>";
         }
 
