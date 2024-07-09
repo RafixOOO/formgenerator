@@ -30,22 +30,25 @@ endif;
     <div class="table-responsive d-flex justify-content-center"></div>
     <table id="myTable" class="table table table-hover">
         <thead>
-        <th scope="col">Imię, nazwisko, telefon</th>
+        <th scope="col" style="width:20%;">Imię, nazwisko, telefon</th>
+        <th scope="col" style="width:20%;">Data</th>
         <th scope="col" style="width:10em;">Wniosek</th>
         <th scope="col">Punkty</th>
-        <th scope="col" data-orderable="false">Opcje</th>
+        <th scope="col" data-orderable="false" style="width:10em;">Opcje</th>
         </thead>
         <tbody>
         <?php
         require_once("../dbconnect.php");
         $id = returniserid();
-        $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id and r.status!=1 and a.deleted!=1; ";
+        $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email, r.createdate FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id and r.status!=1 and a.deleted!=1; ";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>"
                 . $row["nazwa"] . " " . $row["surname"] . " " . $row["phone"] .
                 "</td>";
+                echo "<td>"
+                . $row["createdate"] . "</td>";
             echo "<td>" . $row["name"] . "</td>";
             echo "<td>";
             if ($row["type"] == 0 and $row["status"] == 0) {
@@ -58,9 +61,9 @@ endif;
             echo "</td>";
 
             if ($row["type"] != 0) {
-                echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Sprawdzone' disabled></a>";
+                echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 40%' type='button' class='fadeIn fourth' value='Sprawdzone' disabled></a>";
             } else {
-                echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Sprawdź'></a>";
+                echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 40%' type='button' class='fadeIn fourth' value='Sprawdź'></a>";
 
             }
 
