@@ -49,6 +49,146 @@ if (isset($_GET['ID'])) {
           href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+            <script>
+        
+        function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    let encodedName = encodeURIComponent(name); // Kodowanie nazwy ciasteczka
+    let encodedValue = encodeURIComponent(value); // Kodowanie wartości ciasteczka
+    let cookieString = encodedName + "=" + encodedValue + ";" + expires + ";path=/;SameSite=Strict";
+    if (window.location.protocol === "https:") {
+        cookieString += ";Secure";
+    }
+    document.cookie = cookieString;
+}
+
+function getCookie(name) {
+    let cname = encodeURIComponent(name) + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(cname) === 0) {
+            let cookieValue = decodeURIComponent(c.substring(cname.length, c.length)); // Dekodowanie wartości ciasteczka
+            return cookieValue;
+        }
+    }
+    return "";
+}
+
+
+
+
+
+function saveFormData() {
+    const formElements = document.forms[0].elements;
+    const formId = getUrlParameter('ID'); // Pobierz wartość parametru ID z adresu URL
+
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+
+        if (element.type !== "submit" && element.type !== "button") {
+            let elementName = element.name;
+
+            // Sprawdź, czy element jest inputem tekstowym, textarea lub częścią tablicy
+            if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
+                if (elementName.endsWith("[]")) {
+                    // Utwórz nazwę ciasteczka z uwzględnieniem ID formularza i indeksu elementu w tablicy
+                    let cookieNameBase = `${formId}_${elementName.replace("[]", "")}_`;
+
+                    // Zapisz wartość do ciasteczka
+                    if (element.type === "checkbox" || element.type === "radio") {
+                        setCookie(cookieNameBase + i, element.checked, 30);
+                    } else {
+                        setCookie(cookieNameBase + i, element.value, 30);
+                    }
+                } else {
+                    // Utwórz nazwę ciasteczka z uwzględnieniem ID formularza i nazwy elementu
+                    let cookieName = `${formId}_${elementName}`;
+
+                    // Zapisz wartość do ciasteczka
+                    if (element.type === "checkbox" || element.type === "radio") {
+                        setCookie(cookieName, element.checked, 30);
+                    } else {
+                        setCookie(cookieName, element.value, 30);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+function loadFormData() {
+    const formElements = document.forms[0].elements;
+    const formId = getUrlParameter('ID');
+
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+
+        if (element.type !== "submit" && element.type !== "button") {
+            let elementName = element.name;
+
+            if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
+                if (elementName.endsWith("[]")) {
+                    let cookieNameBase = `${formId}_${elementName.replace("[]", "")}_`;
+                    let cookieValue = getCookie(cookieNameBase + i);
+
+                    if (cookieValue !== "") {
+                        element.value = cookieValue; // Nie potrzebujesz parsowania JSON, jeśli wartość nie jest obiektem JSON
+                    }
+                } else {
+                    let cookieName = `${formId}_${elementName}`;
+                    let cookieValue = getCookie(cookieName);
+
+                    if (cookieValue !== "") {
+                        element.value = cookieValue;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+function getUrlParameter(name) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(window.location.href);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function logCookies() {
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    ca.forEach(cookie => {
+        console.log(cookie.trim());
+    });
+}
+
+window.onload = function () {
+    loadFormData();
+}
+
+window.onbeforeunload = function () {
+    saveFormData();
+}
+    </script>
 </head>
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
