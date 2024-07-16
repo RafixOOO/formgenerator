@@ -43,7 +43,17 @@ endif;
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT * FROM `application` WHERE `deleted`=0 AND `datetimedo`>CURRENT_DATE; ";
+        $sql = "SELECT a.*
+FROM `application` a
+WHERE a.`deleted` = 0
+  AND a.`datetimedo` > CURRENT_DATE
+  AND NOT EXISTS (
+    SELECT 1
+    FROM `readyapplication` r
+    WHERE r.applicationID = a.applicationID
+      AND r.userID = 1
+      AND r.status != 1
+  );";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
