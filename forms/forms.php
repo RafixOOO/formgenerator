@@ -42,7 +42,7 @@ endif;
         <tbody>
         <?php
         require_once("../dbconnect.php");
-
+        $id=returniserid();
         $sql = "SELECT a.*
 FROM `application` a
 WHERE a.`deleted` = 0
@@ -51,7 +51,7 @@ WHERE a.`deleted` = 0
     SELECT 1
     FROM `readyapplication` r
     WHERE r.applicationID = a.applicationID
-      AND r.userID = 1
+      AND r.userID = $id
       AND r.status != 1
   );";
         $result = $conn->query($sql);
