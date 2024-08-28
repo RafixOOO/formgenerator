@@ -14,6 +14,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idapp = $_POST['id'];
     $number = $_POST['number'];
     $readyID = 0;
+
+    $sqlcheck="select * from readyapplication where userID=$userID and applicationId=$idapp and status=0;";
+    $result = $conn->query($sqlcheck);
+
+    if ($result->num_rows > 0) {
+        // Jeśli są wiersze, przekierowanie na inną stronę
+        header("Location: forms.php");
+        exit;
+    }
+    
+
     $sql = "INSERT INTO readyapplication (userID, applicationID, status, type) VALUES (?, ?, '0', '0')";
 
     // Przygotowanie zapytania

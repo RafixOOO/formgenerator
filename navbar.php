@@ -1,45 +1,45 @@
 <script>
         function redirectToNewPage() {
         // Ustawienie adresu URL nowej strony
-        var newPageURL = "http://10.100.101.14/programs/formgenerator/forms/forms.php";
+        var newPageURL = "http://generator.fundacjasmk.pl/forms/forms.php";
         // Przekierowanie użytkownika
         window.location.href = newPageURL;
         }
 function redirectToNewPage1() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/formready.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/formready/formready.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 
 function redirectToNewPage2() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/tocheck.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/formready/tocheck.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 
 function redirectToNewPage3() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/szkic.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/formready/szkic.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage4() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/role_user.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/user/role_user.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage5() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/accept.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/user/accept.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage6() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/organization/organization.php";
+    var newPageURL1 = "http://generator.fundacjasmk.pl/organization/organization.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
@@ -67,7 +67,7 @@ function redirectToNewPage6() {
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li><a class="dropdown-item" onclick="redirectToNewPage1()">Wnioski</a></li>
-                                 <?php if(returnRole()==2 or returnRole()==3) { ?>
+                                 <?php if(returnRole()==1 or returnRole()==2 or returnRole()==3) { ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage2()">Do sprawdzenia</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage3()">Szkice</a></li>

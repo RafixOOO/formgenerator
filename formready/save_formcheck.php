@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $type = '';
         $i = 1;
         $points = 0;
+        $userid=returniserid();
 
         // Get the application ID
         $sql1 = "SELECT `applicationID` FROM `readyapplication` WHERE `readyID` = ?";
@@ -69,7 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             } else if ($type == 11) {
                 // Insert answer for type 11
-                $insertAnswer11->bind_param("iiis", $id, $questID, $i, $value);
+                $valueall=$userid.",".$value;
+                $insertAnswer11->bind_param("iiis", $id, $questID, $i, $valueall);
                 if ($insertAnswer11->execute()) {
                     echo "Updated type 11 answer.";
                     $points += (int)$value; // Accumulate points
@@ -80,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
+        if(returnRole()==2 or returnRole()==3){
         // Update status and points for the application
         $updateStatus->bind_param("iii", $status,$points, $id);
         if ($updateStatus->execute()) {
@@ -87,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Error updating points and status: " . $updateStatus->error;
         }
-
+    }
         // Close prepared statements
         $insertAnswer10->close();
         $insertAnswer11->close();

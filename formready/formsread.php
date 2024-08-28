@@ -1,9 +1,11 @@
 <?php require_once("../auth.php"); ?>
 
-<?php if (!isLoggedIn()):
-    header("Location: ../index.php"); // Przekierowanie na stronę po zalogowaniu
+<?php
+
+if (!isLoggedIn()) {
+    header("Location: ../index.php");
     exit;
-endif;
+}
 
 if (isset($_GET['ID'])) {
     // Odczytujemy wartość zmiennej
@@ -43,6 +45,74 @@ if (isset($_GET['ID'])) {
       border: 1px solid #ced4da;
       border-radius: 0.25rem;
     }
+    .hide-in-pdf {
+            display: none;
+        }
+        .pdf-margin {
+            margin: 20px; /* Dodaje marginesy */
+        }
+        #generate-pdf {
+            background-color: #28a745; /* Zielony kolor */
+            color: white; /* Kolor tekstu */
+            border: none; /* Brak ramki */
+            border-radius: 5px; /* Zaokrąglone narożniki */
+            padding: 10px 20px; /* Padding wewnętrzny */
+            font-size: 16px; /* Rozmiar czcionki */
+            cursor: pointer; /* Kursor wskaźnika */
+            transition: background-color 0.3s ease; /* Animacja koloru tła */
+        }
+
+        /* Stylizacja przycisku na hover */
+        #generate-pdf:hover {
+            background-color: #218838; /* Ciemniejszy zielony kolor przy najechaniu */
+        }
+
+        /* Stylizacja przycisku na active (kliknięty) */
+        #generate-pdf:active {
+            background-color: #1e7e34; /* Jeszcze ciemniejszy zielony kolor przy kliknięciu */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Cień */
+        }
+
+        /* Wyrównanie przycisku do prawej strony */
+        .button-container {
+            text-align: right; /* Wyrównuje przyciski do prawej strony */
+        }
+        @media print {
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .pdf-container {
+            width: 100%;
+            page-break-inside: avoid; /* Zapobiega łamaniu wewnątrz kontenera */
+        }
+
+        .form-section {
+            page-break-inside: avoid; /* Zapobiega łamaniu sekcji formularza */
+        }
+
+        /* Zapewnia, że marginesy są brane pod uwagę */
+        .pdf-margin {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Stylizacja dla inputów, aby dobrze wyglądały w PDF */
+        input, select, textarea {
+            width: 100%;
+            box-sizing: border-box; /* Uwzględnia padding i border w szerokości */
+        }
+
+        /* Kontrolowanie łamania stron w dużych blokach tekstu */
+        .avoid-break {
+            page-break-inside: avoid; /* Unikaj łamania wewnątrz elementu */
+        }
+    }
     </style>
 
 </head>
@@ -50,7 +120,31 @@ if (isset($_GET['ID'])) {
 <!-- 2024 Created by: Rafał Pezda-->
 <!-- link: https://github.com/RafixOOO -->
 <div class="wrapper fadeInDown">
-    <form>
+    <form id="form" class="pdf-container">
+    <div class="button-container">
+            <button id="generate-pdf" type="button">Generuj PDF</button>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+       document.getElementById('generate-pdf').addEventListener('click', function() {
+            var form = document.getElementById('form');
+            
+            // Dodaj marginesy i ukryj przyciski
+            form.classList.add('pdf-margin');
+            document.querySelectorAll('button').forEach(function(button) {
+                button.classList.add('hide-in-pdf');
+            });
+
+            // Generowanie PDF
+            html2pdf().from(form).save('form.pdf').finally(function() {
+                // Usuń marginesy i przywróć przyciski po zakończeniu
+                form.classList.remove('pdf-margin');
+                document.querySelectorAll('button').forEach(function(button) {
+                    button.classList.remove('hide-in-pdf');
+                });
+            });
+        });
+    </script>
         <?php
         require_once("../dbconnect.php");
 
