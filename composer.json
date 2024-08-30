@@ -2,7 +2,6 @@
     "require": {
         "phpmailer/phpmailer": "^6.9",
         "ext-json": "*",
-        "ext-ctype": "*",
-        "dompdf/dompdf": "^3.0"
+        "ext-ctype": "*"
     }
 }

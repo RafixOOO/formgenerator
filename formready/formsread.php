@@ -120,31 +120,7 @@ if (isset($_GET['ID'])) {
 <!-- 2024 Created by: Rafał Pezda-->
 <!-- link: https://github.com/RafixOOO -->
 <div class="wrapper fadeInDown">
-    <form id="form" class="pdf-container">
-    <div class="button-container">
-            <button id="generate-pdf" type="button">Generuj PDF</button>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-    <script>
-       document.getElementById('generate-pdf').addEventListener('click', function() {
-            var form = document.getElementById('form');
-            
-            // Dodaj marginesy i ukryj przyciski
-            form.classList.add('pdf-margin');
-            document.querySelectorAll('button').forEach(function(button) {
-                button.classList.add('hide-in-pdf');
-            });
-
-            // Generowanie PDF
-            html2pdf().from(form).save('form.pdf').finally(function() {
-                // Usuń marginesy i przywróć przyciski po zakończeniu
-                form.classList.remove('pdf-margin');
-                document.querySelectorAll('button').forEach(function(button) {
-                    button.classList.remove('hide-in-pdf');
-                });
-            });
-        });
-    </script>
+    <form id="form">
         <?php
         require_once("../dbconnect.php");
 
