@@ -1192,7 +1192,8 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     body: data,
                     startY: yOffset,
                     styles: {
-                        fontSize: defaultFontSize // Ustaw rozmiar czcionki w tabeli
+                        fontSize: defaultFontSize, // Ustaw rozmiar czcionki w tabeli
+                        font: 'Roboto-Regular'
                     },
                     pageBreak: 'auto', // Dziel tabelę automatycznie, jeśli jest zbyt duża na jedną stronę
                     overflow: 'linebreak'
