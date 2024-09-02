@@ -1,7 +1,7 @@
 <script>
         function redirectToNewPage() {
         // Ustawienie adresu URL nowej strony
-        var newPageURL = "http://generator.fundacjasmk.pl/forms/forms.php";
+        var newPageURL = "http://localhost/programs/forms/forms.php";
         // Przekierowanie użytkownika
         window.location.href = newPageURL;
         }
