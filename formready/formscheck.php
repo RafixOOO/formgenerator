@@ -1144,6 +1144,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                         yOffset = addTextToPDF(``, 10, yOffset, defaultFontSize);
                     }
                     yOffset = addTextToPDF(label, 10, yOffset-8, defaultFontSize);
+                    yOffset = addTextToPDF(``, 10, yOffset-5, defaultFontSize);
                 }
             } else if (element.tagName === 'TEXTAREA') {
                 let value = element.value; // Pobierz wartość z textarea
