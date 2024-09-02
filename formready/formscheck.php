@@ -1091,7 +1091,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 const textLines = doc.splitTextToSize(text, maxTextWidth);
                 textLines.forEach(line => {
                     doc.text(line, x, y);
-                    y += fontSize; // Zaktualizuj pozycję Y dla kolejnej linii
+                    y += 3; // Zaktualizuj pozycję Y dla kolejnej linii
                 });
             } else {
                 // Tekst mieści się w szerokości strony, dodaj go normalnie
