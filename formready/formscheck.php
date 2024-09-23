@@ -906,7 +906,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 }
                 $userid = returniserid();
                 $status = '';
-                $sql1 = "SELECT SUBSTRING_INDEX(a.answer, ',', 1) AS first_value, r.status
+                $sql1 = "SELECT SUBSTRING_INDEX(a.answer, ',', 1) AS first_value, r.status as status1
                 FROM answerconnect a, quest q, readyapplication r 
                 WHERE a.questID = q.questID and r.readyID=a.readyID and a.readyID = ? and SUBSTRING_INDEX(a.answer, ',', 1)=? AND q.type = 11 group by  SUBSTRING_INDEX(a.answer, ',', 1);";
                 $stmt = $conn->prepare($sql1);
@@ -916,7 +916,8 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 $result1 = $stmt->get_result();
                 if ($row1 = $result1->fetch_assoc()) {
                     $values2 = $row1['first_value'];
-                    $status = $row1['status'];
+                    $status = $row1['status1'];
+                    echo $row1['first_value'];
                 }
                 echo "<form method='post' action='save_formcheck.php'>";
                 if (isset($values2[0]) && !empty($values2[0])) {
@@ -924,7 +925,8 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 } else {
                     $wartosc2 = 0; // Przypisanie wartości domyślnej
                 }
-                if ($wartosc2 != $userid && $status == 0) {
+                echo $status;
+                if ($wartosc2 != $userid) {
                     if ($table_opened11 or $table_opened12) {
                         if ($table_opened12) {
                             $i = 1;
