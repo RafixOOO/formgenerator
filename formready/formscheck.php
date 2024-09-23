@@ -968,7 +968,11 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                             unset($columns);
                         }
                         echo "<input type='hidden' name='id' value='" . $id . "'>";
-                        echo '<input type="submit" value="Zapisz">';
+                        echo '<input type="submit" value="Zapisz"><br />';
+                        if(returnRole() == 2 or returnRole() == 3){
+                            echo '<input type="submit" name="action" value="Zatwierdź">';
+                        }
+                        
                     }
                     echo "</form>";
                 } else if (returnRole()==1) {

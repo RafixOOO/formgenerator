@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        if(returnRole()==2 or returnRole()==3){
+        if($_POST['action'] == 'Zatwierdź'){
         // Update status and points for the application
         $updateStatus->bind_param("iii", $status,$points, $id);
         if ($updateStatus->execute()) {
