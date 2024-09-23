@@ -86,7 +86,8 @@ endif;
         var table = $('#myTable').DataTable({
             paging: false,
             info: false,
-            searching: false
+            searching: false,
+            order: [[3, 'desc']]
         });
 
         $('#myTable').on('order.dt', function () {
