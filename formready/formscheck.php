@@ -907,17 +907,18 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 $userid = returniserid();
                 $status = '';
                 $sql1 = "SELECT SUBSTRING_INDEX(a.answer, ',', 1) AS first_value, r.status as status1
-                FROM answerconnect a, quest q, readyapplication r 
-                WHERE a.questID = q.questID and r.readyID=a.readyID and a.readyID = ? and SUBSTRING_INDEX(a.answer, ',', 1)=? AND q.type = 11 group by  SUBSTRING_INDEX(a.answer, ',', 1);";
+                FROM readyapplication r 
+                left join answerconnect a on r.readyID=a.readyID and SUBSTRING_INDEX(a.answer, ',', 1)=?
+                left join quest q on q.questID=a.questID and q.type = 11
+                where r.readyID = ?  group by  SUBSTRING_INDEX(a.answer, ',', 1);";
                 $stmt = $conn->prepare($sql1);
-                $stmt->bind_param("is", $id, $userid); // Assuming $key is the quest name or identifier
+                $stmt->bind_param("si",  $userid,$id); // Assuming $key is the quest name or identifier
                 $stmt->execute();
                 $values2 = '';
                 $result1 = $stmt->get_result();
                 if ($row1 = $result1->fetch_assoc()) {
                     $values2 = $row1['first_value'];
                     $status = $row1['status1'];
-                    echo $row1['first_value'];
                 }
                 echo "<form method='post' action='save_formcheck.php'>";
                 if (isset($values2[0]) && !empty($values2[0])) {
@@ -925,8 +926,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 } else {
                     $wartosc2 = 0; // Przypisanie wartości domyślnej
                 }
-                echo $status;
-                if ($wartosc2 != $userid) {
+                if ($wartosc2 != $userid && $status==0) {
                     if ($table_opened11 or $table_opened12) {
                         if ($table_opened12) {
                             $i = 1;
@@ -971,7 +971,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                         echo '<input type="submit" value="Zapisz">';
                     }
                     echo "</form>";
-                } else {
+                } else if (returnRole()==1) {
                     $ql = "select q.quest, q.`type`,a.answer,a.answerconnectID from quest q, answerconnect a where q.questID =a.questID and a.readyID = $id and SUBSTRING_INDEX(a.answer, ',', 1)=$userid order by a.answerconnectID ";
                     $result1 = $conn->query($ql);
                     $tablefirst = false;
