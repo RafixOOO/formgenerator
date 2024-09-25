@@ -89,7 +89,7 @@
 </body>
     <script>
       $(document).ready(function(){
-          const baseUrl = "http://localhost/programs/formgenerator/user/role_user.php"; // Stały URL
+          const baseUrl = "http://10.100.101.14/programs/formgenerator/user/role_user.php"; // Stały URL
           let timer;
           $("#search").on("input", function(){
             clearTimeout(timer);
