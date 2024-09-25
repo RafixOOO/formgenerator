@@ -382,37 +382,39 @@ if (isset($_GET['ID'])) {
                 textField.setAttribute("type", "text");
                 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField.setAttribute("name", clasa);
-                textField.setAttribute("placeholder", "Nazwa");
+                textField.setAttribute("value", "Rodzaj kosztu");
 
                 var textField1 = document.createElement('input');
                 textField1.setAttribute("type", "text");
                 textField1.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField1.setAttribute("name", clasa);
-                textField1.setAttribute("placeholder", "Pole");
+                textField1.setAttribute("value", "Wartość w PLN");
 
                 var textField2 = document.createElement('input');
                 textField2.setAttribute("type", "text");
                 textField2.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField2.setAttribute("name", clasa);
-                textField2.setAttribute("placeholder", "Pole");
+                textField2.setAttribute("value", "Z dotacji z PLN");
 
                 var textField3 = document.createElement('input');
                 textField3.setAttribute("type", "text");
                 textField3.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField3.setAttribute("name", clasa);
-                textField3.setAttribute("placeholder", "Pole");
+                textField3.setAttribute("value", "Środki własne w PLN");
 
                 var textField4 = document.createElement('input');
                 textField4.setAttribute("type", "text");
                 textField4.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField4.setAttribute("name", clasa);
-                textField4.setAttribute("placeholder", "Procent");
+                textField4.setAttribute("placeholder", "wpisz ile % mogą stanowić koszty administracyjne");
+                textField4.setAttribute("required", "");
 
                 var textField5 = document.createElement('input');
                 textField5.setAttribute("type", "text");
                 textField5.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField5.setAttribute("name", clasa);
-                textField5.setAttribute("placeholder", "Kwota");
+                textField5.setAttribute("placeholder", "wpisz maksymalną kwote dofinansowania");
+                textField5.setAttribute("required", "");
 
                 var addButton = document.createElement('button');
                 addButton.setAttribute("type", "button");
