@@ -10,6 +10,13 @@ if (isset($_GET['ID'])) {
     $id = $_GET['ID'];
     // Tutaj możesz wykorzystać odczytaną wartość
 }
+if (isLoggedIn()) {
+    // Pobierz ID zalogowanego użytkownika
+    $userId = $_SESSION['user_id'];
+
+    // Ustaw ciasteczko user_id w przeglądarce
+    echo "<script>document.cookie = 'user_id=$userId;path=/;SameSite=Strict';</script>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="PL">
@@ -55,8 +62,8 @@ if (isset($_GET['ID'])) {
     const d = new Date();
     d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
-    let encodedName = encodeURIComponent(name); // Kodowanie nazwy ciasteczka
-    let encodedValue = encodeURIComponent(value); // Kodowanie wartości ciasteczka
+    let encodedName = encodeURIComponent(name);
+    let encodedValue = encodeURIComponent(value);
     let cookieString = encodedName + "=" + encodedValue + ";" + expires + ";path=/;SameSite=Strict";
     if (window.location.protocol === "https:") {
         cookieString += ";Secure";
@@ -74,20 +81,21 @@ function getCookie(name) {
             c = c.substring(1);
         }
         if (c.indexOf(cname) === 0) {
-            let cookieValue = decodeURIComponent(c.substring(cname.length, c.length)); // Dekodowanie wartości ciasteczka
-            return cookieValue;
+            return decodeURIComponent(c.substring(cname.length, c.length));
         }
     }
     return "";
 }
 
-
-
-
-
 function saveFormData() {
     const formElements = document.forms[0].elements;
-    const formId = getUrlParameter('ID'); // Pobierz wartość parametru ID z adresu URL
+    const formId = getUrlParameter('ID');
+    const userId = getCookie('user_id'); // Pobierz ID użytkownika z ciasteczka
+
+    if (!userId) {
+        console.log("Użytkownik nie jest zalogowany. Dane nie zostaną zapisane.");
+        return;
+    }
 
     for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i];
@@ -95,23 +103,18 @@ function saveFormData() {
         if (element.type !== "submit" && element.type !== "button") {
             let elementName = element.name;
 
-            // Sprawdź, czy element jest inputem tekstowym, textarea lub częścią tablicy
             if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
                 if (elementName.endsWith("[]")) {
-                    // Utwórz nazwę ciasteczka z uwzględnieniem ID formularza i indeksu elementu w tablicy
-                    let cookieNameBase = `${formId}_${elementName.replace("[]", "")}_`;
+                    let cookieNameBase = `${userId}_${formId}_${elementName.replace("[]", "")}_`;
 
-                    // Zapisz wartość do ciasteczka
                     if (element.type === "checkbox" || element.type === "radio") {
                         setCookie(cookieNameBase + i, element.checked, 30);
                     } else {
                         setCookie(cookieNameBase + i, element.value, 30);
                     }
                 } else {
-                    // Utwórz nazwę ciasteczka z uwzględnieniem ID formularza i nazwy elementu
-                    let cookieName = `${formId}_${elementName}`;
+                    let cookieName = `${userId}_${formId}_${elementName}`;
 
-                    // Zapisz wartość do ciasteczka
                     if (element.type === "checkbox" || element.type === "radio") {
                         setCookie(cookieName, element.checked, 30);
                     } else {
@@ -123,13 +126,15 @@ function saveFormData() {
     }
 }
 
-
-
-
-
 function loadFormData() {
     const formElements = document.forms[0].elements;
     const formId = getUrlParameter('ID');
+    const userId = getCookie('user_id'); // Pobierz ID użytkownika z ciasteczka
+
+    if (!userId) {
+        console.log("Użytkownik nie jest zalogowany. Dane nie zostaną wczytane.");
+        return;
+    }
 
     for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i];
@@ -139,14 +144,14 @@ function loadFormData() {
 
             if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
                 if (elementName.endsWith("[]")) {
-                    let cookieNameBase = `${formId}_${elementName.replace("[]", "")}_`;
+                    let cookieNameBase = `${userId}_${formId}_${elementName.replace("[]", "")}_`;
                     let cookieValue = getCookie(cookieNameBase + i);
 
                     if (cookieValue !== "") {
-                        element.value = cookieValue; // Nie potrzebujesz parsowania JSON, jeśli wartość nie jest obiektem JSON
+                        element.value = cookieValue;
                     }
                 } else {
-                    let cookieName = `${formId}_${elementName}`;
+                    let cookieName = `${userId}_${formId}_${elementName}`;
                     let cookieValue = getCookie(cookieName);
 
                     if (cookieValue !== "") {
@@ -158,12 +163,6 @@ function loadFormData() {
     }
 }
 
-
-
-
-
-
-
 function getUrlParameter(name) {
     name = name.replace(/[\[\]]/g, '\\$&');
     let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -173,14 +172,6 @@ function getUrlParameter(name) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function logCookies() {
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    ca.forEach(cookie => {
-        console.log(cookie.trim());
-    });
-}
-
 window.onload = function () {
     loadFormData();
 }
@@ -188,6 +179,7 @@ window.onload = function () {
 window.onbeforeunload = function () {
     saveFormData();
 }
+
     </script>
 </head>
 <body>
