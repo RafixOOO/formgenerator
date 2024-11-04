@@ -56,131 +56,6 @@ if (isLoggedIn()) {
           href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-            <script>
-        
-        function setCookie(name, value, days) {
-    const d = new Date();
-    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    let encodedName = encodeURIComponent(name);
-    let encodedValue = encodeURIComponent(value);
-    let cookieString = encodedName + "=" + encodedValue + ";" + expires + ";path=/;SameSite=Strict";
-    if (window.location.protocol === "https:") {
-        cookieString += ";Secure";
-    }
-    document.cookie = cookieString;
-}
-
-function getCookie(name) {
-    let cname = encodeURIComponent(name) + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(cname) === 0) {
-            return decodeURIComponent(c.substring(cname.length, c.length));
-        }
-    }
-    return "";
-}
-
-function saveFormData() {
-    const formElements = document.forms[0].elements;
-    const formId = getUrlParameter('ID');
-    const userId = getCookie('user_id'); // Pobierz ID użytkownika z ciasteczka
-
-    if (!userId) {
-        console.log("Użytkownik nie jest zalogowany. Dane nie zostaną zapisane.");
-        return;
-    }
-
-    for (let i = 0; i < formElements.length; i++) {
-        const element = formElements[i];
-
-        if (element.type !== "submit" && element.type !== "button") {
-            let elementName = element.name;
-
-            if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
-                if (elementName.endsWith("[]")) {
-                    let cookieNameBase = `${userId}_${formId}_${elementName.replace("[]", "")}_`;
-
-                    if (element.type === "checkbox" || element.type === "radio") {
-                        setCookie(cookieNameBase + i, element.checked, 30);
-                    } else {
-                        setCookie(cookieNameBase + i, element.value, 30);
-                    }
-                } else {
-                    let cookieName = `${userId}_${formId}_${elementName}`;
-
-                    if (element.type === "checkbox" || element.type === "radio") {
-                        setCookie(cookieName, element.checked, 30);
-                    } else {
-                        setCookie(cookieName, element.value, 30);
-                    }
-                }
-            }
-        }
-    }
-}
-
-function loadFormData() {
-    const formElements = document.forms[0].elements;
-    const formId = getUrlParameter('ID');
-    const userId = getCookie('user_id'); // Pobierz ID użytkownika z ciasteczka
-
-    if (!userId) {
-        console.log("Użytkownik nie jest zalogowany. Dane nie zostaną wczytane.");
-        return;
-    }
-
-    for (let i = 0; i < formElements.length; i++) {
-        const element = formElements[i];
-
-        if (element.type !== "submit" && element.type !== "button") {
-            let elementName = element.name;
-
-            if (element.type === "text" || element.tagName.toLowerCase() === "textarea" || elementName.endsWith("[]")) {
-                if (elementName.endsWith("[]")) {
-                    let cookieNameBase = `${userId}_${formId}_${elementName.replace("[]", "")}_`;
-                    let cookieValue = getCookie(cookieNameBase + i);
-
-                    if (cookieValue !== "") {
-                        element.value = cookieValue;
-                    }
-                } else {
-                    let cookieName = `${userId}_${formId}_${elementName}`;
-                    let cookieValue = getCookie(cookieName);
-
-                    if (cookieValue !== "") {
-                        element.value = cookieValue;
-                    }
-                }
-            }
-        }
-    }
-}
-
-function getUrlParameter(name) {
-    name = name.replace(/[\[\]]/g, '\\$&');
-    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(window.location.href);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
-window.onload = function () {
-    loadFormData();
-}
-
-window.onbeforeunload = function () {
-    saveFormData();
-}
-
-    </script>
 </head>
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
@@ -935,9 +810,118 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         echo "<input type='hidden' name='id' value='" . $id . "' >";
         echo "<input type='hidden' name='number' value='" . $number . "' >"
         ?>
+        <div style="text-align: left;margin-top:2%;">
+        <button id="saveBtn" class="btn btn-primary me-2" type="button">Zapisz do pliku</button>
+    <input type="file" id="loadFileInput" style="display:none;" accept="application/json" />
+    <button id="loadBtn" class="btn btn-success" type="button">Wczytaj z pliku</button>
+<script>
+function saveFormDataToFile() {
+    const formElements = document.forms[0].elements;
+    const formData = {};
 
+    // Przechodzimy przez elementy formularza i zapisujemy dane
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
 
-        <div style="text-align: right;">
+        if (element.type !== "submit" && element.type !== "button") {
+            // Jeśli element jest tablicą (np. name[])
+            if (element.name.endsWith("[]")) {
+                // Inicjalizuj tablicę w obiekcie, jeśli jeszcze nie istnieje
+                if (!formData[element.name]) {
+                    formData[element.name] = [];
+                }
+                // Dodaj wartość do tablicy
+                formData[element.name].push(element.value);
+            } else {
+                formData[element.name] = element.value; // Normalne pola
+            }
+        }
+    }
+
+    // Konwertujemy dane do formatu JSON
+    const jsonData = JSON.stringify(formData, null, 2); // Formatowanie dla lepszej czytelności
+
+    // Tworzymy plik tekstowy z danymi
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Prosi o nazwę pliku
+    const fileName = prompt("Wpisz nazwę pliku (bez rozszerzenia):", "Wniosek_" + <?php echo $id; ?>) || "Wniosek_" + <?php echo $id; ?>; // Domyślna nazwa pliku
+    const fullFileName = fileName + ".json"; // Dodaje rozszerzenie .json
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fullFileName; // Użyj podanej nazwy pliku z rozszerzeniem
+    document.body.appendChild(link); // Dodajemy go do DOM
+    link.click(); // Klikamy na link, aby wymusić pobranie pliku
+    document.body.removeChild(link); // Usuwamy link po pobraniu
+}
+
+function loadFormDataFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const formData = JSON.parse(e.target.result); // Parsujemy JSON
+            const formElements = document.forms[0].elements;
+
+            // Uzupełniamy pola formularza
+            for (let name in formData) {
+                const values = formData[name]; // Pobierz wartości dla danego pola
+
+                if (Array.isArray(values)) {
+                    // Dla tablicy (np. name[])
+                    let index = 0; // Indeks do przypisania wartości
+
+                    // Iterujemy przez elementy formularza
+                    for (let i = 0; i < formElements.length; i++) {
+                        const element = formElements[i];
+
+                        // Ustawiamy wartość tylko dla pasującego pola
+                        if (element.name === name && index < values.length) {
+                            element.value = values[index]; // Ustaw wartość
+                            index++; // Zwiększamy indeks
+                        }
+                    }
+                } else {
+                    // Normalne pola
+                    for (let i = 0; i < formElements.length; i++) {
+                        const element = formElements[i];
+
+                        // Sprawdzamy, czy element jest polem formularza i nie jest przyciskiem "Anuluj"
+                        if (element.name === name && element.type !== "button") {
+                            element.value = values; // Ustaw wartość
+                        }
+                    }
+                }
+            }
+            alert('Dane formularza zostały wczytane!');
+        } catch (err) {
+            console.error('Błąd podczas wczytywania pliku:', err);
+            alert('Wystąpił błąd przy wczytywaniu danych.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// Dodajemy nasłuchiwanie dla przycisku zapisu
+document.getElementById('saveBtn').addEventListener('click', saveFormDataToFile);
+
+// Nasłuchiwanie dla przycisku wczytania pliku, który uruchamia input do wczytania pliku
+document.getElementById('loadBtn').addEventListener('click', function() {
+    document.getElementById('loadFileInput').click();
+});
+
+// Nasłuchiwanie na zmianę pliku (gdy użytkownik wybierze plik do wczytania)
+document.getElementById('loadFileInput').addEventListener('change', loadFormDataFromFile);
+
+</script>
+        </div>
+
+        <div style="text-align: right">
             <a href="../forms/forms.php"><input type="button" value="Anuluj" style="background-color: red;"></a>
             <input type="submit" name="submit_publish" value="Wyślij">
         </div>
