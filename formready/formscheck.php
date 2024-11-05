@@ -920,13 +920,13 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     $values2 = $row1['first_value'];
                     $status = $row1['status1'];
                 }
-                echo "<form method='post' action='save_formcheck.php'>";
                 if (isset($values2[0]) && !empty($values2[0])) {
                     $wartosc2 = trim($values2[0]);
                 } else {
                     $wartosc2 = 0; // Przypisanie wartości domyślnej
                 }
                 if ($wartosc2 != $userid && $status==0) {
+                    echo "<form method='post' action='save_formcheck.php'>";
                     if ($table_opened11 or $table_opened12) {
                         if ($table_opened12) {
                             $i = 1;
@@ -975,20 +975,63 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                         
                     }
                     echo "</form>";
-                } else if (returnRole()==1) {
-                    $ql = "select q.quest, q.`type`,a.answer,a.answerconnectID from quest q, answerconnect a where q.questID =a.questID and a.readyID = $id and SUBSTRING_INDEX(a.answer, ',', 1)=$userid order by a.answerconnectID ";
+                } else if($status==0) {
+                    $ql = "SELECT q.quest, q.`type`, a.answer, a.answerconnectID
+FROM quest q
+JOIN answerconnect a ON q.questID = a.questID
+WHERE a.readyID = $id
+  AND SUBSTRING_INDEX(a.answer, ',', 1) = '$userid'
+UNION ALL
+SELECT q.quest, q.`type`, a.answer, a.answerconnectID
+FROM quest q
+JOIN answerconnect a ON q.questID = a.questID
+WHERE a.answerconnectID = (
+    SELECT MIN(a2.answerconnectID) - 1
+    FROM answerconnect a2
+    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
+    WHERE a2.readyID = $id
+      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
+) or  a.answerconnectID = (
+    SELECT MIN(a2.answerconnectID) - 2
+    FROM answerconnect a2
+    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
+    WHERE a2.readyID = $id
+      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
+) or  a.answerconnectID = (
+    SELECT MIN(a2.answerconnectID) - 3
+    FROM answerconnect a2
+    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
+    WHERE a2.readyID = $id
+      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
+) or  a.answerconnectID = (
+    SELECT MIN(a2.answerconnectID) - 4
+    FROM answerconnect a2
+    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
+    WHERE a2.readyID = $id
+      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
+)
+ORDER BY answerconnectID;";
                     $result1 = $conn->query($ql);
                     $tablefirst = false;
                     $tablelast = false;
                     $osoba = '';
+                    $min = '';
+                    $max = '';
                     $values2 = '0';
                     $first = false;
+                    $first1= false;
+                    echo "<form method='post' action='edit_formcheck.php'>";
                     while ($row = $result1->fetch_assoc()) {
                         if (strpos($row['answer'], ',') !== false && $first == false) {
                             $values2 = explode(',', $row['answer']);
                             $first = true;
                         }
                         if ($row['type'] == 10) {
+                            if($first1==false){
+                                $min=$row['answerconnectID'];
+                                $first1=true;
+                            }
+                            
                             if ($tablelast == true) {
                                 echo '</tbody></table>';
                                 echo "<label>Osoba sprawdzająca: " . $osoba . "</label>";
@@ -1002,22 +1045,26 @@ document.addEventListener(\'DOMContentLoaded\', function() {
 
                             // Wybór "Tak"
                             echo '<input type="radio" value="Tak"';
+                            echo 'name="'.$row['answerconnectID'].'"';
                             if ($row['answer'] == 'Tak') {
+                               
                                 echo ' checked';
                             }
-                            echo ' disabled>';
+                            echo '>';
                             echo '<label1>Tak</label1><br />';
 
                             // Wybór "Nie"
                             echo '<input type="radio" value="Nie"';
+                            echo 'name="'.$row['answerconnectID'].'"';
                             if ($row['answer'] == 'Nie') {
                                 echo ' checked';
                             }
-                            echo ' disabled>';
+                            echo '>';
                             echo '<label1 >Nie</label1>';
                             echo '</div>';
                             echo '</div>';
                         }
+                        
                         if ($row['type'] == 11) {
                             $values2 = explode(',', $row['answer']);
                             $tablelast = true;
@@ -1028,10 +1075,10 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                                 echo '</tr></thead><tbody>';
                                 $tablefirst = true;
                             }
-
+                            $max=$row['answerconnectID'];
                             echo '<tr>'; // Otwórz nowy wiersz
                             echo '<td>' . $row['quest'] . '</td>'; // Nazwa kolumny
-                            echo '<td><input type="number" value="' . trim($values2[1]) . '" disabled></td>'; // Pole do wpisania punktów
+                            echo '<td><input type="number" name="'.$row['answerconnectID'].'" value="' . trim($values2[1]) . '"></td>'; // Pole do wpisania punktów
                             echo '</tr>'; // Zamknij wiersz
                             $ql1 = "select name, surname from user where userID=" . trim($values2[0]) . " ";
                             $result2 = $conn->query($ql1);
@@ -1042,9 +1089,17 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     }
                     echo '</tbody></table>';
                     if ($osoba != '') {
-                        echo "<label>Osoba sprawdzająca: " . $osoba . "</label>";
                         echo "<hr />";
                     }
+                    echo "<input type='hidden' name='id' value='".$id."'>";
+                    echo "<input type='hidden' name='min1' value='".$min."'>";
+                    echo "<input type='hidden' name='max1' value='".$max."'>";
+                    echo "<label>Osoba sprawdzająca: " . $osoba . "</label><br /><br />";
+                    echo '<input type="submit" value="Edytuj"><br />';
+                    if(returnRole() == 2 or returnRole() == 3){
+                        echo '<input type="submit" name="action" value="Zatwierdź">';
+                    }
+                    echo "</form>";
                 }
                 ?>
         </div>
