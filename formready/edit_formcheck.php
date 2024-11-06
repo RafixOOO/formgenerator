@@ -23,6 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         for($i=$min;$i<=$max;$i++){
         $answer=$_POST[$i];
         if($answer=='Tak' || $answer=='Nie'){
+            if($answer=="Nie"){
+                $status=4;
+            }
             $update->bind_param("si",$answer, $i);
         if ($update->execute()) {
             echo "Updated answer.";
