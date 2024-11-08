@@ -15,7 +15,6 @@ if (isLoggedIn()) {
     $userId = $_SESSION['user_id'];
 
     // Ustaw ciasteczko user_id w przeglądarce
-    echo "<script>document.cookie = 'user_id=$userId;path=/;SameSite=Strict';</script>";
 }
 ?>
 <!DOCTYPE html>
@@ -811,113 +810,98 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         echo "<input type='hidden' name='number' value='" . $number . "' >"
         ?>
         <div style="text-align: left;margin-top:2%;">
-        <button id="saveBtn" class="btn btn-primary me-2" type="button">Zapisz do pliku</button>
-    <input type="file" id="loadFileInput" style="display:none;" accept="application/json" />
-    <button id="loadBtn" class="btn btn-success" type="button">Wczytaj z pliku</button>
+        <button id="saveBtn" class="btn btn-primary me-2" type="button">Zapisz Kopie</button>
 <script>
-function saveFormDataToFile() {
+function saveFormDataToDatabase() {
     const formElements = document.forms[0].elements;
     const formData = {};
 
-    // Przechodzimy przez elementy formularza i zapisujemy dane
     for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i];
-
         if (element.type !== "submit" && element.type !== "button") {
-            // Jeśli element jest tablicą (np. name[])
             if (element.name.endsWith("[]")) {
-                // Inicjalizuj tablicę w obiekcie, jeśli jeszcze nie istnieje
                 if (!formData[element.name]) {
                     formData[element.name] = [];
                 }
-                // Dodaj wartość do tablicy
                 formData[element.name].push(element.value);
             } else {
-                formData[element.name] = element.value; // Normalne pola
+                formData[element.name] = element.value;
             }
         }
     }
 
-    // Konwertujemy dane do formatu JSON
-    const jsonData = JSON.stringify(formData, null, 2); // Formatowanie dla lepszej czytelności
+    // Przykładowe ID aplikacji i użytkownika - ustawione statycznie do celów testowych
+    const dataToSend = {
+        readyapplicationID: <?php echo $id; ?>, // Przykładowe ID aplikacji
+        userID: <?php echo returniserid(); ?>,             // Przykładowe ID użytkownika
+        formData: formData
+    };
 
-    // Tworzymy plik tekstowy z danymi
-    const blob = new Blob([jsonData], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    // Prosi o nazwę pliku
-    const fileName = prompt("Wpisz nazwę pliku (bez rozszerzenia):", "Wniosek_" + <?php echo $id; ?>) || "Wniosek_" + <?php echo $id; ?>; // Domyślna nazwa pliku
-    const fullFileName = fileName + ".json"; // Dodaje rozszerzenie .json
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fullFileName; // Użyj podanej nazwy pliku z rozszerzeniem
-    document.body.appendChild(link); // Dodajemy go do DOM
-    link.click(); // Klikamy na link, aby wymusić pobranie pliku
-    document.body.removeChild(link); // Usuwamy link po pobraniu
+    fetch('save_form_data.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        readyapplicationID: <?php echo $id; ?>,
+        userID: <?php echo returniserid(); ?>,
+        formData: formData // tutaj twoje dane formularza
+    })
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Odpowiedź z serwera:', data); // Sprawdź tutaj, czy odpowiedź jest poprawna
+    if (data.status === "success" || data.status === "updated" || data.status === "inserted") {
+        alert("Dane zostały zapisane!");
+    } else {
+        alert("Błąd podczas zapisu danych: " + (data.message || "Nieznany błąd"));
+    }
+})
+.catch(error => {
+    console.error("Błąd podczas komunikacji z serwerem:", error);
+    alert("Błąd podczas zapisu danych: " + error.message);
+});
 }
 
-function loadFormDataFromFile(event) {
-    const file = event.target.files[0];
-    if (!file) {
-        return;
-    }
+function loadFormDataFromDatabase() {
+    const userID = <?php echo returniserid(); ?>; // Przykładowe ID użytkownika
+    const readyapplicationID = <?php echo $id; ?>; // Przykładowe ID aplikacji
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const formData = JSON.parse(e.target.result); // Parsujemy JSON
-            const formElements = document.forms[0].elements;
+    fetch(`load_form_data.php?userID=${userID}&readyapplicationID=${readyapplicationID}`)
+    .then(response => response.json())
+    .then(formData => {
+        if (formData.status === "no_data") {
+            return;
+        }
 
-            // Uzupełniamy pola formularza
-            for (let name in formData) {
-                const values = formData[name]; // Pobierz wartości dla danego pola
-
-                if (Array.isArray(values)) {
-                    // Dla tablicy (np. name[])
-                    let index = 0; // Indeks do przypisania wartości
-
-                    // Iterujemy przez elementy formularza
-                    for (let i = 0; i < formElements.length; i++) {
-                        const element = formElements[i];
-
-                        // Ustawiamy wartość tylko dla pasującego pola
-                        if (element.name === name && index < values.length) {
-                            element.value = values[index]; // Ustaw wartość
-                            index++; // Zwiększamy indeks
-                        }
+        const formElements = document.forms[0].elements;
+        for (let name in formData) {
+            const values = formData[name];
+            if (Array.isArray(values)) {
+                let index = 0;
+                for (let i = 0; i < formElements.length; i++) {
+                    const element = formElements[i];
+                    if (element.name === name && index < values.length) {
+                        element.value = values[index];
+                        index++;
                     }
-                } else {
-                    // Normalne pola
-                    for (let i = 0; i < formElements.length; i++) {
-                        const element = formElements[i];
-
-                        // Sprawdzamy, czy element jest polem formularza i nie jest przyciskiem "Anuluj"
-                        if (element.name === name && element.type !== "button") {
-                            element.value = values; // Ustaw wartość
-                        }
+                }
+            } else {
+                for (let i = 0; i < formElements.length; i++) {
+                    const element = formElements[i];
+                    if (element.name === name) {
+                        element.value = values;
                     }
                 }
             }
-            alert('Dane formularza zostały wczytane!');
-        } catch (err) {
-            console.error('Błąd podczas wczytywania pliku:', err);
-            alert('Wystąpił błąd przy wczytywaniu danych.');
         }
-    };
-    reader.readAsText(file);
+    })
+    .catch(error => console.error('Błąd podczas wczytywania danych:', error));
 }
 
-// Dodajemy nasłuchiwanie dla przycisku zapisu
-document.getElementById('saveBtn').addEventListener('click', saveFormDataToFile);
-
-// Nasłuchiwanie dla przycisku wczytania pliku, który uruchamia input do wczytania pliku
-document.getElementById('loadBtn').addEventListener('click', function() {
-    document.getElementById('loadFileInput').click();
-});
-
-// Nasłuchiwanie na zmianę pliku (gdy użytkownik wybierze plik do wczytania)
-document.getElementById('loadFileInput').addEventListener('change', loadFormDataFromFile);
-
+// Wczytaj dane automatycznie po załadowaniu strony
+document.addEventListener('DOMContentLoaded', loadFormDataFromDatabase);
+document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatabase);
 </script>
         </div>
 

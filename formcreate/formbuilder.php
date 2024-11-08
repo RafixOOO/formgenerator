@@ -68,10 +68,10 @@ endif;
             <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
             <option value="1">Tekst</option>\
-            <option value="0">Tekst bez pola</option>\
+            <option value="0">Etykieta</option>\
             <option value="4">Tabela</option>\
-            <option value="5">Tabela Suma</option>\
-            <option value="6">Tabela Róźnica</option>\
+            <option value="5">Tabela Obliczeń(Suma)</option>\
+            <option value="6">Tabela Obliczeń(Różnica)</option>\
             <option value="7">Tabela Budżetowa</option>\
             <option value="8">Dane osobowe(imię, nazwisko, email, numer telefonu)</option>\
             <option value="9">Organizacja</option>\

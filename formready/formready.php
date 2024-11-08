@@ -68,7 +68,10 @@ endif;
             echo "</td>";
             echo "<td>".$row['createdate']."</td>";
             echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
-            if($row["status"] = 1){
+            if($row["status"] == 2){
+                echo "<a href='correction.php?ID=" . $row["readyID"] . "'><input type='button'' value='Sprawozdanie' style='background-color: #1591ea;width: 25%;'></a>";
+            }
+            if($row["status"] == 0){
             echo "<a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a>";
         }
         echo "</td>";
