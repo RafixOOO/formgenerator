@@ -46,26 +46,41 @@ endif;
         $sql = "SELECT a.*
 FROM `application` a
 WHERE a.`deleted` = 0
-  AND a.`datetimedo` > CURRENT_DATE
   AND NOT EXISTS (
     SELECT 1
     FROM `readyapplication` r
     WHERE r.applicationID = a.applicationID
       AND r.userID = $id
       AND r.status != 1
-  );";
+  )
+  order by a.datetimedo asc;";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["name"] . "</td>";
-            echo "<td>" . $row["datetime"] . "</td>";
-            echo "<td>" . $row["datetimedo"] . "</td>";
-            echo "<td><a href='formsread.php?ID=" . $row["applicationID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Wypełnij'></a>";
-            if (returnRole() == 2 or returnRole() == 3) {
-                echo "<a href='formsdelete.php?ID=" . $row["applicationID"] . "'><input style='width: 25%; background-color: red;' type='button' class='fadeIn fourth' value='Usuń'></a>";
-                echo "<a href='formscopy.php?ID=" . $row["applicationID"] . "'><input style='width: 25%;' type='button' class='fadeIn fourth' value='Kopiuj do szkiców'></a></td>";
+            if(new DateTime($row["datetimedo"]) < new DateTime() && returnRole()==3){
+                if(returnRole()==3){
+                    echo "<tr style='background-color:lightgray;'>";
+                    echo "<td>" . $row["name"] . "</td>";
+                    echo "<td>" . $row["datetime"] . "</td>";
+                    echo "<td>" . $row["datetimedo"] . "</td>";
+                    echo "<td><a href='formsread.php?ID=" . $row["applicationID"] . "&finish=1'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
+                    if (returnRole() == 2 or returnRole() == 3) {
+                        echo "<a href='formscopy.php?ID=" . $row["applicationID"] . "'><input style='width: 25%;' type='button' class='fadeIn fourth' value='Kopiuj do szkiców'></a></td>";
+                    }
+                    echo "</tr>";
+                }
+            } else if(new DateTime($row["datetimedo"]) > new DateTime()){
+                echo "<tr>";
+                echo "<td>" . $row["name"] . "</td>";
+                echo "<td>" . $row["datetime"] . "</td>";
+                echo "<td>" . $row["datetimedo"] . "</td>";
+                echo "<td><a href='formsread.php?ID=" . $row["applicationID"] . "&finish=0'><input style='width: 25%' type='button' class='fadeIn fourth' value='Wypełnij'></a>";
+                if (returnRole() == 2 or returnRole() == 3) {
+                    echo "<a href='formsdelete.php?ID=" . $row["applicationID"] . "'><input style='width: 25%; background-color: red;' type='button' class='fadeIn fourth' value='Usuń'></a>";
+                    echo "<a href='formscopy.php?ID=" . $row["applicationID"] . "'><input style='width: 25%;' type='button' class='fadeIn fourth' value='Kopiuj do szkiców'></a></td>";
+                }
+                echo "</tr>";
             }
-            echo "</tr>";
+           
         }
 
         ?>
@@ -78,7 +93,8 @@ WHERE a.`deleted` = 0
         var table = $('#myTable').DataTable({
             paging: false,
             info: false,
-            searching: false
+            searching: false,
+            order: [[2, 'desc']]
         });
 
         $('#myTable').on('order.dt', function () {

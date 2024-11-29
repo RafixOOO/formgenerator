@@ -60,11 +60,15 @@ endif;
     function addRow() {
         var newColumn = document.createElement('div');
         newColumn.setAttribute("class", "column");
-        newColumn.innerHTML = '<br />\
+        newColumn.innerHTML = '<br />\ <input type="hidden" name="checkbox_' + columnCounter + '" value="0">\
+<input type="checkbox" id="checkbox_' + columnCounter + '" name="checkbox_' + columnCounter + '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1">\
+<label for="checkbox_' + columnCounter + '" class="ml-1 text-sm text-neutral-600">Sprawozdanie</label>\
+        <br />\
     <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>\
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')" required>\
+            <option value="" disabled selected>Wybierz opcję</option>\
             <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
             <option value="1">Tekst</option>\

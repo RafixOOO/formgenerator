@@ -65,6 +65,10 @@ endif;
                 echo "Odrzucony";
 
             }
+            else if ($row["status"] == 4) {
+                echo "Sprawozdanie wysłane";
+
+            }
             echo "</td>";
             echo "<td>".$row['createdate']."</td>";
             echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";

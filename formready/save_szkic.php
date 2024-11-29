@@ -82,6 +82,7 @@ try {
    $type = "type_";
 $req = "required_";
 $field = "field_";
+$checkbox="checkbox_";
 $number=1;
 $idlastfield='';
 $columnCounterValue = $_POST['columnCounterInput'];
@@ -94,10 +95,11 @@ echo $columnCounterValue+1;
             $reqvalue =  $_POST[$req . $i];
             if (isset($_POST[$field . $i])) {
             $fieldvalue =  $_POST[$field . $i];
+            $checkboxvalue= $_POST[$checkbox . $i];
 
         foreach ($fieldvalue as $value) {
                 echo $value;
-                $sql1 = "INSERT INTO `quest`(`quest`, `type`) VALUES ('$value','$typeValue');";
+                $sql1 = "INSERT INTO `quest`(`quest`, `type`, 'constant') VALUES ('$value','$typeValue','$checkboxvalue');";
                 if ($conn->query($sql1) === TRUE) {
                     $idlastfield = $conn->insert_id;
                 }

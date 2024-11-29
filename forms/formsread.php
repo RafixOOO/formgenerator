@@ -8,6 +8,7 @@ endif;
 if (isset($_GET['ID'])) {
     // Odczytujemy wartość zmiennej
     $id = $_GET['ID'];
+    $finish = $_GET['finish'];
     // Tutaj możesz wykorzystać odczytaną wartość
 }
 if (isLoggedIn()) {
@@ -75,7 +76,7 @@ if (isLoggedIn()) {
         }
 
 
-        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id order by number,qu.questID; ";
+        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id and qu.constant=0 order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
         $columns = array();
@@ -809,9 +810,13 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         echo "<input type='hidden' name='id' value='" . $id . "' >";
         echo "<input type='hidden' name='number' value='" . $number . "' >"
         ?>
-        <div style="text-align: left;margin-top:2%;">
-        <button id="saveBtn" class="btn btn-primary me-2" type="button">Zapisz Kopie</button>
-<script>
+
+        <div style="text-align: right">
+            <input id="saveBtn" type="button" style="background-color: red;" value="Wróć">
+            <?php if($finish==0){ ?>
+            <input type="submit" name="submit_publish" value="Wyślij">
+            <?php } ?>
+            <script>
 function saveFormDataToDatabase() {
     const formElements = document.forms[0].elements;
     const formData = {};
@@ -852,7 +857,7 @@ function saveFormDataToDatabase() {
 .then(data => {
     console.log('Odpowiedź z serwera:', data); // Sprawdź tutaj, czy odpowiedź jest poprawna
     if (data.status === "success" || data.status === "updated" || data.status === "inserted") {
-        alert("Dane zostały zapisane!");
+        window.location.href = "../forms/forms.php";
     } else {
         alert("Błąd podczas zapisu danych: " + (data.message || "Nieznany błąd"));
     }
@@ -895,6 +900,7 @@ function loadFormDataFromDatabase() {
                 }
             }
         }
+        document.getElementById('saveBtn').value = 'Wróć';
     })
     .catch(error => console.error('Błąd podczas wczytywania danych:', error));
 }
@@ -903,11 +909,6 @@ function loadFormDataFromDatabase() {
 document.addEventListener('DOMContentLoaded', loadFormDataFromDatabase);
 document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatabase);
 </script>
-        </div>
-
-        <div style="text-align: right">
-            <a href="../forms/forms.php"><input type="button" value="Anuluj" style="background-color: red;"></a>
-            <input type="submit" name="submit_publish" value="Wyślij">
         </div>
     </form>
 </div>

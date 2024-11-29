@@ -53,7 +53,7 @@ if (isset($_GET['ID'])) {
             <div id="inRows" class="row">
                 <?php
 
-                $sql = "SELECT q.quest, q.type, qu.number, qu.applicationID, qu.req from application a, questconnect qu, quest q where a.applicationID=qu.applicationID and qu.questID=q.questID and a.applicationID=$id order by qu.number, qu.questconnectID; ";
+                $sql = "SELECT q.quest, q.type, qu.number, qu.applicationID, qu.req, q.constant from application a, questconnect qu, quest q where a.applicationID=qu.applicationID and qu.questID=q.questID and a.applicationID=$id order by qu.number, qu.questconnectID; ";
                 $result = $conn->query($sql);
                 $num = 0;
                 $check = 0;
@@ -112,10 +112,14 @@ if (isset($_GET['ID'])) {
                         }
                         $num = $row['number'];
                         echo '<div class="column"><br />';
+                        echo '<input type="hidden" name="checkbox_' . $row['number'] . '" value="0">';
+                        echo '<input type="checkbox" id="checkbox_' . $row['number'] . '" name="checkbox_' . $row['number'] . '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1" ' . ($row['constant'] == 1 ? ' checked' : '') . '>';
+                        echo '<label for="checkbox_' . $row['number'] . '" class="ml-1 text-sm text-neutral-600">Sprawozdanie</label><br />';
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>';
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>';
                         echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
-                        echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')">';
+                        echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')" required>';
+                        echo '<option value="" disabled selected>Wybierz opcję</option>';
                         echo '<option value="3"' . ($row['type'] == 2 ? ' selected' : '') . '>Jednokrotny wybór</option>';
                         echo '<option value="2"' . ($row['type'] == 3 ? ' selected' : '') . '>Wielokrotny wybór</option>';
                         echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Tekst</option>';
@@ -220,11 +224,14 @@ if (isset($_GET['ID'])) {
     function addRow() {
         var newColumn = document.createElement('div');
         newColumn.setAttribute("class", "column");
-        newColumn.innerHTML = '<br />\
+        newColumn.innerHTML = '<br />\ <input type="hidden" name="checkbox_' + columnCounter + '" value="0">\
+<input type="checkbox" id="checkbox_' + columnCounter + '" name="checkbox_' + columnCounter + '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1">\
+<label for="checkbox_' + columnCounter + '" class="ml-1 text-sm text-neutral-600">Sprawozdanie</label>\<br />\
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>\
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')">\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')" required>\
+             <option value="" disabled selected>Wybierz opcję</option>\
            <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
             <option value="1">Tekst</option>\

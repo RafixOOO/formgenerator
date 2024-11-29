@@ -138,7 +138,7 @@ if (isset($_GET['ID'])) {
                 <?php
                 require_once("../dbconnect.php");
 
-                $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id order by number;";
+                $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id and qu.constant=0 order by number;";
                 $result = $conn->query($sql);
                 $number = 0;
                 $columns = array();

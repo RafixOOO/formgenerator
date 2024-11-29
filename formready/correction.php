@@ -47,25 +47,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    //$sql = "UPDATE readyapplication SET status=3 WHERE readyID=?";
-    //$stmt = $conn->prepare($sql);
-    //$stmt->bind_param('i', $readyID);
-    //$stmt->execute();
-    //$stmt->close();
-
+    if ($_POST['action'] == 'send') {
+    $sql = "UPDATE readyapplication SET status=3 WHERE readyID=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $readyID);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: report.php");
+    exit;
+    }
     $corrected = true;
     header("Location: formready.php");
 exit;
 }
 
 // Pobranie danych wypełnionego formularza
-$sql = "SELECT q.questID, q.quest, a.answer , a.answerconnectID, a2.answer as spr , a2.reason 
-        FROM quest q 
-        JOIN answerconnect a ON q.questID = a.questID 
-        left join answercorrect a2 on a2.answerconnectID = a.answerconnectID 
-        WHERE a.readyID = ? and q.`type` in (1,4,5,6)";
+$sql = "WITH quest_ranked AS (
+    SELECT 
+        qu.questID, 
+        qu.quest, 
+        qu.type, 
+        q.number, 
+        q.req, 
+        b.answer, 
+        b.answerconnectID, 
+        a2.answer AS spr, 
+        a2.reason, 
+        r.readyID, 
+        b.tablerow,
+        ROW_NUMBER() OVER (PARTITION BY q.number ORDER BY qu.questID DESC) AS row_num
+    FROM 
+        questconnect q
+    JOIN 
+        quest qu ON q.questID = qu.questID
+    JOIN 
+        application a ON q.applicationID = a.applicationID
+    JOIN 
+        readyapplication r ON r.applicationID = a.applicationID
+    JOIN 
+        answerconnect b ON qu.questID = b.questID 
+    LEFT JOIN 
+        answercorrect a2 ON a2.answerconnectID = b.answerconnectID
+    WHERE 
+        b.readyID = ? 
+        AND r.readyID = ?
+        AND qu.constant = 0
+)
+SELECT 
+    questID, 
+    quest, 
+    type, 
+    number, 
+    req, 
+    answer, 
+    answerconnectID, 
+    spr, 
+    reason, 
+    readyID, 
+    tablerow
+FROM 
+    quest_ranked
+WHERE 
+    NOT (type = 7 AND (answer = 'brak'))
+ORDER BY 
+    answerconnectID, 
+    number;
+";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $readyID);
+$stmt->bind_param('ii', $readyID,$readyID);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -81,7 +130,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sprawozdanie z realizacji inicjatywy PFR</title>
+    <title>Generator | Sprawozdanie</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .auto-resize {
@@ -216,6 +265,8 @@ $stmt->close();
                 <h2>Wypełniony formularz</h2>
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
+                        
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
                         <div class="form-group">
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
@@ -241,6 +292,9 @@ $stmt->close();
                                 <span class="copy-button" onclick="copyToInput(<?php echo $questID; ?>)" title="Skopiuj do poprawionego formularza">📋</span>
                             </div>
                         </div>
+                        <?php } else if($data['type']==3){ ?>
+                            <?php } else if($data['type']==2 ){ ?>
+                                <?php } ?>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>Brak danych do wyświetlenia.</p>
@@ -252,17 +306,14 @@ $stmt->close();
                 <h2>Sprawozdanie</h2>
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
                         <div class="form-group">
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
 
 
                                 <?php
-                                if(empty($data['spr'])){
-                                    echo '<textarea type="text" rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')"></textarea>';
-                                }else{
-                                    echo '<textarea type="text" rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')" disabled>'.$data["spr"].'</textarea>';
-                                }
+                                    echo '<textarea type="text" rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')">'.$data["spr"].'</textarea>';
                                
 
                                 echo '<script>
@@ -279,14 +330,9 @@ $stmt->close();
                                     textarea.style.height = textarea.scrollHeight + \'px\';
                                 });
                                 </script>';
-
-                                if(empty($data['reason'])){
                                 echo '<textarea rows="1" id="reason-'.$questID.'" class="form-control reason auto-resize res' . $questID . '" type="text" name="reasons['.$questID.']"';
-                                echo 'placeholder="Opisz przyczynę odstępstw"></textarea>';
-                                }else{
-                                    echo '<textarea style="display:block;" rows="1" id="'.$questID.'" class="form-control reason auto-resize res' . $questID . '" type="text" name="reasons['.$questID.']"';
-                                echo 'placeholder="Opisz przyczynę odstępstw" disabled>'.$data["reason"].'</textarea>';
-                                }
+                                echo 'placeholder="Opisz przyczynę odstępstw">'.$data["reason"].'</textarea>';
+                                
                                 
                       echo '<script>
                 document.addEventListener(\'DOMContentLoaded\', function() {
@@ -302,6 +348,11 @@ $stmt->close();
                     textarea.style.height = textarea.scrollHeight + \'px\';
                 });
                 </script>';
+                                 } else if($data['type']==3){ 
+                                     } else if($data['type']==2 ){
+
+                                     }
+                               
                                 ?>
                             </div>
                         </div>
@@ -314,10 +365,12 @@ $stmt->close();
 
         <!-- Przycisk zapisu wyrównany do prawej -->
         <div class="save-button-container">
-            <button type="submit" class="btn btn-primary">Zapisz sprawozdanie</button>
+            <button type="submit" name="submit" value="save" class="btn btn-primary">Zapisz jako wersję roboczą</button><br />
+            <button type="submit" name="submit" value="send" class="btn btn-success">Dalej</button>
+
         </div>
     </form>
-
+    <br />
     <div class="text-right">
         <a href="../formready/formready.php"><input type="button" value="Wróć" class="btn btn-danger"></a>
     </div>
