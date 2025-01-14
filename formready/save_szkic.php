@@ -44,18 +44,6 @@ if ($stmt->execute()) {
     echo "Błąd: " . $stmt->error;
 }
 
-   $delsql = "DELETE FROM quest
-           WHERE questID IN (
-               SELECT q.questID
-               FROM quest q
-               JOIN questconnect qc ON q.questID = qc.questID
-               WHERE qc.applicationID = ?
-           );";
-
-// Przygotowanie i wykonanie zapytania usuwającego questy
-$stmt = $conn->prepare($delsql);
-$stmt->bind_param("i", $applicationID);
-
 $conn->begin_transaction();
 
 try {
@@ -99,7 +87,7 @@ echo $columnCounterValue+1;
 
         foreach ($fieldvalue as $value) {
                 echo $value;
-                $sql1 = "INSERT INTO `quest`(`quest`, `type`, 'constant') VALUES ('$value','$typeValue','$checkboxvalue');";
+                $sql1 = "INSERT INTO `quest`(`quest`, `type`, `constant`) VALUES ('$value','$typeValue','$checkboxvalue');";
                 if ($conn->query($sql1) === TRUE) {
                     $idlastfield = $conn->insert_id;
                 }

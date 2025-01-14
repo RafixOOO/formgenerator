@@ -26,7 +26,9 @@ if (isset($_GET['ID'])) {
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
-    <title>Generator | Strona główna</title>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
+    <title>Generator | Wnioski</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
@@ -118,10 +120,10 @@ if (isset($_GET['ID'])) {
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>';
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>';
                         echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
-                        echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\')" required>';
+                        echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\');toggleCheckbox(this, \'checkbox_' . $row['number'] . '\');" required>';
                         echo '<option value="" disabled selected>Wybierz opcję</option>';
-                        echo '<option value="3"' . ($row['type'] == 2 ? ' selected' : '') . '>Jednokrotny wybór</option>';
-                        echo '<option value="2"' . ($row['type'] == 3 ? ' selected' : '') . '>Wielokrotny wybór</option>';
+                        echo '<option value="3"' . ($row['type'] == 3 ? ' selected' : '') . '>Jednokrotny wybór</option>';
+                        echo '<option value="2"' . ($row['type'] == 2 ? ' selected' : '') . '>Wielokrotny wybór</option>';
                         echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Tekst</option>';
                         echo '<option value="0"' . ($row['type'] == 0 ? ' selected' : '') . '>Tekst bez pola</option>';
                         echo '<option value="4"' . ($row['type'] == 4 ? ' selected' : '') . '>Tabela</option>';
@@ -230,7 +232,7 @@ if (isset($_GET['ID'])) {
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>\
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')" required>\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\');toggleCheckbox(this, \'checkbox_' + columnCounter + '\');" required>\
              <option value="" disabled selected>Wybierz opcję</option>\
            <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
@@ -282,6 +284,16 @@ if (isset($_GET['ID'])) {
             updateFields(previousColumn);
         }
     }
+
+    function toggleCheckbox(selectElement, checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    if (selectElement.value === "10" || selectElement.value === "11") {
+        checkbox.disabled = true; // Wyłącz checkbox
+        checkbox.checked = false; // Odznacz checkbox
+    } else {
+        checkbox.disabled = false; // Włącz checkbox
+    }
+}
 
     function downnode(button) {
         var currentColumn = button;

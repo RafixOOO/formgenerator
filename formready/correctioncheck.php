@@ -10,7 +10,6 @@ if (!isLoggedIn()) {
 
 // Sprawdzenie, czy formularz jest wypełniony
 $readyID = intval($_GET['ID']);  // ID wniosku do pobrania
-$appID1 = intval($_GET['appID1']);
 $corrected = false; // Flaga, czy formularz jest poprawiony
 $applicationID = 0;
 $sql = "SELECT applicationID FROM formbuilder.readyapplication WHERE readyID = $readyID";
@@ -22,49 +21,8 @@ if ($result && $row = $result->fetch_assoc()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    
-    // Obsługa zapisu poprawionego formularza
-    $answers = $_POST['answers'];  // Pobrane odpowiedzi z formularza
-    $reasons = $_POST['reasons'];  // Pobrane przyczyny odstępstw
-    $readyID = intval($_POST['readyID']);
-    
-    foreach ($answers as $questID => $answer) {
-        if ($reasons[$questID] != "") {
-            // Najpierw sprawdzamy, czy rekord z danym answerconnectID istnieje
-            $sqlCheck = "SELECT COUNT(*) FROM answercorrect WHERE answerconnectID = ?";
-            $stmtCheck = $conn->prepare($sqlCheck);
-            $stmtCheck->bind_param('i', $questID);
-            $stmtCheck->execute();
-            $stmtCheck->bind_result($count);
-            $stmtCheck->fetch();
-            $stmtCheck->close();
-        
-            if ($count > 0) {
-                // Jeśli rekord istnieje, wykonujemy aktualizację
-                $sqlUpdate = "UPDATE answercorrect SET reason = ?, answer = ? WHERE answerconnectID = ?";
-                $stmtUpdate = $conn->prepare($sqlUpdate);
-                $stmtUpdate->bind_param('ssi', $reasons[$questID], $answer, $questID);
-                $stmtUpdate->execute();
-                $stmtUpdate->close();
-            } else {
-                // Jeśli rekord nie istnieje, wykonujemy INSERT
-                $sqlInsert = "INSERT INTO answercorrect (answerconnectID, reason, answer) VALUES (?, ?, ?)";
-                $stmtInsert = $conn->prepare($sqlInsert);
-                $stmtInsert->bind_param('iss', $questID, $reasons[$questID], $answer);
-                $stmtInsert->execute();
-                $stmtInsert->close();
-            }
-        }
-    }
-    $corrected = true;
-    if ($_POST['submit'] === 'save') {
-    header("Location: report.php?ID=" . $applicationID . "&finish=0&readyID=".$readyID);
+    header("Location: reportcheck.php?ID=" . $readyID . "&finish=0");
 exit;
-    }else if($_POST['submit'] === 'wroc'){
-        header("Location: formready.php");
-exit;
-    }
 }
 
 // Pobranie danych wypełnionego formularza
@@ -79,20 +37,25 @@ $sql = "WITH quest_ranked AS (
         b.answerconnectID, 
         a2.answer AS spr, 
         a2.reason, 
-        b.readyID, 
+        r.readyID, 
         b.tablerow,
         ROW_NUMBER() OVER (PARTITION BY q.number ORDER BY qu.questID DESC) AS row_num
     FROM 
         questconnect q
     JOIN 
-        quest qu ON q.questID = qu.questID AND qu.constant = 0 and qu.type in (0,1,2,3,4,5,6,7)
+        quest qu ON q.questID = qu.questID
     JOIN 
-        application a ON q.applicationID = a.applicationID and a.applicationID = ?
-    left JOIN 
-        answerconnect b ON qu.questID = b.questID and b.readyID = ?
+        application a ON q.applicationID = a.applicationID
+    JOIN 
+        readyapplication r ON r.applicationID = a.applicationID
+    JOIN 
+        answerconnect b ON qu.questID = b.questID 
     LEFT JOIN 
-        answercorrect a2 ON a2.answerconnectID = b.answerconnectID 
-    order by q.number, b.tablerow
+        answercorrect a2 ON a2.answerconnectID = b.answerconnectID
+    WHERE 
+        b.readyID = ? 
+        AND r.readyID = ?
+        AND qu.constant = 0
 )
 SELECT 
     questID, 
@@ -110,9 +73,12 @@ FROM
     quest_ranked
 WHERE 
     NOT (type = 7 AND (answer = 'brak'))
+ORDER BY 
+    answerconnectID, 
+    number;
 ";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('ii', $appID1,$readyID);
+$stmt->bind_param('ii', $readyID,$readyID);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -129,6 +95,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <title>Generator | Sprawozdanie</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -185,11 +152,11 @@ $stmt->close();
             padding-left: 20px;
         }
         .reason {
-            display: none;
+            display: block;
             margin-left: 10px;
             width: 100%;
         }
-        .textarea {
+        textarea {
             resize: vertical;
             height: auto;
             min-height: 1.5em;
@@ -206,10 +173,17 @@ $stmt->close();
         .save-button-container {
             text-align: right; /* Przycisk zapisu wyrównany do prawej */
             margin-top: 20px;
-            margin-right:5%;
+            margin-bottom: 20px;
+            margin-right:15%;
         }
     </style>
     <script>
+        function copyToInput(answerconnectID) {
+            var valueToCopy = document.getElementById('filled-answer-' + answerconnectID).value;
+            document.getElementById('corrected-answer-' + answerconnectID).value = valueToCopy;
+            checkForDifference(answerconnectID);
+        }
+
         function checkForDifference(answerconnectID) {
             var originalValue = document.getElementById('filled-answer-' + answerconnectID).value;
             var correctedValue = document.getElementById('corrected-answer-' + answerconnectID).value;
@@ -251,15 +225,13 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php 
-                        
-                        if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
-                        
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
 
                                 <?php
                                 echo '<textarea rows="1" type="text" rows="2" id="filled-answer-'.$questID.'" class="form-control auto-resize1 res3' . $questID . '" disabled>'.htmlspecialchars($data["answer"]).'</textarea>';
+
                                 echo '<script>
                                 document.addEventListener(\'DOMContentLoaded\', function() {
                                     const textarea = document.querySelector(\'.res3' . $questID . '\');
@@ -278,7 +250,7 @@ $stmt->close();
                             </div>
                         
                         <?php } ?>
-                                    </div>
+                        </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>Brak danych do wyświetlenia.</p>
@@ -291,17 +263,19 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php echo "<script type='text/javascript'>
-    console.log('PHP zmienna quest: " . addslashes($data['quest']) . "');
-</script>"; if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
                         
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
 
 
                                 <?php
-                                    echo '<textarea rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')">'.(empty($data["spr"]) ? $data["answer"] : $data["spr"]).'</textarea>';
-
+                                    if($data["spr"]!=''){
+                                        echo '<textarea type="text" rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')" disabled>'.$data["spr"].'</textarea>';
+                                    }else{
+                                        echo '<textarea type="text" rows="1" id="corrected-answer-'.$questID.'" class="form-control auto-resize1 res1' . $questID . '" name="answers['.$questID.']" oninput="checkForDifference('.$questID.')" disabled>'.htmlspecialchars($data["answer"]).'</textarea>';
+                                    }
+                                    
                                
 
                                 echo '<script>
@@ -318,8 +292,10 @@ $stmt->close();
                                     textarea.style.height = textarea.scrollHeight + \'px\';
                                 });
                                 </script>';
+                                if($data["reason"]!=''){
                                 echo '<textarea rows="1" id="reason-'.$questID.'" class="form-control reason auto-resize res' . $questID . '" type="text" name="reasons['.$questID.']"';
-                                echo 'placeholder="Opisz przyczynę odstępstw">'.$data["reason"].'</textarea>';
+                                echo 'placeholder="Opisz przyczynę odstępstw" disabled>'.$data["reason"].'</textarea>';
+                            }
                                 
                                 
                       echo '<script>
@@ -337,30 +313,62 @@ $stmt->close();
                 });
                 </script>';
                 echo '</div>';
-                                 } 
-                               
+                                 }
                                 ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>Brak danych do wyświetlenia.</p>
                 <?php endif; ?>
-            
-            
-        </div>
-        
+            </div>
 
-        </div>
-        </div>
-        <div class="save-button-container">
-        <button type="submit" name="submit" value="wroc" class="btn btn-danger">Wróć</button>
-            <button type="submit" name="submit" value="save" class="btn btn-primary">Dalej</button>
+            </div>
         </div>
         <br />
+
         <!-- Przycisk zapisu wyrównany do prawej -->
        
     </form>
 </div>
+<br />
+<iframe id="dynamic-iframe" src="reportcheck.php?ID=<?php echo $readyID; ?>&finish=0" 
+        style="width: 100%; border: none;" scrolling="no"></iframe>
 
+<script>
+    function adjustIframeHeight() {
+        const iframe = document.getElementById('dynamic-iframe');
+        
+        // Ustaw wysokość, gdy iframe się załaduje
+        iframe.onload = function() {
+            setHeight();
+        };
+
+        function setHeight() {
+            try {
+                // Pobierz wysokość całej zawartości iframe
+                const iframeDocument = iframe.contentWindow.document;
+                const newHeight = Math.max(
+                    iframeDocument.body.scrollHeight,
+                    iframeDocument.documentElement.scrollHeight
+                );
+                iframe.style.height = newHeight + 'px';
+            } catch (error) {
+                console.error('Nie można uzyskać dostępu do zawartości iframe:', error);
+            }
+        }
+
+        // Aktualizuj wysokość co jakiś czas (np. przy dynamicznej zawartości)
+        setInterval(setHeight, 500);
+    }
+
+    document.addEventListener('DOMContentLoaded', adjustIframeHeight);
+</script>
+
+<div class="save-button-container">
+        <a href="../formready/tocheck.php"><input type="button" value="Wróć" class="btn btn-danger"></a>
+        </div>
 </body>
 </html>
+
+<?php
+?>

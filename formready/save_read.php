@@ -12,46 +12,11 @@ require_once("../dbconnect.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userID = returniserid();
     $idapp = $_POST['id'];
-    $number = $_POST['number'];
-    $readyID = 0;
-
-    $sqlcheck="select * from readyapplication where userID=$userID and applicationId=$idapp and status=0;";
-    $result = $conn->query($sqlcheck);
-
-    if ($result->num_rows > 0) {
-        // Jeśli są wiersze, przekierowanie na inną stronę
-        header("Location: forms.php");
-        exit;
-    }
-    
-
-    $sql = "INSERT INTO readyapplication (userID, applicationID, status, type) VALUES (?, ?, '0', '0')";
-
-    // Przygotowanie zapytania
-    $stmt = $conn->prepare($sql);
-
-    // Sprawdzenie, czy zapytanie zostało poprawnie przygotowane
-    if ($stmt) {
-        // Wiązanie parametrów
-        $stmt->bind_param("ii", $userID, $idapp);
-
-        // Wykonanie zapytania
-        if ($stmt->execute()) {
-            $readyID = $conn->insert_id;
-        } else {
-            // Błąd podczas wykonywania zapytania
-            echo "Error: " . $conn->error;
-        }
-
-        // Zamknięcie prepared statement
-        $stmt->close();
-    } else {
-        // Błąd podczas przygotowywania zapytania
-        echo "Error: " . $conn->error;
-    }
+    $number = $_POST['number1'];
+    $readyID = $_POST['readyID'];
 
     for ($i = 1; $i <= $number; $i++) {
-        $sel = "SELECT qu.questID, qu.number, q.type FROM `questconnect` qu, quest q WHERE qu.questID=q.questID and qu.applicationID=$idapp and qu.number=$i ORDER BY qu.questID;";
+        $sel = "SELECT qu.questID, qu.number, q.type FROM `questconnect` qu, quest q WHERE qu.questID=q.questID and qu.applicationID=$idapp and q.constant=1 and qu.number=$i ORDER BY qu.questID;";
         $result = $conn->query($sel);
         while ($row = $result->fetch_assoc()) {
             if ($row['type'] == 1 or $row['type'] == 9) { // Używamy operatora porównania '=='
@@ -184,7 +149,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
 
-    header("Location: forms.php");
+    $sql = "UPDATE readyapplication SET status=3 WHERE readyID=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $readyID);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: formready.php");
     exit;
 
 }

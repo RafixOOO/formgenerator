@@ -21,6 +21,8 @@ endif;
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <title>Generator | Wnioski</title>
 </head>
 
@@ -42,7 +44,7 @@ endif;
                 <?php
                 require_once("../dbconnect.php");
                 $id = returniserid();
-                $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email, r.createdate FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.userID!=$id and r.status!=1 and a.deleted!=1; ";
+                $sql = "SELECT r.status, r.type, a.name, r.readyID, u.name as nazwa,u.surname, u.phone, u.email, r.createdate FROM readyapplication r, application a, user u WHERE u.userID=r.userID and r.applicationID=a.applicationID and r.status!=1 and a.deleted!=1; ";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>";
@@ -75,6 +77,9 @@ endif;
                     }
                     if ($row["status"] != 0 || $values2 == $id) {
                         echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 40%; background-color:green;' type='button' class='fadeIn fourth' value='Sprawdzone'></a>";
+                        if($row["status"] == 3 && returnRole()==3){
+                        echo "<a href='correctioncheck.php?ID=" . $row["readyID"] . "'><input style='width: 40%; background-color: #1591ea;' type='button' class='fadeIn fourth' value='Sprawozdanie'></a>";
+                        }
                     } else {
                         echo "<td><a href='formscheck.php?ID=" . $row["readyID"] . "'><input style='width: 40%' type='button' class='fadeIn fourth' value='Sprawdź'></a>";
                     }

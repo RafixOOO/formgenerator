@@ -66,7 +66,7 @@ function redirectToNewPage6() {
                                 Wnioski
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" onclick="redirectToNewPage1()">Wnioski</a></li>
+                                <li><a class="dropdown-item" onclick="redirectToNewPage1()">Wypełnione</a></li>
                                  <?php if(returnRole()==1 or returnRole()==2 or returnRole()==3) { ?>
                                 <li><a class="dropdown-item" onclick="redirectToNewPage2()">Do sprawdzenia</a></li>
                                 <?php } ?>

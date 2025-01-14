@@ -20,6 +20,8 @@ endif;
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <title>Generator | Strona główna</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -67,7 +69,7 @@ endif;
     <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>\
         <button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>\
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
-        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\')" required>\
+        <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\');toggleCheckbox(this, \'checkbox_' + columnCounter + '\');" required>\
             <option value="" disabled selected>Wybierz opcję</option>\
             <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
@@ -108,6 +110,16 @@ endif;
     function removeRow(node) {
         return node.remove()
     }
+
+    function toggleCheckbox(selectElement, checkboxId) {
+    const checkbox = document.getElementById(checkboxId);
+    if (selectElement.value === "10" || selectElement.value === "11") {
+        checkbox.disabled = true; // Wyłącz checkbox
+        checkbox.checked = false; // Odznacz checkbox
+    } else {
+        checkbox.disabled = false; // Włącz checkbox
+    }
+}
 
     function upnode(button) {
         var currentColumn = button;
@@ -170,6 +182,7 @@ endif;
                 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField.setAttribute("name", clasa);
                 textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
                 specificFieldsDiv.appendChild(textField);
                 break;
             case "2":
@@ -183,6 +196,8 @@ endif;
                 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                 textField.setAttribute("name", clasa);
                 textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
+
 
                 var addButton = document.createElement('button');
                 addButton.setAttribute("type", "button");
@@ -210,6 +225,7 @@ endif;
                     newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
                     newTextField.setAttribute("name", clasa);
                     newTextField.setAttribute("placeholder", "Pole tekstowe");
+                    textField.setAttribute("required", "required");
                     fieldsDiv.insertBefore(newTextField, addButton);
                 });
 

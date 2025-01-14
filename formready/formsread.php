@@ -28,7 +28,9 @@ if (isset($_GET['ID'])) {
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
-    <title>Generator | Strona główna</title>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
+    <title>Generator | Wnioski</title>
     <style>
         .hidden-row {
             display: none;
@@ -330,11 +332,15 @@ if (isset($_GET['ID'])) {
                 $sum1 = 0;
                 $sum2 = 0;
                 $sum3 = 0;
-                $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
+                $sql1 = "SELECT distinct a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
                 $result1 = $conn->query($sql1);
                 $table = 0;
                 echo '<table class="table"><thead><tr>';
                 echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                if (is_numeric(reset($columns))) {
+                    // Odwrócenie tablicy, jeśli pierwszy element to liczba
+                    $columns = array_reverse($columns);
+                }
                 $count = count($columns) - 2;
                 for ($i = 0; $i < $count; $i++) {
                     echo '<th scope="col">' . $columns[$i] . '</th>';
@@ -795,11 +801,15 @@ document.addEventListener(\'DOMContentLoaded\', function() {
             $sum1 = 0;
             $sum2 = 0;
             $sum3 = 0;
-            $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID = $id and tablerow is not null and answer != 'brak'  order by tablerow, questid;";
+            $sql1 = "SELECT distinct `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID = $id and tablerow is not null and answer != 'brak'  order by tablerow, questid;";
             $result1 = $conn->query($sql1);
             $table = 0;
             echo '<table class="table"><thead><tr>';
             echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+            if (is_numeric(reset($columns))) {
+                // Odwrócenie tablicy, jeśli pierwszy element to liczba
+                $columns = array_reverse($columns);
+            }
             $count = count($columns) - 2;
             for ($i = 0; $i < $count; $i++) {
                 echo '<th scope="col">' . $columns[$i] . '</th>';

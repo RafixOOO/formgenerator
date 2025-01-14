@@ -11,12 +11,14 @@ require_once("../dbconnect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = intval($_POST["id"]);
+    $updateStatus = $conn->prepare("UPDATE `readyapplication` SET `status` = ?, `type` = ? WHERE `readyID` = ?");
+    $status=2;
+    $points = 0;
     if (isset($_POST['b'])) {
         $answers = $_POST['b'];
         $apkid = '';
         $type = '';
         $i = 1;
-        $points = 0;
         $userid=returniserid();
 
         // Get the application ID
@@ -24,7 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt1 = $conn->prepare($sql1);
         $stmt1->bind_param("i", $id);
         $stmt1->execute();
-        $status=2;
         $result1 = $stmt1->get_result();
         if ($row1 = $result1->fetch_assoc()) {
             $apkid = $row1['applicationID'];
@@ -38,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Prepare insert statements
         $insertAnswer10 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`) VALUES (?, ?, ?)");
         $insertAnswer11 = $conn->prepare("INSERT INTO `answerconnect`(`readyID`, `questID`, `tablerow`, `answer`) VALUES (?, ?, ?, ?)");
-        $updateStatus = $conn->prepare("UPDATE `readyapplication` SET `status` = ?, `type` = ? WHERE `readyID` = ?");
 
         foreach ($answers as $key => $value) {
             if($value=="Nie"){
@@ -81,7 +81,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         }
-
+        $insertAnswer10->close();
+        $insertAnswer11->close();
+    }
         if($_POST['action'] == 'Zatwierdź'){
         // Update status and points for the application
         $updateStatus->bind_param("iii", $status,$points, $id);
@@ -90,16 +92,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Error updating points and status: " . $updateStatus->error;
         }
+        $updateStatus->close();
     }
         // Close prepared statements
-        $insertAnswer10->close();
-        $insertAnswer11->close();
-        $updateStatus->close();
 
         // Redirect after processing
          header("Location: tocheck.php");
          exit;
-    }
+    
 }
 
 ?>

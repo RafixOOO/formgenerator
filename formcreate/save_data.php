@@ -53,7 +53,7 @@ $columnCounterValue = $_POST['columnCounterInput'];
             
         foreach ($fieldvalue as $value) {
                 echo $value;
-                $sql1 = "INSERT INTO `quest`(`quest`, `type`, 'constant') VALUES ('$value','$typeValue','$checkboxvalue');";
+                $sql1 = "INSERT INTO `quest` (`quest`, `type`, `constant`) VALUES ('$value',$typeValue,$checkboxvalue);";
                 if ($conn->query($sql1) === TRUE) {
                     $idlastfield = $conn->insert_id;
                 }

@@ -29,6 +29,7 @@ if (isset($_GET['ID'])) {
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
     <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <title>Generator | Wnioski</title>
     <style>
         .hidden-row {
@@ -131,19 +132,19 @@ if (isset($_GET['ID'])) {
 <body>
     <!-- 2024 Created by: Rafał Pezda-->
     <!-- link: https://github.com/RafixOOO -->
-    <div class="wrapper fadeInDown">
+    <div style="width:80%; margin-left:auto;margin-right:auto;">
 
         <div id="form" class="pdf-container">
             <meta charset="UTF-8">
+            <form>
                 <?php
                 require_once("../dbconnect.php");
 
-                $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id and qu.constant=0 order by number;";
+                $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id and qu.constant=1 order by number;";
                 $result = $conn->query($sql);
                 $number = 0;
                 $columns = array();
                 $columns1 = array();
-                $columns2 = array();
                 $table_opened4 = false;
                 $table_opened5 = false;
                 $table_opened6 = false;
@@ -186,7 +187,9 @@ if (isset($_GET['ID'])) {
                                 echo ' required';
                             }
 
-                            echo '></td>'; // Pole tekstowe w komórkach
+                            echo '
+
+                    ></td>'; // Pole tekstowe w komórkach
                         }
                         echo '</tbody></table>';
 
@@ -207,7 +210,7 @@ if (isset($_GET['ID'])) {
                             if (($i >= count($columns))) {
                                 echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                             } else {
-                                echo '<th scope="col">' . $columns[$i] . ' ></th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                                echo '<th scope="col"><input value="' . $columns[$i] . '" ></th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                             }
                         }
                         echo '</tr></thead><tbody>';
@@ -331,11 +334,7 @@ if (isset($_GET['ID'])) {
                         $table = 0;
                         echo '<table class="table"><thead><tr>';
                         echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                        if (is_numeric(reset($columns))) {
-                            // Odwrócenie tablicy, jeśli pierwszy element to liczba
-                            $columns = array_reverse($columns);
-                        }
-                        $count = count($columns)-2;
+                        $count = count($columns) - 2;
                         for ($i = 0; $i < $count; $i++) {
                             echo '<th scope="col">' . $columns[$i] . '</th>';
                         }
@@ -523,10 +522,6 @@ if (isset($_GET['ID'])) {
                         echo '<div class="form-check">
         <input class="form-check-input" type="checkbox" name="' . $row["number"] . '" value="' . $row["questID"] . '" disabled';
 
-                        if ($row["req"] == 1) {
-                            echo ' required';
-                        }
-
                         if ($selected != '0') {
                             echo ' checked'; // Jeśli pole jest wybrane, dodaj atrybut checked i disabled
                         }
@@ -602,7 +597,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                             $columns[] = $row["quest"];
                         } else if ($row["type"] == 11) {
                             $table_opened11 = true;
-                            $columns2[] = $row["quest"];
+                            $columns[] = $row["quest"];
                         } else if ($row["type"] == 10) {
                             $table_opened12 = true;
                             $columns1[] = $row["quest"];
@@ -785,15 +780,11 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     $sum1 = 0;
                     $sum2 = 0;
                     $sum3 = 0;
-                    $sql1 = "SELECT `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
+                    $sql1 = "SELECT distinct `answerconnectID`,`readyID`, `questID`, `tablerow`, `answer` FROM `answerconnect` WHERE readyID=$id and tablerow is not null and answer!='brak'  order by tablerow, questid;";
                     $result1 = $conn->query($sql1);
                     $table = 0;
                     echo '<table class="table"><thead><tr>';
                     echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                    if (is_numeric(reset($columns))) {
-                        // Odwrócenie tablicy, jeśli pierwszy element to liczba
-                        $columns = array_reverse($columns);
-                    }
                     $count = count($columns) - 2;
                     for ($i = 0; $i < $count; $i++) {
                         echo '<th scope="col">' . $columns[$i] . '</th>';
@@ -838,313 +829,10 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     $table_opened7 = false;
                     unset($columns);
                 }
-                 ?> <?php
-                echo "<br /><hr>";
-                echo "<p><h2>KOMISJA</h2></p>";
-                if (returnRole() == 2 or returnRole() == 3) {
-                    $ql = "select q.quest, q.`type`,a.answer,a.answerconnectID from quest q, answerconnect a where q.questID =a.questID and a.readyID = $id order by a.answerconnectID ";
-                    $result1 = $conn->query($ql);
-                    $tablefirst = false;
-                    $tablelast = false;
-                    $osoba = '';
-                    $values2 = '0';
-                    $first = false;
-                    while ($row = $result1->fetch_assoc()) {
-                        if (strpos($row['answer'], ',') !== false && $first == false) {
-                            $values2 = explode(',', $row['answer']);
-                            $first = true;
-                        }
-                        if ($row['type'] == 10) {
-                            if ($tablelast == true) {
-                                echo '</tbody></table>';
-                                echo "<label>Osoba sprawdzająca: " . $osoba . "</label>";
-                                echo "<hr />";
-                                $tablelast = false;
-                            }
-                            $tablefirst = false;
-                            echo '<div class="mb-3">';
-                            echo '<label class="form-label">' . $row['quest'] . '</label>';
-                            echo '<div>';
 
-                            // Wybór "Tak"
-                            echo '<input type="radio" value="Tak"';
-                            if ($row['answer'] == 'Tak') {
-                                echo ' checked';
-                            }
-                            echo ' disabled>';
-                            echo '<label1>Tak</label1><br />';
-
-                            // Wybór "Nie"
-                            echo '<input type="radio" value="Nie"';
-                            if ($row['answer'] == 'Nie') {
-                                echo ' checked';
-                            }
-                            echo ' disabled>';
-                            echo '<label1 >Nie</label1>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                        if ($row['type'] == 11) {
-                            $values2 = explode(',', $row['answer']);
-                            $tablelast = true;
-                            if ($tablefirst == false) {
-                                echo '<table class="table"><thead><tr>';
-                                echo '<th>Nazwa</th>';
-                                echo '<th>Punkty</th>';
-                                echo '</tr></thead><tbody>';
-                                $tablefirst = true;
-                            }
-
-                            echo '<tr>'; // Otwórz nowy wiersz
-                            echo '<td>' . $row['quest'] . '</td>'; // Nazwa kolumny
-                            echo '<td><input type="number" value="' . trim($values2[1]) . '" disabled></td>'; // Pole do wpisania punktów
-                            echo '</tr>'; // Zamknij wiersz
-                            $ql1 = "select name, surname from user where userID=" . trim($values2[0]) . " ";
-                            $result2 = $conn->query($ql1);
-                            while ($row1 = $result2->fetch_assoc()) {
-                                $osoba = $row1['name'] . ' ' . $row1['surname'];
-                            }
-                        }
-                    }
-                    echo '</tbody></table>';
-                    if ($osoba != '') {
-                        echo "<label>Osoba sprawdzająca: " . $osoba . "</label>";
-                        echo "<hr />";
-                    }
-                }
-                $userid = returniserid();
-                $status = '';
-                $sql1 = "SELECT SUBSTRING_INDEX(a.answer, ',', 1) AS first_value, r.status as status1
-                FROM readyapplication r 
-                left join answerconnect a on r.readyID=a.readyID and SUBSTRING_INDEX(a.answer, ',', 1)=?
-                left join quest q on q.questID=a.questID and q.type = 11
-                where r.readyID = ?  group by  SUBSTRING_INDEX(a.answer, ',', 1);";
-                $stmt = $conn->prepare($sql1);
-                $stmt->bind_param("si",  $userid,$id); // Assuming $key is the quest name or identifier
-                $stmt->execute();
-                $values2 = '';
-                $result1 = $stmt->get_result();
-                if ($row1 = $result1->fetch_assoc()) {
-                    $values2 = $row1['first_value'];
-                    $status = $row1['status1'];
-                }
-                if (isset($values2[0]) && !empty($values2[0])) {
-                    $wartosc2 = trim($values2[0]);
-                } else {
-                    $wartosc2 = 0; // Przypisanie wartości domyślnej
-                }    
-                if ($wartosc2 != $userid && $status==0) {
-                    echo "<form method='post' action='save_formcheck.php'>";
-                    if ($table_opened11 or $table_opened12) {
-                        if ($table_opened12) {
-                            $i = 1;
-                            foreach ($columns1 as $column) {
-                                echo '<div class="mb-3">';
-                                echo '<label class="form-label">' . $column . '</label>';
-                                echo '<div>';
-
-                                // Wybór "Tak"
-                                echo '<input type="radio" id="yes_' . $column . '" name="b[' . $column . ']" value="Tak" required>';
-                                echo '<label1 for="yes_' . $i . '">Tak</label1><br />';
-
-                                // Wybór "Nie"
-                                echo '<input type="radio" id="no_' . $column . '" name="b[' . $column . ']" value="Nie" required>';
-                                echo '<label1 for="no_' . $i . '">Nie</label1>';
-                                $i++;
-                                echo '</div>';
-                                echo '</div>';
-                            }
-                            $table_opened12 = false;
-                            unset($columns1);
-                        }
-                        if ($table_opened11) {
-                            echo '<table class="table"><thead><tr>';
-                            echo '<th>Nazwa</th>';
-                            echo '<th>Punkty</th>';
-                            echo '</tr></thead><tbody>';
-
-                            // Każdy element w $columns tworzy nowy wiersz w tabeli
-                            foreach ($columns2 as $column) {
-                                echo '<tr>'; // Otwórz nowy wiersz
-                                echo '<td>' . $column . '</td>'; // Nazwa kolumny
-                                echo '<td><input type="number" name="b[' . $column . ']" required></td>'; // Pole do wpisania punktów
-                                echo '</tr>'; // Zamknij wiersz
-                            }
-
-                            echo '</tbody></table>';
-                            $table_opened11 = false;
-                            unset($columns2);
-                        }
-                    }
-                        echo "<input type='hidden' name='id' value='" . $id . "'>";
-                        echo '<input type="submit" id="submit-button" name="action" value="Zapisz">';
-                        if(returnRole() == 2 or returnRole() == 3){
-                            echo '<label><input type="checkbox" id="approve-checkbox" onchange="toggleSubmitButton()"> Zatwierdź</label>';
-                            ?>
-                            <script>
-    function toggleSubmitButton() {
-        const checkbox = document.getElementById('approve-checkbox');
-        const submitButton = document.getElementById('submit-button');
-        
-        if (checkbox.checked) {
-            submitButton.value = 'Zatwierdź'; // Zmieniamy tekst przycisku
-        } else {
-            submitButton.value = 'Zapisz'; // Przywracamy pierwotny tekst
-        }
-    }
-</script>
-                            <?php
-                        }
-                        
-                    
-                    echo "</form>";
-                } else if($status==0) {
-                    $ql = "SELECT q.quest, q.`type`, a.answer, a.answerconnectID
-FROM quest q
-JOIN answerconnect a ON q.questID = a.questID
-WHERE a.readyID = $id
-  AND SUBSTRING_INDEX(a.answer, ',', 1) = '$userid'
-UNION ALL
-SELECT q.quest, q.`type`, a.answer, a.answerconnectID
-FROM quest q
-JOIN answerconnect a ON q.questID = a.questID
-WHERE a.answerconnectID = (
-    SELECT MIN(a2.answerconnectID) - 1
-    FROM answerconnect a2
-    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
-    WHERE a2.readyID = $id
-      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
-) or  a.answerconnectID = (
-    SELECT MIN(a2.answerconnectID) - 2
-    FROM answerconnect a2
-    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
-    WHERE a2.readyID = $id
-      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
-) or  a.answerconnectID = (
-    SELECT MIN(a2.answerconnectID) - 3
-    FROM answerconnect a2
-    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
-    WHERE a2.readyID = $id
-      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
-) or  a.answerconnectID = (
-    SELECT MIN(a2.answerconnectID) - 4
-    FROM answerconnect a2
-    inner join quest q on q.questID=a2.questID and q.type IN (10, 11) 
-    WHERE a2.readyID = $id
-      AND SUBSTRING_INDEX(a2.answer, ',', 1) = '$userid'
-)
-ORDER BY answerconnectID;";
-                    $result1 = $conn->query($ql);
-                    $tablefirst = false;
-                    $tablelast = false;
-                    $osoba = '';
-                    $min = '';
-                    $max = '';
-                    $values2 = '0';
-                    $first = false;
-                    $first1= false;
-                    echo "<form method='post' action='edit_formcheck.php'>";
-                    while ($row = $result1->fetch_assoc()) {
-                        if (strpos($row['answer'], ',') !== false && $first == false) {
-                            $values2 = explode(',', $row['answer']);
-                            $first = true;
-                        }
-                        if ($row['type'] == 10) {
-                            if($first1==false){
-                                $min=$row['answerconnectID'];
-                                $first1=true;
-                            }
-                            
-                            if ($tablelast == true) {
-                                echo '</tbody></table>';
-                                echo "<label>Osoba sprawdzająca: " . $osoba . "</label>";
-                                echo "<hr />";
-                                $tablelast = false;
-                            }
-                            $tablefirst = false;
-                            echo '<div class="mb-3">';
-                            echo '<label class="form-label">' . $row['quest'] . '</label>';
-                            echo '<div>';
-
-                            // Wybór "Tak"
-                            echo '<input type="radio" value="Tak"';
-                            echo 'name="'.$row['answerconnectID'].'"';
-                            if ($row['answer'] == 'Tak') {
-                               
-                                echo ' checked';
-                            }
-                            echo '>';
-                            echo '<label1>Tak</label1><br />';
-
-                            // Wybór "Nie"
-                            echo '<input type="radio" value="Nie"';
-                            echo 'name="'.$row['answerconnectID'].'"';
-                            if ($row['answer'] == 'Nie') {
-                                echo ' checked';
-                            }
-                            echo '>';
-                            echo '<label1 >Nie</label1>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                        
-                        if ($row['type'] == 11) {
-                            $values2 = explode(',', $row['answer']);
-                            $tablelast = true;
-                            if ($tablefirst == false) {
-                                echo '<table class="table"><thead><tr>';
-                                echo '<th>Nazwa</th>';
-                                echo '<th>Punkty</th>';
-                                echo '</tr></thead><tbody>';
-                                $tablefirst = true;
-                            }
-                            $max=$row['answerconnectID'];
-                            echo '<tr>'; // Otwórz nowy wiersz
-                            echo '<td>' . $row['quest'] . '</td>'; // Nazwa kolumny
-                            echo '<td><input type="number" name="'.$row['answerconnectID'].'" value="' . trim($values2[1]) . '"></td>'; // Pole do wpisania punktów
-                            echo '</tr>'; // Zamknij wiersz
-                            $ql1 = "select name, surname from user where userID=" . trim($values2[0]) . " ";
-                            $result2 = $conn->query($ql1);
-                            while ($row1 = $result2->fetch_assoc()) {
-                                $osoba = $row1['name'] . ' ' . $row1['surname'];
-                            }
-                        }
-                    }
-                    echo '</tbody></table>';
-                    if ($osoba != '') {
-                        echo "<hr />";
-                    }
-                    echo "<input type='hidden' name='id' value='".$id."'>";
-                    echo "<input type='hidden' name='min1' value='".$min."'>";
-                    echo "<input type='hidden' name='max1' value='".$max."'>";
-                    echo "<label>Osoba sprawdzająca: " . $osoba . "</label><br /><br />";
-                    echo '<input type="submit" id="submit-button" name="action" value="Edytuj">';
-                    if(returnRole() == 2 or returnRole() == 3){
-                        echo '<label><input type="checkbox" id="approve-checkbox" onchange="toggleSubmitButton()"> Zatwierdź</label>';
-                        ?>
-                            <script>
-    function toggleSubmitButton() {
-        const checkbox = document.getElementById('approve-checkbox');
-        const submitButton = document.getElementById('submit-button');
-        
-        if (checkbox.checked) {
-            submitButton.value = 'Zatwierdź'; // Zmieniamy tekst przycisku
-        } else {
-            submitButton.value = 'Edytuj'; // Przywracamy pierwotny tekst
-        }
-    }
-</script>
-                            <?php
-                    }
-                    echo "</form>";
-                }
+                echo "</form>";
+             
                 ?>
-        </div>
-        <div class="button-container" style="text-align: right;">
-            <a href="../formready/tocheck.php"><input type="button" value="Wróć" style="background-color: red;"></a>
-            <div class="button-container">
-                <button id="generate-pdf" onclick="generatePDF()" type="button">Generuj PDF</button>
-            </div>
         </div>
     </div>
 </body>

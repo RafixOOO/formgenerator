@@ -20,6 +20,8 @@ endif;
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <title>Generator | Wnioski</title>
 </head>
 <body>
@@ -40,9 +42,11 @@ endif;
         <?php
         require_once("../dbconnect.php");
 
-        $sql = "SELECT r.status, r.type, a.name, r.readyID, r.createdate FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and a.deleted!=1; ";
+        $sql = "SELECT r.status, r.type, a.name, r.readyID, r.createdate, r.applicationID FROM readyapplication r, application a WHERE r.applicationID=a.applicationID and r.userID=" . returniserid() . " and a.deleted!=1; ";
         $result = $conn->query($sql);
         while ($row = $result->fetch_assoc()) {
+            $createdateObj = new DateTime($row["createdate"]);
+            $thresholdDate = new DateTime('2025-01-01 00:00:00');
             echo "<tr>";
             echo "<td>" . $row["name"] . "</td>";
             echo "<td>";
@@ -72,8 +76,8 @@ endif;
             echo "</td>";
             echo "<td>".$row['createdate']."</td>";
             echo "<td><a href='formsread.php?ID=" . $row["readyID"] . "'><input style='width: 25%' type='button' class='fadeIn fourth' value='Podgląd'></a>";
-            if($row["status"] == 2){
-                echo "<a href='correction.php?ID=" . $row["readyID"] . "'><input type='button'' value='Sprawozdanie' style='background-color: #1591ea;width: 25%;'></a>";
+            if($row["status"] == 2 && $createdateObj > $thresholdDate){
+                echo "<a href='correction.php?ID=" . $row["readyID"] . "&appID1=" . $row["applicationID"] . "'><input type='button'' value='Sprawozdanie' style='background-color: #1591ea;width: 25%;'></a>";
             }
             if($row["status"] == 0){
             echo "<a href='formdelete.php?ID=" . $row["readyID"] . "'><input type='button'' value='Usuń' style='background-color: red;'></a>";

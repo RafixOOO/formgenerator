@@ -33,6 +33,8 @@ if (isLoggedIn()) {
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
     <title>Generator | Strona główna</title>
+    <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
+
     <style>
         .hidden-row {
             display: none;
@@ -467,10 +469,6 @@ if (isLoggedIn()) {
                 echo '<div class="form-check">
         <input class="form-check-input" type="checkbox" name="' . $row["number"] . '[]" value="' . $row["questID"] . '"';
 
-                if ($row["req"] == 1) {
-                    echo ' required';
-                }
-
                 echo '>
         <label class="form-check-label" for="' . $row["number"] . '">
             ' . $row["quest"] . '
@@ -812,7 +810,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         ?>
 
         <div style="text-align: right">
-            <input id="saveBtn" type="button" style="background-color: red;" value="Wróć">
+            <input id="saveBtn" type="button" style="background-color: red;" value="Wróć (zapisz)">
             <?php if($finish==0){ ?>
             <input type="submit" name="submit_publish" value="Wyślij">
             <?php } ?>
@@ -900,7 +898,7 @@ function loadFormDataFromDatabase() {
                 }
             }
         }
-        document.getElementById('saveBtn').value = 'Wróć';
+        document.getElementById('saveBtn').value = 'Wróć (zapisz)';
     })
     .catch(error => console.error('Błąd podczas wczytywania danych:', error));
 }
