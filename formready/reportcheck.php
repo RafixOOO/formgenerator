@@ -558,7 +558,7 @@ if (isset($_GET['ID'])) {
                         }
                         echo '<div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-       <textarea type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . ' " disabled';
+       <textarea style="width:50%;" type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . ' " disabled';
 
                         if ($row["req"] == 1) {
                             echo ' required';
