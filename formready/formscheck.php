@@ -194,66 +194,55 @@ if (isset($_GET['ID'])) {
                         unset($columns);
                     } else if ($row["type"] != 5 and $table_opened5) {
                         $answer1 = 0;
-                        $answer2 = 0;
-                        $sum1 = 0;
-                        $sum3 = 0;
-                        $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
-                        $result1 = $conn->query($sql1);
-                        $table = 0;
-                        echo '<table class="table"><thead><tr>';
-                        echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                        $count = count($columns) + 1;
-                        for ($i = 0; $i < $count; $i++) {
-                            if (($i >= count($columns))) {
-                                echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                            } else {
-                                echo '<th scope="col">' . $columns[$i] . ' ></th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                            }
+                    $answer2 = 0;
+                    $sum1 = 0;
+                    $sum3 = 0;
+                    $sql1 = "SELECT a . `answerconnectID`,a . `readyID`, a . `questID`, a . `tablerow`, a . `answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a . questID = q . questID and qu . questID = q . questID and qu . number = $number and readyID = $id and tablerow is not null order by tablerow, questid;";
+                    $result1 = $conn->query($sql1);
+                    $table = 0;
+                    echo '<table class="table"><thead><tr>';
+                    echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
+                    $count = count($columns);
+                    for ($i = 0; $i < $count; $i++) {
+                            echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                        
+        
+        
+                    }
+                    echo '</tr></thead><tbody>';
+                    $up = 0;
+                    $i = 1;
+                    $ac2 = count($columns);
+                    while ($row1 = $result1->fetch_assoc()) {
+                        if ($ac2 == $i) {
+                            $answer2 = (int)$row1["answer"];
                         }
-                        echo '</tr></thead><tbody>';
-                        $up = 0;
-                        $i = 1;
-                        $ac1 = count($columns) - 1;
-                        $ac2 = count($columns);
-                        while ($row1 = $result1->fetch_assoc()) {
-                            if ($ac1 == $i) {
-                                $answer1 = (int)$row1["answer"];
-                            } else if ($ac2 == $i) {
-                                $answer2 = (int)$row1["answer"];
-                            }
-                            if ($i == $count) {
-                                $a = (int)$answer1 + (int)$answer2;
-                                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $a . '" disabled></td>';
-                                $sum3 += $a;
-                            }
-                            if ($up == 0) {
-                                echo '<tr>';
-                                echo '<th scope="row">' . $row1["tablerow"] . '</th>';
-                                $up++;
-                            }
-                            if ($i >= $count) {
-                                $i = 1;
-                                if ($up !== 1) {
-                                    echo '</tr>';
-                                }
-                                echo '<tr>';
-                                echo '<th scope="row">' . $row1["tablerow"] . '</th>';
-                                $up++;
-                            }
-
-
-                            // Numeracja wierszy
-                            echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $row1["answer"] . '" disabled></td>';
-
-                            $i++;
+                        if ($i == $count) {
+                            $sum3 += $answer2;
                         }
-                        $a = (int)$answer1 + (int)$answer2;
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $a . '" disabled></td>';
-                        $sum3 += $a;
-                        echo '</tbody>
-                <tfoot><td style="text-align:right;" colspan="' . $count . '">Suma: </td><td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="' . $sum3 . '" readonly></td></tfoot>
-
-                </table>';
+                        if ($up == 0) {
+                            echo '<tr>';
+                            echo '<th scope="row">' . $row1["tablerow"] . '</th>';
+                            $up++;
+                        }
+                        // Numeracja wierszy
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $row1["answer"] . '" disabled></td>';
+                        if ($i >= $count) {
+                            $i = 1;
+                            if ($up == 1) {
+                                echo '</tr>';
+                            }
+                            $up=0;
+        
+        
+                        }
+        
+                        $i++;
+                    }
+                    echo '</tbody>
+                    <tfoot><td style="text-align:right;" colspan="' . $count . '">Suma: </td><td ><input style="text - align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="' . $sum3 . '" disabled></td></tfoot>
+        
+                    </table>';
 
                         $table_opened5 = false;
                         unset($columns);
@@ -720,63 +709,52 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                     $answer2 = 0;
                     $sum1 = 0;
                     $sum3 = 0;
-                    $sql1 = "SELECT a.`answerconnectID`,a.`readyID`, a.`questID`, a.`tablerow`, a.`answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a.questID=q.questID and qu.questID=q.questID and qu.number=$number and readyID=$id and tablerow is not null order by tablerow, questid;";
+                    $sql1 = "SELECT a . `answerconnectID`,a . `readyID`, a . `questID`, a . `tablerow`, a . `answer` FROM `answerconnect` a, quest q, questconnect qu WHERE a . questID = q . questID and qu . questID = q . questID and qu . number = $number and readyID = $id and tablerow is not null order by tablerow, questid;";
                     $result1 = $conn->query($sql1);
                     $table = 0;
                     echo '<table class="table"><thead><tr>';
                     echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                    $count = count($columns) + 1;
+                    $count = count($columns);
                     for ($i = 0; $i < $count; $i++) {
-                        if (($i >= count($columns))) {
-                            echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                        } else {
                             echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                        }
+                        
+        
+        
                     }
                     echo '</tr></thead><tbody>';
                     $up = 0;
                     $i = 1;
-                    $ac1 = count($columns) - 1;
                     $ac2 = count($columns);
                     while ($row1 = $result1->fetch_assoc()) {
-                        if ($ac1 == $i) {
-                            $answer1 = (int)$row1["answer"];
-                        } else if ($ac2 == $i) {
+                        if ($ac2 == $i) {
                             $answer2 = (int)$row1["answer"];
                         }
                         if ($i == $count) {
-                            $a = (int)$answer1 + (int)$answer2;
-                            echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $a . '" disabled></td>';
-                            $sum3 += $a;
+                            $sum3 += $answer2;
                         }
                         if ($up == 0) {
                             echo '<tr>';
                             echo '<th scope="row">' . $row1["tablerow"] . '</th>';
                             $up++;
                         }
-                        if ($i >= $count) {
-                            $i = 1;
-                            if ($up !== 1) {
-                                echo '</tr>';
-                            }
-                            echo '<tr>';
-                            echo '<th scope="row">' . $row1["tablerow"] . '</th>';
-                            $up++;
-                        }
-
-
                         // Numeracja wierszy
                         echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $row1["answer"] . '" disabled></td>';
-
+                        if ($i >= $count) {
+                            $i = 1;
+                            if ($up == 1) {
+                                echo '</tr>';
+                            }
+                            $up=0;
+        
+        
+                        }
+        
                         $i++;
                     }
-                    $a = (int)$answer1 + (int)$answer2;
-                    echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . $a . '" disabled></td>';
-                    $sum3 += $a;
                     echo '</tbody>
-            <tfoot><td style="text-align:right;" colspan="' . $count . '">Suma: </td><td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="' . $sum3 . '" readonly></td></tfoot>
-
-            </table>';
+                    <tfoot><td style="text-align:right;" colspan="' . $count . '">Suma: </td><td ><input style="text - align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="' . $sum3 . '" disabled></td></tfoot>
+        
+                    </table>';
 
                     $table_opened5 = false;
                     unset($columns);

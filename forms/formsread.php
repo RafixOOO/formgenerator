@@ -211,7 +211,7 @@ if (isLoggedIn()) {
             } else if ($row["type"] != 5 and $table_opened5) {
                 echo '<table class="table m' . $number . '"><thead><tr>';
                 echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                $count = count($columns) + 1;
+                $count = count($columns);
                 for ($i = 0; $i < $count; $i++) {
                     if (($i >= count($columns))) {
                         echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
@@ -229,12 +229,8 @@ if (isLoggedIn()) {
                 $inne1 = count($columns) - 1;
                 $random_number = rand(100, 999);
                 for ($i = 0; $i < $count; $i++) {
-                    if ($i >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
-                    } else if ($i == $inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                    } else if ($i == $inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+                    if ($i = count($columns)) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
 
                     } else {
                         echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
@@ -257,15 +253,11 @@ if (isLoggedIn()) {
                     echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count; $j++) {
-                        if ($j >= count($columns)) {
-                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                        } else if ($j == $inne) {
-                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')" ';
-                        } else if ($j == $inne1) {
-                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-
+                        if ($i = count($columns)) {
+                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
+    
                         } else {
-                            echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
+                            echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
                         }
                         echo '
 
@@ -493,7 +485,7 @@ if (isLoggedIn()) {
                 }
                 echo '<div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-        <textarea style="width:50%;" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" type="text" name="' . $row["number"] . '"';
+        <textarea style="width:50%" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" type="text" name="' . $row["number"] . '"';
                 if ($row["req"] == 1) {
                     echo ' required';
                 }
@@ -575,13 +567,10 @@ document.addEventListener(\'DOMContentLoaded\', function() {
         if ($table_opened5) {
             echo '<table class="table m' . $number . '"><thead><tr>';
             echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-            $count = count($columns) + 1;
+            $count = count($columns);
             for ($i = 0; $i < $count; $i++) {
-                if (($i >= count($columns))) {
-                    echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                } else {
+               
                     echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                }
 
 
             }
@@ -589,20 +578,14 @@ document.addEventListener(\'DOMContentLoaded\', function() {
 
             echo '<tr>';
             echo '<th scope="row">1</th>'; // Numeracja wierszy
-            $inne = count($columns) - 2;
-            $inne1 = count($columns) - 1;
             $random_number = rand(100, 999);
             for ($i = 0; $i < $count; $i++) {
-                if ($i >= count($columns)) {
-                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                } else if ($i == $inne) {
-                    echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                } else if ($i == $inne1) {
-                    echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-
+                if ($i == count($columns)-1) {
+                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
                 } else {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
                 }
+
 
 
                 if ($req == 1) {
@@ -621,16 +604,13 @@ document.addEventListener(\'DOMContentLoaded\', function() {
                 echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
-                    if ($j >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                    } else if ($j == $inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                    } else if ($j == $inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+                    if ($j == count($columns)-1) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
 
                     } else {
-                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
                     }
+
                     echo '
 
                 ></td>'; // Pole tekstowe w komórkach
@@ -975,21 +955,6 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
 </script>
 
 <script>
-    function addInputs(index, number) {
-        // Pobierz wartości z obu pól tekstowych
-        var input1Value = parseFloat(document.getElementById("input1_" + index + "_" + number).value);
-        var input2Value = parseFloat(document.getElementById("input2_" + index + "_" + number).value);
-
-        // Upewnij się, że wartości są liczbami, a nie NaN
-        if (!isNaN(input1Value) && !isNaN(input2Value)) {
-            // Dodaj wartość z input1 do wartości w input2
-            var result = input1Value + input2Value;
-            // Ustaw wynik jako wartość pola tekstowego wynikowego
-            document.getElementById("inputwyn_" + index + "_" + number).value = result;
-
-        }
-        updateSumByTableClass4(number);
-    }
 
     function delInputs(index, number) {
         // Pobierz wartości z obu pól tekstowych
@@ -1058,7 +1023,7 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
         });
 
         // Ustaw sumę w inpucie na dole
-        document.getElementById('inputres1_' + index).value = totalSum;
+        document.getElementById('inputres_' + index).value = totalSum;
     }
 
     function updateSumByTableClass1(index) {
