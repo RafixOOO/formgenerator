@@ -85,7 +85,7 @@ $sql = "WITH quest_ranked AS (
     FROM 
         questconnect q
     JOIN 
-        quest qu ON q.questID = qu.questID AND qu.constant = 0 and qu.type in (0,1,2,3,4,5,6,7)
+        quest qu ON q.questID = qu.questID AND qu.constant = 0 and qu.type in (0,1,2,3,4,5,6,7,12)
     JOIN 
         application a ON q.applicationID = a.applicationID and a.applicationID = ?
     left JOIN 
@@ -253,7 +253,7 @@ $stmt->close();
                         <div class="form-group">
                         <?php 
                         
-                        if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
+                        if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==7 || $data['type']==12){ ?>
                         
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
@@ -293,7 +293,7 @@ $stmt->close();
                         <div class="form-group">
                         <?php echo "<script type='text/javascript'>
     console.log('PHP zmienna quest: " . addslashes($data['quest']) . "');
-</script>"; if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
+</script>"; if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ ?>
                         
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">

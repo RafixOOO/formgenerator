@@ -65,6 +65,8 @@ if (isset($_GET['ID'])) {
             $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id order by number,qu.questID; ";
             $result = $conn->query($sql);
             $number = 0;
+            $gpup=1;
+            $gpdown=0;
             $columns = array();
             $columns1 = array();
             $table_opened4 = false;
@@ -470,7 +472,7 @@ if (isset($_GET['ID'])) {
                     }
                     echo '<div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-       <textarea style="width:50%;" type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . ' "';
+       <textarea style="width:40%;" type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . ' "';
 
                     if ($row["req"] == 1) {
                         echo ' required';
@@ -492,6 +494,50 @@ document.addEventListener(\'DOMContentLoaded\', function() {
     textarea.style.height = textarea.scrollHeight + \'px\';
 });
 </script>';
+                } else if ($row["type"] == 12) {
+                    if ($number != $row["number"] and $number != 0) {
+                        echo "</p>";
+                    } else {
+                        $number = $row["number"];
+                    }
+                    if ($number != $row["number"]) {
+                        echo "<p>";
+                    }
+                    if($gpup==1){
+                        echo '<div style="display: flex; gap: 0.5%;">';
+                        $gpup=0;
+                        $gpdown=0;
+                    }
+                    echo '<div class="mb-3" style="width: 40%;">
+        <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
+       <textarea id="'.$gpdown.'res' . $row["number"] . '" style="width:100%;" type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . ' "';
+
+                    if ($row["req"] == 1) {
+                        echo ' required';
+                    }
+
+                    echo '></textarea>
+      </div>';
+                    echo '<script>
+document.addEventListener(\'DOMContentLoaded\', function() {
+    const textarea = document.getElementById(\''.$gpdown.'res' . $row["number"] . '\');
+    
+    textarea.addEventListener(\'input\', function() {
+        this.style.height = \'auto\'; // Resetowanie wysokości
+        this.style.height = this.scrollHeight + \'px\'; // Ustawianie wysokości na podstawie zawartości
+    });
+
+    // Początkowa zmiana wysokości na podstawie istniejącej zawartości
+    textarea.style.height = \'auto\';
+    textarea.style.height = textarea.scrollHeight + \'px\';
+});
+</script>';
+if($gpdown==1){
+    echo '</div>';
+    $gpup=1;
+    $gpdown=0;
+}
+$gpdown=1;
                 } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7 or $row["type"] == 11 or $row["type"] == 10) {
                     $req = $row["req"];
                     $number = $row["number"];

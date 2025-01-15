@@ -71,18 +71,25 @@ endif;
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
         <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\');toggleCheckbox(this, \'checkbox_' + columnCounter + '\');" required>\
             <option value="" disabled selected>Wybierz opcję</option>\
+            <optgroup label="Opcje">\
             <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
-            <option value="1">Tekst</option>\
+            <option value="1">Pytanie</option>\
+            <option value="12">Grupa pytań</option>\
             <option value="0">Etykieta</option>\
             <option value="4">Tabela</option>\
             <option value="5">Tabela Obliczeń(Suma)</option>\
             <option value="6">Tabela Obliczeń(Różnica)</option>\
             <option value="7">Tabela Budżetowa</option>\
+            </optgroup>\
+            <optgroup label="Opcje dynamiczne">\
             <option value="8">Dane osobowe(imię, nazwisko, email, numer telefonu)</option>\
             <option value="9">Organizacja</option>\
-            <option value="10">pytanie(Komisja)</option>\
-            <option value="11">Tabela punktów(Komisja)</option>\
+            </optgroup>\
+            <optgroup label="Komisja">\
+            <option value="10">Pytanie</option>\
+            <option value="11">Tabela punktów</option>\
+            </optgroup>\
         </select>\
         <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
             <option value="1">Wymagane</option>\
@@ -174,6 +181,23 @@ endif;
 
         // Tworzymy odpowiednie pola w zależności od wybranego typu
         switch (selectedValue) {
+            case "12": // grupa pytań
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "text");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
+                specificFieldsDiv.appendChild(textField);
+
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "text");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
+                specificFieldsDiv.appendChild(textField);
+                break;
             case "1": // Tekst
             case "0": // Tekstarea
             case "10": // Pytanie

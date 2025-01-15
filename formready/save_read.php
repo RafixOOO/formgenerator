@@ -92,7 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 break;
 
-            } else if ($row['type'] == 4 or $row['type'] == 5 or $row['type'] == 6 or $row['type'] == 7 or $row['type'] == 8) {
+            } else if ($row['type'] == 4 or $row['type'] == 5 or $row['type'] == 6 or $row['type'] == 7 or $row['type'] == 8 or $row['type'] == 12) {
+                $type=$row['type'];
                 $fieldvalue = $_POST['' . $i];
                 $count = 0;
                 $min = 0;
@@ -116,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $quest1 = $min;
                     }
 
-                    if ($value != '') {
+                    if ($value != '' and $type != 12) {
                         $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`,`tablerow`) VALUES (?,?,?,?)";
                         $stmt = $conn->prepare($ins);
                         if (!$stmt) {
@@ -125,6 +126,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         } else {
                             // Przypisanie wartości do zapytania
                             $stmt->bind_param("iisi", $readyID, $quest1, $value, $j);
+                            // Wykonanie zapytania
+                            $stmt->execute();
+                            if ($stmt->affected_rows === 0) {
+                                // Obsługa błędów
+                                echo "Błąd podczas wykonywania zapytania: " . $stmt->error;
+                            }
+                            // Zamknięcie zapytania
+                            $stmt->close();
+                        }
+                    } else if ($value != '' and $type == 12) {
+                        $ins = "INSERT INTO `answerconnect`(`readyID`, `questID`, `answer`) VALUES (?,?,?)";
+                        $stmt = $conn->prepare($ins);
+                        if (!$stmt) {
+                            // Obsługa błędów
+                            echo "Błąd przy przygotowywaniu zapytania: " . $conn->error;
+                        } else {
+                            // Przypisanie wartości do zapytania
+                            $stmt->bind_param("iis", $readyID, $quest1, $value);
                             // Wykonanie zapytania
                             $stmt->execute();
                             if ($stmt->affected_rows === 0) {

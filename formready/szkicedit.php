@@ -122,22 +122,29 @@ if (isset($_GET['ID'])) {
                         echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
                         echo '<select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' . $row['number'] . '" onchange="showFields(this, \'field_' . $row['number'] . '[]\');toggleCheckbox(this, \'checkbox_' . $row['number'] . '\');" required>';
                         echo '<option value="" disabled selected>Wybierz opcję</option>';
+                        echo '<optgroup label="Opcje">';
                         echo '<option value="3"' . ($row['type'] == 3 ? ' selected' : '') . '>Jednokrotny wybór</option>';
                         echo '<option value="2"' . ($row['type'] == 2 ? ' selected' : '') . '>Wielokrotny wybór</option>';
-                        echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Tekst</option>';
-                        echo '<option value="0"' . ($row['type'] == 0 ? ' selected' : '') . '>Tekst bez pola</option>';
+                        echo '<option value="1"' . ($row['type'] == 1 ? ' selected' : '') . '>Pytanie</option>';
+                        echo '<option value="12"' . ($row['type'] == 12 ? ' selected' : '') . '>Grupa pytań</option>';
+                        echo '<option value="0"' . ($row['type'] == 0 ? ' selected' : '') . '>Etykieta</option>';
                         echo '<option value="4"' . ($row['type'] == 4 ? ' selected' : '') . '>Tabela</option>';
-                        echo '<option value="5"' . ($row['type'] == 5 ? ' selected' : '') . '>Tabela Suma</option>';
-                        echo '<option value="6"' . ($row['type'] == 6 ? ' selected' : '') . '>Tabela Róźnica</option>';
+                        echo '<option value="5"' . ($row['type'] == 5 ? ' selected' : '') . '>Tabela Obliczeń(Suma)</option>';
+                        echo '<option value="6"' . ($row['type'] == 6 ? ' selected' : '') . '>Tabela Obliczeń(Różnica)</option>';
                         echo '<option value="7"' . ($row['type'] == 7 ? ' selected' : '') . '>Tabela Budżetowa</option>';
+                        echo '</optgroup>';
+                        echo '<optgroup label="Opcje dynamiczne">';
                         echo '<option value="8"' . ($row['type'] == 8 ? ' selected' : '') . '>Dane osobowe(imię, nazwisko, email, numer telefonu)</option>';
                         echo '<option value="9"' . ($row['type'] == 9 ? ' selected' : '') . '>Organizacja</option>';
+                        echo '</optgroup>';
+                        echo '<optgroup label="Komisja">';
                         echo '<option value="10"' . ($row['type'] == 10 ? ' selected' : '') . '>pytanie(Komisja)</option>';
                         echo '<option value="11"' . ($row['type'] == 11 ? ' selected' : '') . '>Tabela punktów(Komisja)</option>';
                         echo '</select>';
                         echo '<select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' . $row['number'] . '">';
                         echo '<option value="1"' . ($row['req'] == 1 ? ' selected' : '') . '>Wymagane</option>';
                         echo '<option value="0"' . ($row['req'] == 0 ? ' selected' : '') . '>Opcjonalne</option>';
+                        echo '</optgroup>';
                         echo '</select>';
                         echo '<div class="specificFields">';
                         echo '<div id="' . $num . '" class="flex flex-col">';
@@ -234,18 +241,25 @@ if (isset($_GET['ID'])) {
     <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>\
         <select class="py-2.5 px-3.5 text-sm w-2/5 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="type_' + columnCounter + '" onchange="showFields(this, \'field_' + columnCounter + '[]\');toggleCheckbox(this, \'checkbox_' + columnCounter + '\');" required>\
              <option value="" disabled selected>Wybierz opcję</option>\
-           <option value="3">Jednokrotny wybór</option>\
+          <optgroup label="Opcje">\
+            <option value="3">Jednokrotny wybór</option>\
             <option value="2">Wielokrotny wybór</option>\
-            <option value="1">Tekst</option>\
+            <option value="1">Pytanie</option>\
+            <option value="12">Grupa pytań</option>\
             <option value="0">Etykieta</option>\
             <option value="4">Tabela</option>\
             <option value="5">Tabela Obliczeń(Suma)</option>\
             <option value="6">Tabela Obliczeń(Różnica)</option>\
             <option value="7">Tabela Budżetowa</option>\
+            </optgroup>\
+            <optgroup label="Opcje dynamiczne">\
             <option value="8">Dane osobowe(imię, nazwisko, email, numer telefonu)</option>\
             <option value="9">Organizacja</option>\
-            <option value="10">pytanie(Komisja)</option>\
-            <option value="11">Tabela punktów(Komisja)</option>\
+            </optgroup>\
+            <optgroup label="Komisja">\
+            <option value="10">Pytanie</option>\
+            <option value="11">Tabela punktów</option>\
+            </optgroup>\
         </select>\
         <select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' + columnCounter + '">\
             <option value="1">Wymagane</option>\
@@ -337,6 +351,23 @@ if (isset($_GET['ID'])) {
 
         // Tworzymy odpowiednie pola w zależności od wybranego typu
         switch (selectedValue) {
+            case "12": // grupa pytań
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "text");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
+                specificFieldsDiv.appendChild(textField);
+
+                var textField = document.createElement('input');
+                textField.setAttribute("type", "text");
+                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+                textField.setAttribute("name", clasa);
+                textField.setAttribute("placeholder", "Pole tekstowe");
+                textField.setAttribute("required", "required");
+                specificFieldsDiv.appendChild(textField);
+                break;
             case "1": // Tekst
             case "0": // Tekstarea
             case "10": // Pytanie

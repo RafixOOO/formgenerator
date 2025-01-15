@@ -81,6 +81,8 @@ if (isLoggedIn()) {
         $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id and qu.constant=0 order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
+        $gpup=1;
+        $gpdown=0;
         $columns = array();
         $table_opened4 = false;
         $table_opened5 = false;
@@ -507,6 +509,49 @@ document.addEventListener(\'DOMContentLoaded\', function() {
     textarea.style.height = textarea.scrollHeight + \'px\';
 });
 </script>';
+            }else if ($row["type"] == 12) {
+                if ($number != $row["number"] and $number != 0) {
+                    echo "</p>";
+                }
+                if ($number != $row["number"]) {
+                    echo "<p>";
+                    $number = $row["number"];
+                }
+                if($gpup==1){
+                    echo '<div style="display: flex; gap: 0.5%;">';
+                    $gpup=0;
+                    $gpdown=0;
+                }
+                echo '<div class="mb-3" style="width: 40%;">
+    <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
+   <textarea id="'.$gpdown.'res' . $row["number"] . '" style="width:100%;" type="text" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" name="' . $row["number"] . '[]"';
+
+                if ($row["req"] == 1) {
+                    echo ' required';
+                }
+
+                echo '></textarea>
+  </div>';
+                echo '<script>
+document.addEventListener(\'DOMContentLoaded\', function() {
+const textarea = document.getElementById(\''.$gpdown.'res' . $row["number"] . '\');
+
+textarea.addEventListener(\'input\', function() {
+    this.style.height = \'auto\'; // Resetowanie wysokości
+    this.style.height = this.scrollHeight + \'px\'; // Ustawianie wysokości na podstawie zawartości
+});
+
+// Początkowa zmiana wysokości na podstawie istniejącej zawartości
+textarea.style.height = \'auto\';
+textarea.style.height = textarea.scrollHeight + \'px\';
+});
+</script>';
+if($gpdown==1){
+echo '</div>';
+$gpup=1;
+$gpdown=0;
+}
+$gpdown=1;
             } else if ($row["type"] == 4 or $row["type"] == 5 or $row["type"] == 6 or $row["type"] == 7) {
                 $req = $row["req"];
                 $number = $row["number"];
@@ -786,7 +831,7 @@ document.addEventListener(\'DOMContentLoaded\', function() {
             unset($columns);
         }
         echo "<input type='hidden' name='id' value='" . $id . "' >";
-        echo "<input type='hidden' name='number' value='" . $number . "' >"
+        echo "<input type='hidden' name='number1' value='" . $number . "' >"
         ?>
 
         <div style="text-align: right">

@@ -225,7 +225,7 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ ?>
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
 
@@ -263,7 +263,7 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7){ ?>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ ?>
                         
                             <label><?php echo htmlspecialchars($data['quest']); ?></label>
                             <div style="display: flex;">
