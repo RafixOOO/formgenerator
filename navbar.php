@@ -1,45 +1,45 @@
 <script>
         function redirectToNewPage() {
         // Ustawienie adresu URL nowej strony
-        var newPageURL = "http://10.100.101.14/programs/formgenerator/forms/forms.php";
+        var newPageURL = "http://localhost/programs/formgenerator/forms/forms.php";
         // Przekierowanie użytkownika
         window.location.href = newPageURL;
         }
 function redirectToNewPage1() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/formready.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/formready/formready.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 
 function redirectToNewPage2() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/tocheck.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/formready/tocheck.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 
 function redirectToNewPage3() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/formready/szkic.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/formready/szkic.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage4() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/role_user.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/user/role_user.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage5() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/user/accept.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/user/accept.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
 function redirectToNewPage6() {
     // Ustawienie adresu URL nowej strony
-    var newPageURL1 = "http://10.100.101.14/programs/formgenerator/organization/organization.php";
+    var newPageURL1 = "http://localhost/programs/formgenerator/organization/organization.php";
     // Przekierowanie użytkownika
     window.location.href = newPageURL1;
     }
