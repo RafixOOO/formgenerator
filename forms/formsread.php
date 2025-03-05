@@ -487,7 +487,7 @@ if (isLoggedIn()) {
                 }
                 echo '<div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">' . $row["quest"] . '</label>
-        <textarea style="width:50%" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" type="text" name="' . $row["number"] . '"';
+        <textarea style="width:81.5%" rows="1" id="exampleTextarea" class="form-control auto-resize res' . $row["number"] . '" type="text" name="' . $row["number"] . '"';
                 if ($row["req"] == 1) {
                     echo ' required';
                 }
