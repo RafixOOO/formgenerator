@@ -206,7 +206,6 @@ endif;
                 specificFieldsDiv.appendChild(textField);
                 break;
             case "1": // Tekst
-            case "0": // Tekstarea
             case "10": // Pytanie
                 var textField = document.createElement('input');
                 textField.setAttribute("type", "text");
@@ -215,6 +214,69 @@ endif;
                 textField.setAttribute("placeholder", "Pole tekstowe");
                 textField.setAttribute("required", "required");
                 specificFieldsDiv.appendChild(textField);
+                break;
+            case "0": // Tekstarea
+                // Stworzenie kontenera dla inputa i przycisku (dla lepszego ułożenia w linii)
+                var container = document.createElement('div');
+container.setAttribute("class", "flex items-center space-x-2");
+
+// Tworzenie pola tekstowego (readonly, bo użytkownik nie wpisuje ręcznie)
+var textField = document.createElement('input');
+textField.setAttribute("type", "text");
+textField.setAttribute("class", "py-2.5 px-3.5 text-sm flex-1 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField.setAttribute("name", clasa);
+textField.setAttribute("placeholder", "Pole tekstowe");
+textField.setAttribute("readonly", "readonly");
+
+// Tworzenie przycisku do wyboru pliku
+var uploadBtn = document.createElement('button');
+uploadBtn.innerText = "Dodaj obraz";
+uploadBtn.setAttribute("type", "button");
+uploadBtn.setAttribute("class", "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600");
+
+// Ukryty input file
+var fileInput = document.createElement('input');
+fileInput.setAttribute("type", "file");
+fileInput.setAttribute("accept", "image/*");
+fileInput.style.display = "none";
+
+// Obsługa kliknięcia przycisku - otwarcie okna wyboru pliku
+uploadBtn.addEventListener('click', function() {
+    fileInput.click();
+});
+
+// Obsługa wyboru pliku i wysyłka na serwer
+fileInput.addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    if (file) {
+        var formData = new FormData();
+        formData.append("image", file);
+
+        // Wysyłka na serwer (zmień URL na swój backend)
+        fetch('upload.php', {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json()) // Oczekujemy JSON z URL obrazka
+        .then(data => {
+            if (data.success) {
+                var imgTag = `<center><img src="${data.imageUrl}" /></center>`;
+                textField.value = imgTag; // Wstawienie całego tagu HTML do inputa
+            } else {
+                alert("Błąd przesyłania obrazu!");
+            }
+        })
+        .catch(error => console.error("Błąd:", error));
+    }
+});
+
+// Dodanie elementów do kontenera i do strony
+container.appendChild(textField);
+container.appendChild(uploadBtn);
+specificFieldsDiv.appendChild(container);
+specificFieldsDiv.appendChild(fileInput);
+
+
                 break;
             case "2":
             case "3":// Jednokrotny wybór
