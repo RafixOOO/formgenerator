@@ -309,7 +309,7 @@ if (isset($_GET['ID'])) {
     function toggleCheckbox(selectElement, checkboxId, checkboxrepId) {
     const checkbox = document.getElementById(checkboxId);
     const checkboxrep = document.getElementById(checkboxrepId);
-    if (selectElement.value === "10" || selectElement.value === "11") {
+    if (selectElement.value === "10" || selectElement.value === "11" || selectElement.value === "8" || selectElement.value === "9") {
         checkbox.disabled = true; // Wyłącz checkbox
         checkbox.checked = false; // Odznacz checkbox
         checkboxrep.disabled = true; // Wyłącz checkbox
