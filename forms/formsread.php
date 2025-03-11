@@ -78,7 +78,7 @@ if (isLoggedIn()) {
         }
 
 
-        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id and qu.constant=0 order by number,qu.questID; ";
+        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id and (qu.constant=0 or qu.constant=2 or qu.constant=3) order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
         $gpup=1;
@@ -231,8 +231,8 @@ if (isLoggedIn()) {
                 $inne1 = count($columns) - 1;
                 $random_number = rand(100, 999);
                 for ($i = 0; $i < $count; $i++) {
-                    if ($i = count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
+                    if ($i == count($columns)-1) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]"';
 
                     } else {
                         echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
@@ -255,11 +255,11 @@ if (isLoggedIn()) {
                     echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count; $j++) {
-                        if ($i = count($columns)) {
-                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
+                        if ($i == count($columns)-1) {
+                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="a' . $number . '[]"';
     
                         } else {
-                            echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                            echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                         }
                         echo '
 
@@ -298,7 +298,7 @@ if (isLoggedIn()) {
                 $random_number = rand(100, 999);
                 for ($i = 0; $i < $count; $i++) {
                     if ($i >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass4(' . $number . ')" ';
                     } else if ($i == $inne) {
                         echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
                     } else if ($i == $inne1) {
@@ -326,7 +326,7 @@ if (isLoggedIn()) {
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count; $j++) {
                         if ($j >= count($columns)) {
-                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
+                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass4(' . $number . ')" name="anull"';
                         } else if ($j == $inne) {
                             echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                         } else if ($j == $inne1) {
@@ -650,10 +650,10 @@ $gpdown=1;
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
                     if ($j == count($columns)-1) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="a' . $number . '[]"';
 
                     } else {
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                        echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                     }
 
                     echo '
@@ -891,9 +891,11 @@ function saveFormDataToDatabase() {
 });
 }
 
+window.addEventListener('DOMContentLoaded', loadFormDataFromDatabase);
+
 function loadFormDataFromDatabase() {
-    const userID = <?php echo returniserid(); ?>; // Przykładowe ID użytkownika
-    const readyapplicationID = <?php echo $id; ?>; // Przykładowe ID aplikacji
+    const userID = <?php echo returniserid(); ?>; // Pobranie ID użytkownika
+    const readyapplicationID = <?php echo $id; ?>; // Pobranie ID aplikacji
 
     fetch(`load_form_data.php?userID=${userID}&readyapplicationID=${readyapplicationID}`)
     .then(response => response.json())
@@ -903,30 +905,79 @@ function loadFormDataFromDatabase() {
         }
 
         const formElements = document.forms[0].elements;
-        for (let name in formData) {
-            const values = formData[name];
+
+        for (let originalName in formData) {
+            const values = formData[originalName];
+
             if (Array.isArray(values)) {
                 let index = 0;
                 for (let i = 0; i < formElements.length; i++) {
                     const element = formElements[i];
-                    if (element.name === name && index < values.length) {
+
+                    // Sprawdzenie czy name zaczyna się od 'a' i usunięcie go
+                    let normalizedName = element.name;
+                    if (normalizedName.startsWith('a')) {
+                        normalizedName = normalizedName.substring(1); // Usunięcie pierwszego 'a'
+                    }
+
+                    if (normalizedName === originalName && index < values.length && values[index] !== "") {
                         element.value = values[index];
                         index++;
+
+                        // Usunięcie klasy hidden-row tylko jeśli wartość nie jest pusta
+                        if (values[index - 1] !== "") {
+                            removeHiddenRowClass(element);
+                        }
                     }
                 }
             } else {
                 for (let i = 0; i < formElements.length; i++) {
                     const element = formElements[i];
-                    if (element.name === name) {
+
+                    // Sprawdzenie czy name zaczyna się od 'a' i usunięcie go
+                    let normalizedName = element.name;
+                    if (normalizedName.startsWith('a')) {
+                        normalizedName = normalizedName.substring(1); // Usunięcie pierwszego 'a'
+                    }
+
+                    if (normalizedName === originalName && values !== "" && normalizedName == 'anull') {
                         element.value = values;
+
+                        // Usunięcie klasy hidden-row tylko jeśli wartość nie jest pusta
+                        if (values !== "") {
+                            removeHiddenRowClass(element);
+                        }
                     }
                 }
             }
         }
+
         document.getElementById('saveBtn').value = 'Wróć (zapisz)';
+        document.getElementById('sendbtn').value = 'Wyślij';
     })
     .catch(error => console.error('Błąd podczas wczytywania danych:', error));
 }
+
+/**
+ * Funkcja usuwa klasę hidden-row z TR, jeśli input znajduje się w jego wnętrzu
+ */
+function removeHiddenRowClass(inputElement) {
+    let trElement = inputElement.closest('tr'); // Znajdź najbliższy <tr>
+    if (trElement && trElement.classList.contains('hidden-row')) {
+        trElement.classList.remove('hidden-row'); // Usuń klasę 'hidden-row'
+    }
+
+    // Pobranie wszystkich inputów w tym samym wierszu
+    let inputs = trElement.querySelectorAll('input');
+
+    inputs.forEach(input => {
+        // Sprawdzenie, czy name zaczyna się od 'a' i po niej jest liczba
+        if (/^a\d/.test(input.name)) {
+            input.name = input.name.substring(1); // Usuń pierwszą literę 'a'
+        }
+    });
+}
+
 
 // Wczytaj dane automatycznie po załadowaniu strony
 document.addEventListener('DOMContentLoaded', loadFormDataFromDatabase);
@@ -1037,7 +1088,8 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
 
     function updateSumByTableClass4(index) {
         // Pobierz wszystkie pola inputwyn w tabeli o podanej klasie
-        var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="inputwyn_"]');
+        var inputwynFields = document.querySelectorAll('.table.m' + index + ' input[id^="inputwyn_"]:not([name^="a"])');
+
         var totalSum = 0;
 
         // Iteruj przez wszystkie pola inputwyn i sumuj ich wartości
@@ -1068,7 +1120,7 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
         });
 
         // Ustaw sumę w inpucie na dole
-        document.getElementById('inputres_' + index).value = totalSum;
+        document.getElementById('inputres1_' + index).value = totalSum;
     }
 
     function updateSumByTableClass1(index) {

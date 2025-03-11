@@ -79,7 +79,7 @@ if (isLoggedIn()) {
         }
 
 
-        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id and qu.constant=1 order by number,qu.questID; ";
+        $sql = "SELECT qu.questID, qu.quest,qu.type, `number`, `req` FROM `questconnect` q, `quest` qu, `application` a WHERE q.applicationID=a.applicationID and q.questID=qu.questID and a.applicationID=$id AND (qu.constant = 1 or qu.constant = 3) order by number,qu.questID; ";
         $result = $conn->query($sql);
         $number = 0;
         $firstnumber = 0 ;

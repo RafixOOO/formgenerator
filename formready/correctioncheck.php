@@ -55,7 +55,7 @@ $sql = "WITH quest_ranked AS (
     WHERE 
         b.readyID = ? 
         AND r.readyID = ?
-        AND qu.constant = 0
+        AND (qu.constant = 3 or qu.constant = 2)
 )
 SELECT 
     questID, 

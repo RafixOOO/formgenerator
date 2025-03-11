@@ -71,6 +71,7 @@ try {
 $req = "required_";
 $field = "field_";
 $checkbox="checkbox_";
+$checkboxrep="checkboxrep_";
 $number=1;
 $idlastfield='';
 $columnCounterValue = $_POST['columnCounterInput'];
@@ -83,7 +84,16 @@ echo $columnCounterValue+1;
             $reqvalue =  $_POST[$req . $i];
             if (isset($_POST[$field . $i])) {
             $fieldvalue =  $_POST[$field . $i];
-            $checkboxvalue= $_POST[$checkbox . $i];
+            $checkboxrep=$_POST[$checkboxrep . $i];
+            $checkboxspr= $_POST[$checkbox . $i];
+            if($checkboxrep==1 && $checkboxspr==1){
+                $checkboxvalue=3;
+            }
+            else if($checkboxrep==1 && $checkboxspr==0){
+                $checkboxvalue=2;
+            }else if($checkboxrep==0 && $checkboxspr==1){
+                $checkboxvalue=1;
+            }
 
         foreach ($fieldvalue as $value) {
                 echo $value;

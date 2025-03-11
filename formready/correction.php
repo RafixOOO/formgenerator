@@ -13,7 +13,7 @@ $readyID = intval($_GET['ID']);  // ID wniosku do pobrania
 $appID1 = intval($_GET['appID1']);
 $corrected = false; // Flaga, czy formularz jest poprawiony
 $applicationID = 0;
-$sql = "SELECT applicationID FROM formbuilder.readyapplication WHERE readyID = $readyID";
+$sql = "SELECT applicationID FROM readyapplication WHERE readyID = $readyID";
 $result = $conn->query($sql);
 
 if ($result && $row = $result->fetch_assoc()) {
@@ -85,7 +85,7 @@ $sql = "WITH quest_ranked AS (
     FROM 
         questconnect q
     JOIN 
-        quest qu ON q.questID = qu.questID AND qu.constant = 0 and qu.type in (0,1,2,3,4,5,6,7,12)
+        quest qu ON q.questID = qu.questID AND (qu.constant = 3 or qu.constant = 2) and qu.type in (0,1,2,3,4,5,6,7,12)
     JOIN 
         application a ON q.applicationID = a.applicationID and a.applicationID = ?
     left JOIN 

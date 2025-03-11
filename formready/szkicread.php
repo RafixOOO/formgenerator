@@ -69,6 +69,7 @@ if (isset($_GET['ID'])) {
             $gpdown=0;
             $columns = array();
             $columns1 = array();
+            $columns2 = array();
             $table_opened4 = false;
             $table_opened5 = false;
             $table_opened6 = false;
@@ -555,7 +556,7 @@ $gpdown=1;
                         $columns[] = $row["quest"];
                     } else if ($row["type"] == 11) {
                         $table_opened11 = true;
-                        $columns[] = $row["quest"];
+                        $columns2[] = $row["quest"];
                     } else if ($row["type"] == 10) {
                         $table_opened12 = true;
                         $columns1[] = $row["quest"];
@@ -851,7 +852,7 @@ $gpdown=1;
                     echo '</tr></thead><tbody>';
 
                     // Każdy element w $columns tworzy nowy wiersz w tabeli
-                    foreach ($columns as $column) {
+                    foreach ($columns2 as $column) {
                         echo '<tr>'; // Otwórz nowy wiersz
                         echo '<td>' . $column . '</td>'; // Nazwa kolumny
                         echo '<td><input type="number" name="b[' . $column . ']"></td>'; // Pole do wpisania punktów
@@ -860,7 +861,7 @@ $gpdown=1;
 
                     echo '</tbody></table>';
                     $table_opened11 = false;
-                    unset($columns);
+                    unset($columns2);
                 }
                 echo "<input type='hidden' name='id' value='" . $id . "'>";
             }

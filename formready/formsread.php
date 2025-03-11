@@ -136,7 +136,7 @@ if (isset($_GET['ID'])) {
     }
         }
 
-        $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id and qu.constant=0 order by number;";
+        $sql = "SELECT qu.questID, qu.quest,qu.type, q.`number`, q.`req` FROM `questconnect` q, `quest` qu, `application` a, readyapplication r WHERE q.applicationID=a.applicationID and q.questID=qu.questID and r.applicationID=a.applicationID and r.readyID=$id and (qu.constant=0 or qu.constant=2 or qu.constant=3) order by number;";
         $result = $conn->query($sql);
         $number = 0;
         $gpup=1;
@@ -312,7 +312,7 @@ if (isset($_GET['ID'])) {
 
                 </table>';
 
-                $table_opened5 = false;
+                $table_opened6 = false;
                 unset($columns);
 
             } else if ($row["type"] != 7 and $table_opened7) {
