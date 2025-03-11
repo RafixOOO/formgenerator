@@ -141,8 +141,8 @@ if (isset($_GET['ID'])) {
                         echo '<option value="9"' . ($row['type'] == 9 ? ' selected' : '') . '>Organizacja</option>';
                         echo '</optgroup>';
                         echo '<optgroup label="Komisja">';
-                        echo '<option value="10"' . ($row['type'] == 10 ? ' selected' : '') . '>pytanie(Komisja)</option>';
-                        echo '<option value="11"' . ($row['type'] == 11 ? ' selected' : '') . '>Tabela punktów(Komisja)</option>';
+                        echo '<option value="10"' . ($row['type'] == 10 ? ' selected' : '') . '>pytanie</option>';
+                        echo '<option value="11"' . ($row['type'] == 11 ? ' selected' : '') . '>Tabela punktów</option>';
                         echo '</select>';
                         echo '<select class="py-2.5 px-3.5 text-sm w-1/6 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600" name="required_' . $row['number'] . '">';
                         echo '<option value="1"' . ($row['req'] == 1 ? ' selected' : '') . '>Wymagane</option>';
