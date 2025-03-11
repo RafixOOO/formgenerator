@@ -58,6 +58,84 @@ if (isLoggedIn()) {
           href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+            <script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
+        showMoreRowsBtns.forEach(function (btn) {
+            var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
+            var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
+            var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
+            var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
+            console.log(tableId);
+        // Funkcja do liczenia widocznych wierszy w tabeli
+        function countVisibleRows() {
+            var rows = document.querySelectorAll('tr.' + tableId); // Pobierz wszystkie wiersze w tabeli
+            console.log(rows);
+            var visibleRows = 0;
+            rows.forEach(function(row) {
+                if (!row.classList.contains('hidden-row')) {
+                    visibleRows++;
+                }
+            });
+            console.log(visibleRows);
+            return visibleRows;
+        }
+
+        // Inicjalizacja - liczymy początkową liczbę widocznych wierszy i ustawiamy currentIndex
+        currentIndex = countVisibleRows(); // Liczba widocznych wierszy minus 1 // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
+
+            // Funkcja do pokazywania ukrytego wiersza
+            function showNextHiddenRow() {
+                if (currentIndex < hiddenRows.length) {
+                    hiddenRows[currentIndex].style.display = 'table-row';
+                    currentIndex++;
+                    if (currentIndex >= hiddenRows.length) {
+                        showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
+                    }
+                }
+            }
+
+            // Po kliknięciu przycisku pokaż więcej wierszy
+            showMoreRowsBtn.addEventListener('click', function () {
+                showNextHiddenRow();
+
+                // Pobierz referencję do nowo dodanego wiersza
+                var newlyAddedRow = hiddenRows[currentIndex - 1];
+
+                // Zmiana nazwy inputów w dodanym wierszu
+                var inputs = newlyAddedRow.querySelectorAll('input');
+                inputs.forEach(function (input) {
+                    var currentName = input.getAttribute('name');
+                    var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
+                    input.setAttribute('name', newName);
+                });
+            });
+
+            // Dodaj obsługę kliknięcia przycisku usuwania wiersza
+            removeRowBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    if (currentIndex <= 10) {
+                        showMoreRowsBtn.style.display = '';
+                    }
+                    if (currentIndex !== 0) {
+                        --currentIndex;
+                        hiddenRows[currentIndex].style.display = 'none';
+
+                        // Zmiana nazwy inputów w usuwanym wierszu
+                        var inputs = hiddenRows[currentIndex].querySelectorAll('input');
+                        inputs.forEach(function (input) {
+                            var currentName = input.getAttribute('name');
+                            var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
+                            input.setAttribute('name', newName);
+                        });
+                    }
+                });
+            });
+        });
+    });
+
+
+</script>
 </head>
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
@@ -179,7 +257,7 @@ if (isLoggedIn()) {
                 }
                 echo '</tr></thead><tbody>';
 
-                echo '<tr>';
+                echo '<tr class="m' . $number . '">';
                 echo '<th scope="row">1</th>'; // Numeracja wierszy
                 foreach ($columns as $column) {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
@@ -225,7 +303,7 @@ if (isLoggedIn()) {
                 }
                 echo '</tr></thead><tbody>';
 
-                echo '<tr>';
+                echo '<tr class="m' . $number . '">';
                 echo '<th scope="row">1</th>'; // Numeracja wierszy
                 $inne = count($columns) - 2;
                 $inne1 = count($columns) - 1;
@@ -291,7 +369,7 @@ if (isLoggedIn()) {
                 }
                 echo '</tr></thead><tbody>';
 
-                echo '<tr>';
+                echo '<tr class="m' . $number . '">';
                 echo '<th scope="row">1</th>'; // Numeracja wierszy
                 $inne = count($columns) - 2;
                 $inne1 = count($columns) - 1;
@@ -369,7 +447,7 @@ if (isLoggedIn()) {
                 }
                 echo '</tr></thead><tbody>';
 
-                echo '<tr>';
+                echo '<tr class="m' . $number . '">';
                 echo '<th scope="row">1</th>'; // Numeracja wierszy
                 $random_number = rand(100, 999);
                 for ($i = 0; $i < $count - 2; $i++) {
@@ -577,7 +655,7 @@ $gpdown=1;
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
+            echo '<tr class="m' . $number . '">';
             echo '<th scope="row">1</th>'; // Numeracja wierszy
             foreach ($columns as $column) {
                 echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
@@ -621,7 +699,7 @@ $gpdown=1;
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
+            echo '<tr class="m' . $number . '">';
             echo '<th scope="row">1</th>'; // Numeracja wierszy
             $random_number = rand(100, 999);
             for ($i = 0; $i < $count; $i++) {
@@ -687,7 +765,7 @@ $gpdown=1;
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
+            echo '<tr class="m' . $number . '">';
             echo '<th scope="row">1</th>'; // Numeracja wierszy
             $inne = count($columns) - 2;
             $inne1 = count($columns) - 1;
@@ -767,7 +845,7 @@ $gpdown=1;
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
+            echo '<tr class="m' . $number . '">';
             echo '<th scope="row">1</th>'; // Numeracja wierszy
             $random_number = rand(100, 999);
             for ($i = 0; $i < $count; $i++) {
@@ -987,69 +1065,6 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
     </form>
 </div>
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
-        showMoreRowsBtns.forEach(function (btn) {
-            var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
-            var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
-            var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
-            var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
-            var currentIndex = 0; // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
-
-            // Funkcja do pokazywania ukrytego wiersza
-            function showNextHiddenRow() {
-                if (currentIndex < hiddenRows.length) {
-                    hiddenRows[currentIndex].style.display = 'table-row';
-                    currentIndex++;
-                    if (currentIndex >= hiddenRows.length) {
-                        showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
-                    }
-                }
-            }
-
-            // Po kliknięciu przycisku pokaż więcej wierszy
-            showMoreRowsBtn.addEventListener('click', function () {
-                showNextHiddenRow();
-
-                // Pobierz referencję do nowo dodanego wiersza
-                var newlyAddedRow = hiddenRows[currentIndex - 1];
-
-                // Zmiana nazwy inputów w dodanym wierszu
-                var inputs = newlyAddedRow.querySelectorAll('input');
-                inputs.forEach(function (input) {
-                    var currentName = input.getAttribute('name');
-                    var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
-                    input.setAttribute('name', newName);
-                });
-            });
-
-            // Dodaj obsługę kliknięcia przycisku usuwania wiersza
-            removeRowBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    if (currentIndex <= 10) {
-                        showMoreRowsBtn.style.display = '';
-                    }
-                    if (currentIndex !== 0) {
-                        --currentIndex;
-                        hiddenRows[currentIndex].style.display = 'none';
-
-                        // Zmiana nazwy inputów w usuwanym wierszu
-                        var inputs = hiddenRows[currentIndex].querySelectorAll('input');
-                        inputs.forEach(function (input) {
-                            var currentName = input.getAttribute('name');
-                            var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
-                            input.setAttribute('name', newName);
-                        });
-                    }
-                });
-            });
-        });
-    });
-
-
-</script>
-
 <script>
 
     function delInputs(index, number) {
