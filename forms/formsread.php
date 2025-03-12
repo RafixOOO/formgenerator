@@ -34,7 +34,8 @@ if (isLoggedIn()) {
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
     <title>Generator | Strona główna</title>
     <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEAAAAALAAAAAABAAEAAAIA" type="image/gif">
-
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <style>
         .hidden-row {
             display: none;
@@ -56,86 +57,6 @@ if (isLoggedIn()) {
     <!-- Toastr -->
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-            <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
-        var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
-        showMoreRowsBtns.forEach(function (btn) {
-            var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
-            var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
-            var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
-            var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
-            console.log(tableId);
-        // Funkcja do liczenia widocznych wierszy w tabeli
-        function countVisibleRows() {
-            var rows = document.querySelectorAll('tr.' + tableId); // Pobierz wszystkie wiersze w tabeli
-            console.log(rows);
-            var visibleRows = 0;
-            rows.forEach(function(row) {
-                if (!row.classList.contains('hidden-row')) {
-                    visibleRows++;
-                }
-            });
-            console.log(visibleRows);
-            return visibleRows;
-        }
-
-        // Inicjalizacja - liczymy początkową liczbę widocznych wierszy i ustawiamy currentIndex
-        currentIndex = countVisibleRows(); // Liczba widocznych wierszy minus 1 // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
-
-            // Funkcja do pokazywania ukrytego wiersza
-            function showNextHiddenRow() {
-                if (currentIndex < hiddenRows.length) {
-                    hiddenRows[currentIndex].style.display = 'table-row';
-                    currentIndex++;
-                    if (currentIndex >= hiddenRows.length) {
-                        showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
-                    }
-                }
-            }
-
-            // Po kliknięciu przycisku pokaż więcej wierszy
-            showMoreRowsBtn.addEventListener('click', function () {
-                showNextHiddenRow();
-
-                // Pobierz referencję do nowo dodanego wiersza
-                var newlyAddedRow = hiddenRows[currentIndex - 1];
-
-                // Zmiana nazwy inputów w dodanym wierszu
-                var inputs = newlyAddedRow.querySelectorAll('input');
-                inputs.forEach(function (input) {
-                    var currentName = input.getAttribute('name');
-                    var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
-                    input.setAttribute('name', newName);
-                });
-            });
-
-            // Dodaj obsługę kliknięcia przycisku usuwania wiersza
-            removeRowBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    if (currentIndex <= 10) {
-                        showMoreRowsBtn.style.display = '';
-                    }
-                    if (currentIndex !== 0) {
-                        --currentIndex;
-                        hiddenRows[currentIndex].style.display = 'none';
-
-                        // Zmiana nazwy inputów w usuwanym wierszu
-                        var inputs = hiddenRows[currentIndex].querySelectorAll('input');
-                        inputs.forEach(function (input) {
-                            var currentName = input.getAttribute('name');
-                            var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
-                            input.setAttribute('name', newName);
-                        });
-                    }
-                });
-            });
-        });
-    });
-
-
-</script>
 </head>
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
@@ -979,30 +900,39 @@ function loadFormDataFromDatabase() {
     .then(response => response.json())
     .then(formData => {
         if (formData.status === "no_data") {
+            console.log("Brak danych w formData.");
             return;
         }
+
+        console.log("Odebrane dane:", formData);
 
         const formElements = document.forms[0].elements;
 
         for (let originalName in formData) {
             const values = formData[originalName];
 
+            console.log(`Przetwarzanie pola: ${originalName}, wartości:`, values);
+
             if (Array.isArray(values)) {
                 let index = 0;
                 for (let i = 0; i < formElements.length; i++) {
                     const element = formElements[i];
 
-                    // Sprawdzenie czy name zaczyna się od 'a' i usunięcie go
+                    if (!element || !element.name) continue; // Sprawdzenie, czy element istnieje
+
                     let normalizedName = element.name;
-                    if (normalizedName.startsWith('a')) {
-                        normalizedName = normalizedName.substring(1); // Usunięcie pierwszego 'a'
+                    // Usuwamy 'a' z początku, ale TYLKO jeśli faktycznie tam jest
+                    if (normalizedName.startsWith('a') && isNaN(normalizedName)) {
+                        normalizedName = normalizedName.substring(1);
                     }
 
-                    if (normalizedName === originalName && index < values.length && values[index] !== "") {
+                    console.log(`Porównanie: normalizedName=${normalizedName} originalName=${originalName}`);
+
+                    if (String(normalizedName) === String(originalName) && index < values.length && values[index] !== "") {
+                        console.log(`Przypisuję wartość ${values[index]} do inputa ${normalizedName}`);
                         element.value = values[index];
                         index++;
 
-                        // Usunięcie klasy hidden-row tylko jeśli wartość nie jest pusta
                         if (values[index - 1] !== "") {
                             removeHiddenRowClass(element);
                         }
@@ -1012,16 +942,19 @@ function loadFormDataFromDatabase() {
                 for (let i = 0; i < formElements.length; i++) {
                     const element = formElements[i];
 
-                    // Sprawdzenie czy name zaczyna się od 'a' i usunięcie go
+                    if (!element || !element.name) continue; // Sprawdzenie, czy element istnieje
+
                     let normalizedName = element.name;
-                    if (normalizedName.startsWith('a')) {
-                        normalizedName = normalizedName.substring(1); // Usunięcie pierwszego 'a'
+                    if (normalizedName.startsWith('a') && isNaN(normalizedName)) {
+                        normalizedName = normalizedName.substring(1);
                     }
 
-                    if (normalizedName === originalName && values !== "" && normalizedName == 'anull') {
+                    console.log(`Porównanie: normalizedName=${normalizedName} originalName=${originalName}`);
+
+                    if (String(normalizedName) === String(originalName) && values !== "" && String(normalizedName) !== "null") {
+                        console.log(`Przypisuję wartość ${values} do inputa ${normalizedName}`);
                         element.value = values;
 
-                        // Usunięcie klasy hidden-row tylko jeśli wartość nie jest pusta
                         if (values !== "") {
                             removeHiddenRowClass(element);
                         }
@@ -1041,19 +974,30 @@ function loadFormDataFromDatabase() {
  */
 function removeHiddenRowClass(inputElement) {
     let trElement = inputElement.closest('tr'); // Znajdź najbliższy <tr>
-    if (trElement && trElement.classList.contains('hidden-row')) {
-        trElement.classList.remove('hidden-row'); // Usuń klasę 'hidden-row'
-    }
 
-    // Pobranie wszystkich inputów w tym samym wierszu
-    let inputs = trElement.querySelectorAll('input');
+    if (trElement) {
+        let tableElement = trElement.closest('table'); // Sprawdź, czy <tr> jest w tabeli
 
-    inputs.forEach(input => {
-        // Sprawdzenie, czy name zaczyna się od 'a' i po niej jest liczba
-        if (/^a\d/.test(input.name)) {
-            input.name = input.name.substring(1); // Usuń pierwszą literę 'a'
+        if (tableElement && trElement.classList.contains('hidden-row')) {
+            trElement.classList.remove('hidden-row'); // Usuń klasę 'hidden-row'
         }
-    });
+
+        // Pobranie wszystkich inputów w tym samym wierszu
+        let inputs = [];
+        try {
+            inputs = trElement.querySelectorAll('input');
+        } catch (error) {
+            console.error('Błąd podczas pobierania inputów:', error);
+            return;
+        }
+
+        inputs.forEach(input => {
+            // Sprawdzenie, czy name zaczyna się od 'a' i po niej jest liczba
+            if (/^a\d/.test(input.name)) {
+                input.name = input.name.substring(1); // Usuń pierwszą literę 'a'
+            }
+        });
+    }
 }
 
 
@@ -1065,6 +1009,84 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
     </form>
 </div>
 </body>
+            <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
+        showMoreRowsBtns.forEach(function (btn) {
+            var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
+            var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
+            var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
+            var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
+            console.log(tableId);
+        // Funkcja do liczenia widocznych wierszy w tabeli
+        function countVisibleRows() {
+            var rows = document.querySelectorAll('tr.' + tableId); // Pobierz wszystkie wiersze w tabeli
+            console.log(rows);
+            var visibleRows = 0;
+            rows.forEach(function(row) {
+                if (!row.classList.contains('hidden-row')) {
+                    visibleRows++;
+                }
+            });
+            console.log(visibleRows);
+            return visibleRows;
+        }
+
+        // Inicjalizacja - liczymy początkową liczbę widocznych wierszy i ustawiamy currentIndex
+        currentIndex = countVisibleRows(); // Liczba widocznych wierszy minus 1 // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
+
+            // Funkcja do pokazywania ukrytego wiersza
+            function showNextHiddenRow() {
+                if (currentIndex < hiddenRows.length) {
+                    hiddenRows[currentIndex].style.display = 'table-row';
+                    currentIndex++;
+                    if (currentIndex >= hiddenRows.length) {
+                        showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
+                    }
+                }
+            }
+
+            // Po kliknięciu przycisku pokaż więcej wierszy
+            showMoreRowsBtn.addEventListener('click', function () {
+                showNextHiddenRow();
+
+                // Pobierz referencję do nowo dodanego wiersza
+                var newlyAddedRow = hiddenRows[currentIndex - 1];
+
+                // Zmiana nazwy inputów w dodanym wierszu
+                var inputs = newlyAddedRow.querySelectorAll('input');
+                inputs.forEach(function (input) {
+                    var currentName = input.getAttribute('name');
+                    var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
+                    input.setAttribute('name', newName);
+                });
+            });
+
+            // Dodaj obsługę kliknięcia przycisku usuwania wiersza
+            removeRowBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    if (currentIndex <= 10) {
+                        showMoreRowsBtn.style.display = '';
+                    }
+                    if (currentIndex !== 0) {
+                        --currentIndex;
+                        hiddenRows[currentIndex].style.display = 'none';
+
+                        // Zmiana nazwy inputów w usuwanym wierszu
+                        var inputs = hiddenRows[currentIndex].querySelectorAll('input');
+                        inputs.forEach(function (input) {
+                            var currentName = input.getAttribute('name');
+                            var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
+                            input.setAttribute('name', newName);
+                        });
+                    }
+                });
+            });
+        });
+    });
+
+
+</script>
 <script>
 
     function delInputs(index, number) {

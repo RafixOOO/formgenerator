@@ -59,6 +59,8 @@ $columnCounterValue = $_POST['columnCounterInput'];
                 $checkboxvalue=2;
             }else if($checkboxrep==0 && $checkboxspr==1){
                 $checkboxvalue=1;
+            }else{
+                $checkboxvalue=0;
             }
             
         foreach ($fieldvalue as $value) {
