@@ -280,9 +280,6 @@ specificFieldsDiv.appendChild(fileInput);
                 break;
             case "2":
             case "3":// Jednokrotny wybór
-            case "4": // Tabela
-            case "5": // Tabela suma
-            case "6": // Tabela różnica
             case "11": // Tabela punktów
                 var textField = document.createElement('input');
                 textField.setAttribute("type", "text");
@@ -330,83 +327,262 @@ specificFieldsDiv.appendChild(fileInput);
                 });
 
                 break;
+                case "4": // Tabela
+            case "5": // Tabela suma
+            case "6": // Tabela różnica
+                var textField = document.createElement('input');
+textField.setAttribute("type", "text");
+textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField.setAttribute("name", clasa);
+textField.setAttribute("placeholder", "Pole tekstowe");
+textField.setAttribute("required", "required");
+
+var valueAddButton = document.createElement('button');
+valueAddButton.setAttribute("type", "button");
+valueAddButton.setAttribute("class", "btn bg-green-400 hover:bg-green-600 text-white font-bold py-1 px-2 rounded");
+valueAddButton.textContent = "+";
+
+var valueRemoveButton = document.createElement('button');
+valueRemoveButton.setAttribute("type", "button");
+valueRemoveButton.setAttribute("class", "btn bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded");
+valueRemoveButton.textContent = "−";
+
+var addButton = document.createElement('button');
+addButton.setAttribute("type", "button");
+addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
+addButton.textContent = "+ Dodaj pole";
+
+var removeButton = document.createElement('button');
+removeButton.setAttribute("type", "button");
+removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
+removeButton.textContent = "- Usuń pole";
+
+var fieldWrapper = document.createElement('div');
+fieldWrapper.setAttribute("class", "flex items-center gap-2 mb-2");
+
+fieldWrapper.appendChild(textField);
+fieldWrapper.appendChild(valueAddButton);
+fieldWrapper.appendChild(valueRemoveButton);
+
+var fieldsDiv = document.createElement('div');
+fieldsDiv.setAttribute("class", "flex flex-col");
+
+fieldsDiv.appendChild(fieldWrapper);
+fieldsDiv.appendChild(addButton);
+fieldsDiv.appendChild(removeButton);
+
+specificFieldsDiv.appendChild(fieldsDiv);
+
+// Obsługa przycisku "+"
+valueAddButton.addEventListener("click", function () {
+    let value = textField.value.trim();
+    if (value) {
+        textField.value += (textField.value.includes("@=") ? "" : "") + "@=WARTOŚĆ";
+    } else {
+        textField.value = "@=WARTOŚĆ";
+    }
+});
+
+// Obsługa przycisku "−"
+valueRemoveButton.addEventListener("click", function () {
+    let value = textField.value.trim();
+    if (value.includes("@=")) {
+        // Sprawdzamy, czy jest więcej niż jedno wystąpienie "@="
+        const parts = value.split("@=");
+        if (parts.length > 1) {
+            // Usuwamy ostatnią część zaczynającą się od "@="
+            parts.pop(); // Usuwamy ostatnią część
+            textField.value = parts.join("@="); // Łączymy z powrotem
+        }
+    }
+});
+
+// Obsługa przycisku "+ Dodaj pole"
+addButton.addEventListener("click", function () {
+    var newTextField = document.createElement('input');
+    newTextField.setAttribute("type", "text");
+    newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+    newTextField.setAttribute("name", clasa);
+    newTextField.setAttribute("placeholder", "Pole tekstowe");
+    newTextField.setAttribute("required", "required");
+
+    var newFieldWrapper = document.createElement('div');
+    newFieldWrapper.setAttribute("class", "flex items-center gap-2 mb-2");
+
+    var newValueAddButton = valueAddButton.cloneNode(true);
+    var newValueRemoveButton = valueRemoveButton.cloneNode(true);
+
+    newFieldWrapper.appendChild(newTextField);
+    newFieldWrapper.appendChild(newValueAddButton);
+    newFieldWrapper.appendChild(newValueRemoveButton);
+
+    fieldsDiv.insertBefore(newFieldWrapper, addButton);
+
+    // Obsługa "+ / -" dla nowego pola
+    newValueAddButton.addEventListener("click", function () {
+        let value = newTextField.value.trim();
+        if (value) {
+            newTextField.value += (newTextField.value.includes("@=") ? "" : "") + "@=WARTOŚĆ";
+        } else {
+            newTextField.value = "@=WARTOŚĆ";
+        }
+    });
+
+    newValueRemoveButton.addEventListener("click", function () {
+        let value = newTextField.value.trim();
+        if (value.includes("@=")) {
+            // Usuwamy wszystko od początku aż do "@"
+            let parts = value.split("@=");
+            newTextField.value = parts[0].trim(); // Zostaje tylko część przed "@="
+        }
+    });
+});
+
+// Obsługa przycisku "- Usuń pole"
+removeButton.addEventListener("click", function () {
+    if (fieldsDiv.childNodes.length > 3) {
+        fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]);
+    }
+});
+
+
+                break;
             case "7": // Tabela budżetowa
                 var textField = document.createElement('input');
-                textField.setAttribute("type", "text");
-                textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField.setAttribute("name", clasa);
-                textField.setAttribute("value", "Rodzaj kosztu");
+textField.setAttribute("type", "text");
+textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField.setAttribute("name", clasa);
+textField.setAttribute("value", "Rodzaj kosztu");
 
-                var textField1 = document.createElement('input');
-                textField1.setAttribute("type", "text");
-                textField1.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField1.setAttribute("name", clasa);
-                textField1.setAttribute("value", "Wartość w PLN");
+var textField1 = document.createElement('input');
+textField1.setAttribute("type", "text");
+textField1.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField1.setAttribute("name", clasa);
+textField1.setAttribute("value", "Wartość w PLN");
 
-                var textField2 = document.createElement('input');
-                textField2.setAttribute("type", "text");
-                textField2.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField2.setAttribute("name", clasa);
-                textField2.setAttribute("value", "Z dotacji z PLN");
+var textField2 = document.createElement('input');
+textField2.setAttribute("type", "text");
+textField2.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField2.setAttribute("name", clasa);
+textField2.setAttribute("value", "Z dotacji z PLN");
 
-                var textField3 = document.createElement('input');
-                textField3.setAttribute("type", "text");
-                textField3.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField3.setAttribute("name", clasa);
-                textField3.setAttribute("value", "Środki własne w PLN");
+var textField3 = document.createElement('input');
+textField3.setAttribute("type", "text");
+textField3.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField3.setAttribute("name", clasa);
+textField3.setAttribute("value", "Środki własne w PLN");
 
-                var textField4 = document.createElement('input');
-                textField4.setAttribute("type", "text");
-                textField4.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField4.setAttribute("name", clasa);
-                textField4.setAttribute("placeholder", "wpisz ile % mogą stanowić koszty administracyjne");
-                textField4.setAttribute("required", "");
+var textField4 = document.createElement('input');
+textField4.setAttribute("type", "text");
+textField4.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField4.setAttribute("name", clasa);
+textField4.setAttribute("placeholder", "wpisz ile % mogą stanowić koszty administracyjne");
+textField4.setAttribute("required", "");
 
-                var textField5 = document.createElement('input');
-                textField5.setAttribute("type", "text");
-                textField5.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                textField5.setAttribute("name", clasa);
-                textField5.setAttribute("placeholder", "wpisz maksymalną kwote dofinansowania");
-                textField5.setAttribute("required", "");
+var textField5 = document.createElement('input');
+textField5.setAttribute("type", "text");
+textField5.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+textField5.setAttribute("name", clasa);
+textField5.setAttribute("placeholder", "wpisz maksymalną kwote dofinansowania");
+textField5.setAttribute("required", "");
 
-                var addButton = document.createElement('button');
-                addButton.setAttribute("type", "button");
-                addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
-                addButton.textContent = "+ Dodaj pole";
+// Przycisk dodawania tekstu "@=WARTOŚĆ"
+var valueAddButton = document.createElement('button');
+valueAddButton.setAttribute("type", "button");
+valueAddButton.setAttribute("class", "btn bg-green-400 hover:bg-green-600 text-white font-bold py-1 px-2 rounded");
+valueAddButton.textContent = "+";
 
-                var removeButton = document.createElement('button');
-                removeButton.setAttribute("type", "button");
-                removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
-                removeButton.textContent = "- Usuń pole";
+// Przycisk usuwania tekstu "@=WARTOŚĆ"
+var valueRemoveButton = document.createElement('button');
+valueRemoveButton.setAttribute("type", "button");
+valueRemoveButton.setAttribute("class", "btn bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded");
+valueRemoveButton.textContent = "−";
 
-                var fieldsDiv = document.createElement('div');
-                fieldsDiv.setAttribute("class", "flex flex-col");
+// Przycisk dodawania nowego pola
+var addButton = document.createElement('button');
+addButton.setAttribute("type", "button");
+addButton.setAttribute("class", "btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded");
+addButton.textContent = "+ Dodaj pole";
 
-                fieldsDiv.appendChild(textField);
-                fieldsDiv.appendChild(textField1);
-                fieldsDiv.appendChild(textField2);
-                fieldsDiv.appendChild(textField3);
-                fieldsDiv.appendChild(textField4);
-                fieldsDiv.appendChild(textField5);
+// Przycisk usuwania ostatniego pola
+var removeButton = document.createElement('button');
+removeButton.setAttribute("type", "button");
+removeButton.setAttribute("class", "btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded");
+removeButton.textContent = "- Usuń pole";
 
-                specificFieldsDiv.appendChild(fieldsDiv);
+// Kontener na pola
+var fieldsDiv = document.createElement('div');
+fieldsDiv.setAttribute("class", "flex flex-col");
 
-                // Dodanie obsługi zdarzeń dla przycisków dodawania/usuwania pól w tabeli
-                addButton.addEventListener("click", function () {
-                    var newTextField = document.createElement('input');
-                    newTextField.setAttribute("type", "text");
-                    newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
-                    newTextField.setAttribute("name", clasa);
-                    newTextField.setAttribute("placeholder", "Pole tekstowe");
-                    fieldsDiv.insertBefore(newTextField, addButton);
-                });
+// Funkcja do tworzenia pola z przyciskami
+function createField(inputField, withButtons) {
+    var fieldWrapper = document.createElement('div');
+    fieldWrapper.setAttribute("class", "flex items-center gap-2 mb-2");
 
-                removeButton.addEventListener("click", function () {
-                    if (fieldsDiv.childNodes.length > 3) { // Sprawdzamy, czy jest więcej niż dwa elementy w divie (pola tekstowe i przyciski)
-                        fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]); // Usuwamy ostatnie dodane pole tekstowe
-                    }
+    fieldWrapper.appendChild(inputField);
 
-                });
+    if (withButtons) {
+        // Tylko dla pierwszych czterech inputów dodajemy przyciski
+        var newValueAddButton = valueAddButton.cloneNode(true);
+        var newValueRemoveButton = valueRemoveButton.cloneNode(true);
+
+        fieldWrapper.appendChild(newValueAddButton);
+        fieldWrapper.appendChild(newValueRemoveButton);
+
+        // Dodanie funkcji dla przycisków w nowych polach
+        newValueAddButton.addEventListener("click", function () {
+            let value = inputField.value.trim();
+            if (value) {
+                inputField.value += (inputField.value.includes("@=") ? "" : "") + "@=WARTOŚĆ";
+            } else {
+                inputField.value = "@=WARTOŚĆ";
+            }
+        });
+
+        newValueRemoveButton.addEventListener("click", function () {
+            let value = inputField.value.trim();
+            if (value.includes("@=")) {
+                const parts = value.split("@=");
+                if (parts.length > 1) {
+                    parts.pop();
+                    inputField.value = parts.join("@=");
+                }
+            }
+        });
+    }
+
+    return fieldWrapper;
+}
+
+fieldsDiv.appendChild(createField(textField, true));  // Dodajemy przyciski tylko dla tego inputa
+fieldsDiv.appendChild(createField(textField1, true));  // Dodajemy przyciski tylko dla tego inputa
+fieldsDiv.appendChild(createField(textField2, true));  // Dodajemy przyciski tylko dla tego inputa
+fieldsDiv.appendChild(createField(textField3, true));  // Dodajemy przyciski tylko dla tego inputa
+fieldsDiv.appendChild(createField(textField4, false)); // Brak przycisków dla tego inputa
+fieldsDiv.appendChild(createField(textField5, false)); // Brak przycisków dla tego inputa
+
+specificFieldsDiv.appendChild(fieldsDiv);
+
+// Obsługa przycisku dodawania nowego pola
+addButton.addEventListener("click", function () {
+    var newTextField = document.createElement('input');
+    newTextField.setAttribute("type", "text");
+    newTextField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
+    newTextField.setAttribute("name", clasa);
+    newTextField.setAttribute("placeholder", "Pole tekstowe");
+
+    var newFieldWrapper = createField(newTextField, true);  // Dodajemy przyciski do nowego pola
+
+    fieldsDiv.insertBefore(newFieldWrapper, addButton);
+});
+
+// Obsługa przycisku usuwania ostatniego pola
+removeButton.addEventListener("click", function () {
+    if (fieldsDiv.childNodes.length > 3) {
+        fieldsDiv.removeChild(fieldsDiv.childNodes[fieldsDiv.childNodes.length - 3]); // Usuwamy ostatnie pole
+    }
+});
+
 
                 break;
             case "8": // dane

@@ -625,7 +625,7 @@ $gpdown=1;
             $random_number = rand(100, 999);
             for ($i = 0; $i < $count; $i++) {
                 if ($i == count($columns)-1) {
-                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="' . $number . '[]"';
+                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]"';
                 } else {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
                 }
@@ -649,7 +649,7 @@ $gpdown=1;
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
                     if ($j == count($columns)-1) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')" name="a' . $number . '[]"';
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="a' . $number . '[]"';
 
                     } else {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
@@ -693,7 +693,7 @@ $gpdown=1;
             $random_number = rand(100, 999);
             for ($i = 0; $i < $count; $i++) {
                 if ($i >= count($columns)) {
-                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
+                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass4(' . $number . ')" ';
                 } else if ($i == $inne) {
                     echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
                 } else if ($i == $inne1) {
@@ -721,7 +721,7 @@ $gpdown=1;
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
                     if ($j >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass4(' . $number . ')"';
                     } else if ($j == $inne) {
                         echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                     } else if ($j == $inne1) {
@@ -911,7 +911,7 @@ function loadFormDataFromDatabase() {
         for (let originalName in formData) {
             const values = formData[originalName];
 
-            console.log(`Przetwarzanie pola: ${originalName}, wartości:`, values);
+            const isPrefixedWithA = originalName.startsWith('a');
 
             if (Array.isArray(values)) {
                 let index = 0;
@@ -926,16 +926,16 @@ function loadFormDataFromDatabase() {
                         normalizedName = normalizedName.substring(1);
                     }
 
-                    console.log(`Porównanie: normalizedName=${normalizedName} originalName=${originalName}`);
 
-                    if (String(normalizedName) === String(originalName) && index < values.length && values[index] !== "") {
-                        console.log(`Przypisuję wartość ${values[index]} do inputa ${normalizedName}`);
+                    if (String(normalizedName) === String(originalName) && index < values.length) {
+                        
+
+                        if (!isPrefixedWithA) {
+                            removeHiddenRowClass(element);
+                            
+                        }
                         element.value = values[index];
                         index++;
-
-                        if (values[index - 1] !== "") {
-                            removeHiddenRowClass(element);
-                        }
                     }
                 }
             } else {
@@ -949,15 +949,9 @@ function loadFormDataFromDatabase() {
                         normalizedName = normalizedName.substring(1);
                     }
 
-                    console.log(`Porównanie: normalizedName=${normalizedName} originalName=${originalName}`);
-
                     if (String(normalizedName) === String(originalName) && values !== "" && String(normalizedName) !== "null") {
-                        console.log(`Przypisuję wartość ${values} do inputa ${normalizedName}`);
                         element.value = values;
 
-                        if (values !== "") {
-                            removeHiddenRowClass(element);
-                        }
                     }
                 }
             }
@@ -975,34 +969,37 @@ function loadFormDataFromDatabase() {
 function removeHiddenRowClass(inputElement) {
     let trElement = inputElement.closest('tr'); // Znajdź najbliższy <tr>
 
-    if (trElement) {
-        let tableElement = trElement.closest('table'); // Sprawdź, czy <tr> jest w tabeli
+if (trElement) {
+    let tableElement = trElement.closest('table'); // Sprawdź, czy <tr> jest w tabeli
 
-        if (tableElement && trElement.classList.contains('hidden-row')) {
-            trElement.classList.remove('hidden-row'); // Usuń klasę 'hidden-row'
+    if (tableElement && trElement.classList.contains('hidden-row')) {
+         // Sprawdź, czy inputElement znajduje się w pierwszej kolumnie wiersza
+         let firstCell = trElement.querySelector('td'); // Pierwsza komórka w wierszu (jeśli jest)
+        
+        // Jeśli pierwsza komórka istnieje i zawiera inputElement, oznacza to, że jest w pierwszej kolumnie
+        if (firstCell && firstCell.contains(inputElement)) {
+            var number = inputElement.getAttribute('name'); // Pobierz całe 'name' z input
+
+        // Usuń pierwszą literę 'a' (jeśli istnieje) oraz ostatnie 2 znaki
+        var truncatedNumber = number.startsWith('a') ? number.substring(1, number.length - 2) : number.substring(0, number.length - 2);
+
+        // Zbudowanie id przycisku z numerem
+        var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_m' + truncatedNumber);
+
+        // Jeśli przycisk istnieje, kliknij go
+        if (showMoreRowsBtn) {
+            showMoreRowsBtn.click(); // Kliknij przycisk
+            console.log('Kliknięto przycisk "Pokaż więcej wierszy" o id: showMoreRowsBtn_m' + truncatedNumber);
+        } else {
+            console.log('Nie znaleziono przycisku o id: showMoreRowsBtn_m' + truncatedNumber);
         }
-
-        // Pobranie wszystkich inputów w tym samym wierszu
-        let inputs = [];
-        try {
-            inputs = trElement.querySelectorAll('input');
-        } catch (error) {
-            console.error('Błąd podczas pobierania inputów:', error);
-            return;
-        }
-
-        inputs.forEach(input => {
-            // Sprawdzenie, czy name zaczyna się od 'a' i po niej jest liczba
-            if (/^a\d/.test(input.name)) {
-                input.name = input.name.substring(1); // Usuń pierwszą literę 'a'
-            }
-        });
+        }        
     }
+}
 }
 
 
 // Wczytaj dane automatycznie po załadowaniu strony
-document.addEventListener('DOMContentLoaded', loadFormDataFromDatabase);
 document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatabase);
 </script>
         </div>
@@ -1010,80 +1007,69 @@ document.getElementById('saveBtn').addEventListener('click', saveFormDataToDatab
 </div>
 </body>
             <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
-        showMoreRowsBtns.forEach(function (btn) {
-            var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
-            var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
-            var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
-            var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
-            console.log(tableId);
-        // Funkcja do liczenia widocznych wierszy w tabeli
-        function countVisibleRows() {
-            var rows = document.querySelectorAll('tr.' + tableId); // Pobierz wszystkie wiersze w tabeli
-            console.log(rows);
-            var visibleRows = 0;
-            rows.forEach(function(row) {
-                if (!row.classList.contains('hidden-row')) {
-                    visibleRows++;
-                }
-            });
-            console.log(visibleRows);
-            return visibleRows;
-        }
+    var showMoreRowsBtns = document.querySelectorAll('.show-more-rows-btn');
 
-        // Inicjalizacja - liczymy początkową liczbę widocznych wierszy i ustawiamy currentIndex
-        currentIndex = countVisibleRows(); // Liczba widocznych wierszy minus 1 // Zmienna do śledzenia bieżącego indeksu ukrytego wiersza
+    showMoreRowsBtns.forEach(function (btn) {
+        var tableId = btn.getAttribute('id').split('_').pop(); // Pobierz numer ID tabeli
+        var showMoreRowsBtn = document.getElementById('showMoreRowsBtn_' + tableId);
+        var removeRowBtns = document.querySelectorAll('.remove-row-btn[data-table-id="' + tableId + '"]');
+        var hiddenRows = document.querySelectorAll('.hidden-row.' + tableId);
+        console.log("Table ID:", tableId);
 
-            // Funkcja do pokazywania ukrytego wiersza
-            function showNextHiddenRow() {
-                if (currentIndex < hiddenRows.length) {
-                    hiddenRows[currentIndex].style.display = 'table-row';
-                    currentIndex++;
-                    if (currentIndex >= hiddenRows.length) {
-                        showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
-                    }
+
+        // Każdy przycisk dostaje osobny currentIndex
+        showMoreRowsBtn.currentIndex = 0;
+        console.log("Początkowy currentIndex dla tabeli " + tableId + ": " + showMoreRowsBtn.currentIndex);
+
+        // Funkcja do pokazywania ukrytego wiersza
+        function showNextHiddenRow() {
+            if (showMoreRowsBtn.currentIndex < hiddenRows.length) {
+                hiddenRows[showMoreRowsBtn.currentIndex].style.display = 'table-row';
+                showMoreRowsBtn.currentIndex++;
+                if (showMoreRowsBtn.currentIndex >= hiddenRows.length) {
+                    showMoreRowsBtn.style.display = 'none'; // Ukryj przycisk, jeśli pokazano wszystkie wiersze
                 }
             }
+        }
 
-            // Po kliknięciu przycisku pokaż więcej wierszy
-            showMoreRowsBtn.addEventListener('click', function () {
-                showNextHiddenRow();
+        // Obsługa kliknięcia przycisku "Pokaż więcej wierszy"
+        showMoreRowsBtn.addEventListener('click', function () {
+            showNextHiddenRow();
 
-                // Pobierz referencję do nowo dodanego wiersza
-                var newlyAddedRow = hiddenRows[currentIndex - 1];
+            // Pobierz referencję do nowo dodanego wiersza
+            var newlyAddedRow = hiddenRows[showMoreRowsBtn.currentIndex - 1];
 
-                // Zmiana nazwy inputów w dodanym wierszu
-                var inputs = newlyAddedRow.querySelectorAll('input');
-                inputs.forEach(function (input) {
-                    var currentName = input.getAttribute('name');
-                    var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
-                    input.setAttribute('name', newName);
-                });
+            // Zmiana nazwy inputów w dodanym wierszu
+            var inputs = newlyAddedRow.querySelectorAll('input');
+            inputs.forEach(function (input) {
+                var currentName = input.getAttribute('name');
+                var newName = currentName.substring(1); // Usuń pierwszą literę 'a'
+                input.setAttribute('name', newName);
             });
+        });
 
-            // Dodaj obsługę kliknięcia przycisku usuwania wiersza
-            removeRowBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    if (currentIndex <= 10) {
-                        showMoreRowsBtn.style.display = '';
-                    }
-                    if (currentIndex !== 0) {
-                        --currentIndex;
-                        hiddenRows[currentIndex].style.display = 'none';
+        // Obsługa kliknięcia przycisku "Usuń wiersz"
+        removeRowBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                if (showMoreRowsBtn.currentIndex <= 10) {
+                    showMoreRowsBtn.style.display = '';
+                }
+                if (showMoreRowsBtn.currentIndex !== 0) {
+                    --showMoreRowsBtn.currentIndex;
+                    hiddenRows[showMoreRowsBtn.currentIndex].style.display = 'none';
 
-                        // Zmiana nazwy inputów w usuwanym wierszu
-                        var inputs = hiddenRows[currentIndex].querySelectorAll('input');
-                        inputs.forEach(function (input) {
-                            var currentName = input.getAttribute('name');
-                            var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
-                            input.setAttribute('name', newName);
-                        });
-                    }
-                });
+                    // Zmiana nazwy inputów w usuwanym wierszu
+                    var inputs = hiddenRows[showMoreRowsBtn.currentIndex].querySelectorAll('input');
+                    inputs.forEach(function (input) {
+                        var currentName = input.getAttribute('name');
+                        var newName = 'a' + currentName; // Dodaj literkę 'a' na początku
+                        input.setAttribute('name', newName);
+                    });
+                }
             });
         });
     });
+
 
 
 </script>
