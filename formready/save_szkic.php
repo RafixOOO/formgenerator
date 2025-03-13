@@ -60,7 +60,6 @@ try {
     // Zatwierdzenie transakcji, jeśli wszystko przebiegło pomyślnie
     $conn->commit();
 
-    echo "Dane zostały pomyślnie usunięte";
 } catch (Exception $e) {
     // W przypadku błędu cofnięcie transakcji
     $conn->rollback();
@@ -75,7 +74,6 @@ $checkboxrep1="checkboxrep_";
 $number=1;
 $idlastfield='';
 $columnCounterValue = $_POST['columnCounterInput'];
-echo $columnCounterValue+1;
     $i=0;
     for ($i=0;$i<=$columnCounterValue;$i++) {
         if (isset($_POST[$type . $i])) {
@@ -86,8 +84,6 @@ echo $columnCounterValue+1;
             $fieldvalue =  $_POST[$field . $i];
             $checkboxrep=$_POST[$checkboxrep1 . $i];
             $checkboxspr= $_POST[$checkbox . $i];
-            echo "rep".$checkboxrep;
-            echo "spr".$checkboxspr;
             if($checkboxrep==1 && $checkboxspr==1){
                 $checkboxvalue=3;
             }
@@ -98,10 +94,8 @@ echo $columnCounterValue+1;
             }else{
                 $checkboxvalue=0;
             }
-            echo "val".$checkboxvalue;
 
         foreach ($fieldvalue as $value) {
-                echo $value;
                 $sql1 = "INSERT INTO `quest`(`quest`, `type`, `constant`) VALUES ('$value','$typeValue','$checkboxvalue');";
                 if ($conn->query($sql1) === TRUE) {
                     $idlastfield = $conn->insert_id;

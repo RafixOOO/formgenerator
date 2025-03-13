@@ -226,7 +226,6 @@ textField.setAttribute("type", "text");
 textField.setAttribute("class", "py-2.5 px-3.5 text-sm flex-1 hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
 textField.setAttribute("name", clasa);
 textField.setAttribute("placeholder", "Pole tekstowe");
-textField.setAttribute("readonly", "readonly");
 
 // Tworzenie przycisku do wyboru pliku
 var uploadBtn = document.createElement('button');
