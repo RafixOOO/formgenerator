@@ -176,31 +176,46 @@ if (isLoggedIn()) {
 
             if ($row["type"] != 4 and $table_opened4) {
                 echo '<table class="table m' . $number . '"><thead><tr>';
-                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                foreach ($columns as $column) {
-                    echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                $count = count($columns);
+                for ($i = 0; $i < $count; $i++) {
+                    $parts = explode("@=", $columns[$i]);
+                        echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+    
+    
                 }
                 echo '</tr></thead><tbody>';
 
-                echo '<tr>';
-                echo '<th scope="row">1</th>'; // Numeracja wierszy
-                foreach ($columns as $column) {
-                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
-
-                    if ($req == 1) {
-                        echo ' required';
-                    }
-
-                    echo '
-
-                    ></td>'; // Pole tekstowe w komórkach
+                $maxi=0;
+            for ($i = 0; $i < $count; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
                 }
-                echo '</tr>';
+            }
+            $k=0;
+            for ($i = 1; $i < $maxi; $i++) {
+                echo '<tr>';
+                for($k=0;$k<$count;$k++){
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$value.'" '.$disabled.'';
+
+                if ($req == 1) {
+                    echo ' required';
+                }
+
+                echo '
+
+                ></td>'; // Pole tekstowe w komórkach
+            }
+            echo '</tr>';
+            }
 
                 // Wygeneruj 10 wierszy z ukrytą klasą
                 for ($i = 2; $i <= 20; $i++) {
                     echo '<tr class="hidden-row m' . $number . '">';
-                    echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     foreach ($columns as $column) {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
                     }
@@ -215,60 +230,70 @@ if (isLoggedIn()) {
                 unset($columns);
             } else if ($row["type"] != 5 and $table_opened5) {
                 echo '<table class="table m' . $number . '"><thead><tr>';
-                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                $count = count($columns) + 1;
-                for ($i = 0; $i < $count; $i++) {
-                    if (($i >= count($columns))) {
-                        echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                    } else {
-                        echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                    }
+            $count = count($columns);
+        for ($i = 0; $i < $count; $i++) {
+            $parts = explode("@=", $columns[$i]);
+                echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
 
 
+        }
+            echo '</tr></thead><tbody>';
+
+            
+            $inne = count($columns) - 2;
+            $inne1 = count($columns) - 1;
+            $random_number = rand(100, 999);
+            $maxi=0;
+            for ($i = 0; $i < $count; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
                 }
-                echo '</tr></thead><tbody>';
-
+            }
+            $k=0;
+            for ($i = 1; $i < $maxi; $i++) {
                 echo '<tr>';
-                echo '<th scope="row">1</th>'; // Numeracja wierszy
-                $inne = count($columns) - 2;
-                $inne1 = count($columns) - 1;
-                $random_number = rand(100, 999);
-                for ($i = 0; $i < $count; $i++) {
-                    if ($i >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
-                    } else if ($i == $inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                    } else if ($i == $inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-
+                for($k=0;$k<$count;$k++){
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    if ($k == count($columns)-1) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="' . htmlspecialchars($value, ENT_QUOTES) . '" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]" ' . $disabled . '';
+                        if ($req == 1) {
+                            echo ' required';
+                        }
+        
+                        echo '
+        
+                        ></td>';
                     } else {
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . htmlspecialchars($value, ENT_QUOTES) . '" ' . $disabled . '';
+                        if ($req == 1) {
+                            echo ' required';
+                        }
+        
+                        echo '
+        
+                        ></td>';
                     }
-
-
-                    if ($req == 1) {
-                        echo ' required';
-                    }
-
-                    echo '
-
-                    ></td>'; // Pole tekstowe w komórkach
                 }
                 echo '</tr>';
+               
+
+
+
+                 // Pole tekstowe w komórkach
+            }
                 $i = 0;
                 // Wygeneruj 10 wierszy z ukrytą klasą
                 for ($i = 2; $i <= 20; $i++) {
                     echo '<tr class="hidden-row m' . $number . '">';
-                    echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count; $j++) {
-                        if ($j >= count($columns)) {
-                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                        } else if ($j == $inne) {
-                            echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')" ';
-                        } else if ($j == $inne1) {
-                            echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-
+                        if ($i == count($columns)-1) {
+                            echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="a' . $number . '[]"';
+    
                         } else {
                             echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                         }
@@ -278,10 +303,10 @@ if (isLoggedIn()) {
                     }
                     echo '</tr>';
                 }
-                $col = $count;
+                $col = $count-1;
                 echo '</tbody>
-                <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-                </table>';
+            <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+            </table>';
                 echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
                 echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 
@@ -289,51 +314,63 @@ if (isLoggedIn()) {
                 unset($columns);
             } else if ($row["type"] != 6 and $table_opened6) {
                 echo '<table class="table m' . $number . '"><thead><tr>';
-                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                $count = count($columns) + 1;
-                for ($i = 0; $i < $count; $i++) {
-                    if (($i >= count($columns))) {
-                        echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                    } else {
-                        echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                    }
-
-
+            $count = count($columns) + 1;
+            for ($i = 0; $i < $count; $i++) {
+                if (($i < count($columns))) {
+                    $parts = explode("@=", $columns[$i]);
+                }     
+                if (($i >= count($columns))) {
+                    echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                } else {
+                    echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 }
-                echo '</tr></thead><tbody>';
+            }
+            echo '</tr></thead><tbody>';
 
+            $inne = count($columns) - 2;
+            $inne1 = count($columns) - 1;
+            $random_number = rand(100, 999);
+            $maxi=0;
+            for ($i = 0; $i < $count-1; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
+                }
+            }
+            for ($i = 1; $i < $maxi; $i++) {
                 echo '<tr>';
-                echo '<th scope="row">1</th>'; // Numeracja wierszy
-                $inne = count($columns) - 2;
-                $inne1 = count($columns) - 1;
-                $random_number = rand(100, 999);
-                for ($i = 0; $i < $count; $i++) {
-                    if ($i >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
-                    } else if ($i == $inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-                    } else if ($i == $inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-
-                    } else {
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                for($k=0;$k<$count;$k++){
+                    if ($k < count($columns)) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
                     }
-
-
-                    if ($req == 1) {
-                        echo ' required';
-                    }
-
-                    echo '
-
-                    ></td>'; // Pole tekstowe w komórkach
+                if ($k >= count($columns)) {
+                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
+                } else if ($k == $inne) {
+                    echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" value="'.$value.'" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
+                } else if ($k == $inne1) {
+                    echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" value="'.$value.'" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
+                } else {
+                    echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]"';
                 }
-                echo '</tr>';
+
+
+                if ($req == 1) {
+                    echo ' required';
+                }
+
+                echo '
+
+                       '.$disabled.' ></td>'; // Pole tekstowe w komórkach
+            }
+            echo '</tr>';
+            }
                 $i = 0;
                 // Wygeneruj 10 wierszy z ukrytą klasą
                 for ($i = 2; $i <= 20; $i++) {
                     echo '<tr class="hidden-row m' . $number . '">';
-                    echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count; $j++) {
                         if ($j >= count($columns)) {
@@ -342,20 +379,19 @@ if (isLoggedIn()) {
                             echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                         } else if ($j == $inne1) {
                             echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-
                         } else {
                             echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                         }
                         echo '
 
-                    ></td>'; // Pole tekstowe w komórkach
+                ></td>'; // Pole tekstowe w komórkach
                     }
                     echo '</tr>';
                 }
-                $col = $count;
+                $col = $count-1;
                 echo '</tbody>
-                <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-                </table>';
+            <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+            </table>';
                 echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
                 echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 
@@ -363,56 +399,69 @@ if (isLoggedIn()) {
                 unset($columns);
             } else if ($row["type"] != 7 and $table_opened7) {
                 $procent = 0;
-                $kwota = 0;
-                echo '<table class="table m' . $number . '"><thead><tr>';
-                echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-                $count = count($columns);
-                for ($i = 0; $i < $count; $i++) {
-                    if (($i == 4)) {
-                        $procent = $columns[$i];// Wypisujemy nazwy kolumn z tablicy $columns
-                    } else if ($i == 5) {
-                        $kwota = $columns[$i];
-                    } else {
-                        echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                    }
-
-
+            $kwota = 0;
+            echo '<table class="table m' . $number . '"><thead><tr>';
+            $count = count($columns);
+            for ($i = 0; $i < $count; $i++) {
+                if (($i == 4)) {
+                    $procent = $columns[$i]; // Wypisujemy nazwy kolumn z tablicy $columns
+                } else if ($i == 5) {
+                    $kwota = $columns[$i];
+                } else {
+                    $parts = explode("@=", $columns[$i]);
+                    echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 }
-                echo '</tr></thead><tbody>';
+            }
+            echo '</tr></thead><tbody>';
 
+            $maxi=0;
+            for ($i = 0; $i < $count-1; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
+                }
+            }
+            $random_number = rand(100, 999);
+            for ($i = 1; $i < $maxi; $i++) {
                 echo '<tr>';
-                echo '<th scope="row">1</th>'; // Numeracja wierszy
-                $random_number = rand(100, 999);
-                for ($i = 0; $i < $count - 2; $i++) {
-                    if ($i == 3) {
-                        echo '<td><input id="inputwyn_99_' . $number . '" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass(' . $number . ')" readonly';
-                    } else if ($i == 1) {
-                        echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-                    } else if ($i == 2) {
-                        echo '<td><input id="input2_99_' . $number . '" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-
-                    } else if ($i == 0) {
-                        echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
-                    } else {
-                        echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
-
-                    }
-                    if ($req == 1) {
-                        echo ' required';
-                    }
-
-                    echo '
-
-                                                    ></td>';
-
-
+                for($k=0;$k<$count;$k++){
+                if ($k == 4 or $k == 5) {
+                    echo '<td><input type="hidden" value="brak" class="form-control" name="' . $number . '[]"';
+                } else if ($k == 3) {
+                    echo '<td><input id="inputwyn_99_' . $number . '" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass(' . $number . ')" readonly';
+                } else if ($k == 1) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
+                } else if ($k == 2) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input id="input2_99_' . $number . '" value="'.$value.'" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
+                } else if ($k == 0) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" '.$disabled.'';
+                } else {
+                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
                 }
-                echo '</tr>';
+                if ($req == 1) {
+                    echo ' required';
+                }
+
+                echo '
+
+                                                ></td>';
+            }
+            echo '</tr>';
+            }
                 $i = 0;
                 // Wygeneruj 10 wierszy z ukrytą klasą
                 for ($i = 2; $i <= 20; $i++) {
                     echo '<tr class="hidden-row m' . $number . '">';
-                    echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                     $random_number = rand(100, 999);
                     for ($j = 0; $j < $count - 2; $j++) {
                         if ($j == 3) {
@@ -421,21 +470,20 @@ if (isLoggedIn()) {
                             echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ';
                         } else if ($j == 2) {
                             echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-
                         } else {
                             echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                         }
                         echo '
 
-                                                ></td>'; // Pole tekstowe w komórkach
+                                            ></td>'; // Pole tekstowe w komórkach
                     }
                     echo '</tr>';
                 }
                 echo '</tbody>
-                                            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_' . $number . '" type="text" class="form-control" value="" readonly>
-                                                  </td><td><input style="text-align:right;" id="inputres2_' . $number . '" type="text" placeholder="Nie więcej niż ' . $kwota . '" class="form-control" value="" readonly></td>
-                                                   <td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-                                            </table>';
+                                        <tfoot><td style="text-align: right;" colspan="1">Suma:</td><td><input style="text-align:right;" id="inputres3_' . $number . '" type="text" class="form-control" value="" readonly>
+                                              </td><td><input style="text-align:right;" id="inputres2_' . $number . '" type="text" placeholder="Nie więcej niż ' . $kwota . '" class="form-control" value="" readonly></td>
+                                               <td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+                                        </table>';
                 echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
                 echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 
@@ -586,16 +634,30 @@ $gpdown=1;
         }
         if ($table_opened4) {
             echo '<table class="table m' . $number . '"><thead><tr>';
-            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-            foreach ($columns as $column) {
-                echo '<th scope="col">' . $column . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-            }
-            echo '</tr></thead><tbody>';
+            $count = count($columns);
+        for ($i = 0; $i < $count; $i++) {
+            $parts = explode("@=", $columns[$i]);
+                echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
 
-            echo '<tr>';
-            echo '<th scope="row">1</th>'; // Numeracja wierszy
-            foreach ($columns as $column) {
-                echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+
+        }
+            echo '</tr></thead><tbody>';
+            $maxi=0;
+            for ($i = 0; $i < $count; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
+                }
+            }
+            $k=0;
+            for ($i = 1; $i < $maxi; $i++) {
+                echo '<tr>';
+                for($k=0;$k<$count;$k++){
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$value.'" '.$disabled.'';
 
                 if ($req == 1) {
                     echo ' required';
@@ -603,14 +665,14 @@ $gpdown=1;
 
                 echo '
 
-                    ></td>'; // Pole tekstowe w komórkach
+                ></td>'; // Pole tekstowe w komórkach
             }
             echo '</tr>';
+            }
 
             // Wygeneruj 10 wierszy z ukrytą klasą
             for ($i = 2; $i <= 20; $i++) {
                 echo '<tr class="hidden-row m' . $number . '">';
-                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                 foreach ($columns as $column) {
                     echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>'; // Pole tekstowe w komórkach
                 }
@@ -626,73 +688,85 @@ $gpdown=1;
         }
         if ($table_opened5) {
             echo '<table class="table m' . $number . '"><thead><tr>';
-            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
-            $count = count($columns) + 1;
-            for ($i = 0; $i < $count; $i++) {
-                if (($i >= count($columns))) {
-                    echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                } else {
-                    echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
-                }
+            $count = count($columns);
+        for ($i = 0; $i < $count; $i++) {
+            $parts = explode("@=", $columns[$i]);
+                echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
 
 
-            }
+        }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
-            echo '<th scope="row">1</th>'; // Numeracja wierszy
+            
             $inne = count($columns) - 2;
             $inne1 = count($columns) - 1;
             $random_number = rand(100, 999);
+            $maxi=0;
             for ($i = 0; $i < $count; $i++) {
-                if ($i >= count($columns)) {
-                    echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                } else if ($i == $inne) {
-                    echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                } else if ($i == $inne1) {
-                    echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-
-                } else {
-                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
                 }
-                
-
-                if ($req == 1) {
-                    echo ' required';
-                }
-
-                echo '
-
-                ></td>'; // Pole tekstowe w komórkach
             }
-            echo '</tr>';
+            $k=0;
+            for ($i = 1; $i < $maxi; $i++) {
+                echo '<tr>';
+                for($k=0;$k<$count;$k++){
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    if ($k == count($columns)-1) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="' . htmlspecialchars($value, ENT_QUOTES) . '" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]" ' . $disabled . '';
+                        if ($req == 1) {
+                            echo ' required';
+                        }
+        
+                        echo '
+        
+                        ></td>';
+                    } else {
+                        echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="' . htmlspecialchars($value, ENT_QUOTES) . '" ' . $disabled . '';
+                        if ($req == 1) {
+                            echo ' required';
+                        }
+        
+                        echo '
+        
+                        ></td>';
+                    }
+                }
+                echo '</tr>';
+               
+
+
+
+                 // Pole tekstowe w komórkach
+            }
+            
             $i = 0;
             // Wygeneruj 10 wierszy z ukrytą klasą
             for ($i = 2; $i <= 20; $i++) {
                 echo '<tr class="hidden-row m' . $number . '">';
-                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
-                    if ($j >= count($columns)) {
-                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass(' . $number . ')"';
-                    } else if ($j == $inne) {
-                        echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
-                    } else if ($j == $inne1) {
-                        echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="addInputs(' . $random_number . ', ' . $number . ')"';
+                    if ($j == count($columns)-1) {
+                        echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" onchange="updateSumByTableClass4(' . $number . ')" name="a' . $number . '[]"';
 
                     } else {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                     }
+
                     echo '
 
                 ></td>'; // Pole tekstowe w komórkach
                 }
                 echo '</tr>';
             }
-            $col = $count;
+            $col = $count-1;
             echo '</tbody>
-            <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-            </table>';
+        <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+        </table>';
             echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
             echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 
@@ -701,34 +775,46 @@ $gpdown=1;
         }
         if ($table_opened6) {
             echo '<table class="table m' . $number . '"><thead><tr>';
-            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
             $count = count($columns) + 1;
             for ($i = 0; $i < $count; $i++) {
+                if (($i < count($columns))) {
+                    $parts = explode("@=", $columns[$i]);
+                }     
                 if (($i >= count($columns))) {
                     echo '<th scope="col">Wynik</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 } else {
-                    echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                    echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 }
-
-
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
-            echo '<th scope="row">1</th>'; // Numeracja wierszy
             $inne = count($columns) - 2;
             $inne1 = count($columns) - 1;
             $random_number = rand(100, 999);
-            for ($i = 0; $i < $count; $i++) {
-                if ($i >= count($columns)) {
+            $maxi=0;
+            for ($i = 0; $i < $count-1; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
+                }
+            }
+            for ($i = 1; $i < $maxi; $i++) {
+                echo '<tr>';
+                for($k=0;$k<$count;$k++){
+                    if ($k < count($columns)) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    }
+                if ($k >= count($columns)) {
                     echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
-                } else if ($i == $inne) {
-                    echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-                } else if ($i == $inne1) {
-                    echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-
+                } else if ($k == $inne) {
+                    echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" value="'.$value.'" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
+                } else if ($k == $inne1) {
+                    echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" value="'.$value.'" class="form-control" name="' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
                 } else {
-                    echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
+                    echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]"';
                 }
 
 
@@ -738,14 +824,14 @@ $gpdown=1;
 
                 echo '
 
-                            ></td>'; // Pole tekstowe w komórkach
+                       '.$disabled.' ></td>'; // Pole tekstowe w komórkach
             }
             echo '</tr>';
+            }
             $i = 0;
             // Wygeneruj 10 wierszy z ukrytą klasą
             for ($i = 2; $i <= 20; $i++) {
                 echo '<tr class="hidden-row m' . $number . '">';
-                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
                     if ($j >= count($columns)) {
@@ -754,20 +840,19 @@ $gpdown=1;
                         echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')" ';
                     } else if ($j == $inne1) {
                         echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs(' . $random_number . ', ' . $number . ')"';
-
                     } else {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"';
                     }
                     echo '
 
-                            ></td>'; // Pole tekstowe w komórkach
+                        ></td>'; // Pole tekstowe w komórkach
                 }
                 echo '</tr>';
             }
-            $col = $count;
+            $col = $count-1;
             echo '</tbody>
-                        <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-                        </table>';
+                    <tfoot><td style="text-align:right;" colspan="' . $col . '">Suma: </td><td ><input style="text-align:right;" id="inputres_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+                    </table>';
             echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
             echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 
@@ -779,38 +864,52 @@ $gpdown=1;
             $procent = 0;
             $kwota = 0;
             echo '<table class="table m' . $number . '"><thead><tr>';
-            echo '<th scope="col">#</th>'; // Dodajemy kolumnę numeracji
             $count = count($columns);
             for ($i = 0; $i < $count; $i++) {
                 if (($i == 4)) {
-                    $procent = $columns[$i];// Wypisujemy nazwy kolumn z tablicy $columns
+                    $procent = $columns[$i]; // Wypisujemy nazwy kolumn z tablicy $columns
                 } else if ($i == 5) {
                     $kwota = $columns[$i];
                 } else {
-                    echo '<th scope="col">' . $columns[$i] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
+                    $parts = explode("@=", $columns[$i]);
+                    echo '<th scope="col">' . $parts[0] . '</th>'; // Wypisujemy nazwy kolumn z tablicy $columns
                 }
-
-
             }
             echo '</tr></thead><tbody>';
 
-            echo '<tr>';
-            echo '<th scope="row">1</th>'; // Numeracja wierszy
+            $maxi=0;
+            for ($i = 0; $i < $count-1; $i++) {
+                $parts = explode("@=", $columns[$i]);
+                $length = count($parts);
+                if($length>$maxi){
+                    $maxi=$length;
+                }
+            }
             $random_number = rand(100, 999);
-            for ($i = 0; $i < $count; $i++) {
-                if ($i == 4 or $i == 5) {
+            for ($i = 1; $i < $maxi; $i++) {
+                echo '<tr>';
+                for($k=0;$k<$count;$k++){
+                if ($k == 4 or $k == 5) {
                     echo '<td><input type="hidden" value="brak" class="form-control" name="' . $number . '[]"';
-                } else if ($i == 3) {
+                } else if ($k == 3) {
                     echo '<td><input id="inputwyn_99_' . $number . '" type="text" class="form-control" value="" name="' . $number . '[]" oninput="updateSumByTableClass(' . $number . ')" readonly';
-                } else if ($i == 1) {
-                    echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-                } else if ($i == 2) {
-                    echo '<td><input id="input2_99_' . $number . '" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')"';
-                } else if ($i == 0) {
-                    echo '<td><input type="text" class="form-control" value="Koszta administracyjne" name="' . $number . '[]" readonly';
+                } else if ($k == 1) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
+                } else if ($k == 2) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input id="input2_99_' . $number . '" value="'.$value.'" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
+                } else if ($k == 0) {
+                    $parts = explode("@=", $columns[$k]);
+                    $value = $parts[$i] ?? '';
+                    $disabled = ($value !== '') ? 'disabled' : '';
+                    echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" '.$disabled.'';
                 } else {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
-
                 }
                 if ($req == 1) {
                     echo ' required';
@@ -818,16 +917,15 @@ $gpdown=1;
 
                 echo '
 
-                                                    ></td>';
-
-
+                                                ></td>';
             }
             echo '</tr>';
+            }
+            
             $i = 0;
             // Wygeneruj 10 wierszy z ukrytą klasą
             for ($i = 2; $i <= 20; $i++) {
                 echo '<tr class="hidden-row m' . $number . '">';
-                echo '<th scope="row">' . $i . '</th>'; // Numeracja wierszy
                 $random_number = rand(100, 999);
                 for ($j = 0; $j < $count; $j++) {
                     if ($j == 4 or $j == 5) {
@@ -838,7 +936,6 @@ $gpdown=1;
                         echo '<td><input id="input1_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')" ></td>';
                     } else if ($j == 2) {
                         echo '<td><input id="input2_' . $random_number . '_' . $number . '" type="text" class="form-control" name="a' . $number . '[]" onchange="delInputs1(' . $random_number . ', ' . $number . ', ' . $kwota . ', ' . $procent . ')"></td>';
-
                     } else {
                         echo '<td><input type="text" class="form-control" name="a' . $number . '[]"></td>';
                     } // Pole tekstowe w komórkach
@@ -847,10 +944,10 @@ $gpdown=1;
                 echo '</tr>';
             }
             echo '</tbody>
-                                            <tfoot><td style="text-align: right;" colspan="2">Suma:</td><td><input style="text-align:right;" id="inputres3_' . $number . '" type="text" class="form-control" value="" readonly>
-                                                  </td><td><input style="text-align:right;" id="inputres2_' . $number . '" placeholder="Nie więcej niż ' . $kwota . '" type="text" class="form-control" value="" readonly></td>
-                                                   <td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
-                                            </table>';
+                                        <tfoot><td style="text-align: right;" colspan="1">Suma:</td><td><input style="text-align:right;" id="inputres3_' . $number . '" type="text" class="form-control" value="" readonly>
+                                              </td><td><input style="text-align:right;" id="inputres2_' . $number . '" placeholder="Nie więcej niż ' . $kwota . '" type="text" class="form-control" value="" readonly></td>
+                                               <td ><input style="text-align:right;" id="inputres1_' . $number . '" type="text" class="form-control" value="" readonly></td></tfoot>
+                                        </table>';
             echo '<button type="button" id="showMoreRowsBtn_m' . $number . '" class="btn btn-primary show-more-rows-btn">Dodaj wiersz</button>';
             echo '<button type="button" class="btn btn-danger remove-row-btn" data-table-id="m' . $number . '">Usuń wiersz</button>';
 

@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $req = "required_";
 $field = "field_";
 $checkbox="checkbox_";
-$checkboxrep="checkboxrep_";
+$checkboxrep1="checkboxrep_";
 $number=1;
 $idlastfield='';
 $columnCounterValue = $_POST['columnCounterInput'];
@@ -50,7 +50,7 @@ $columnCounterValue = $_POST['columnCounterInput'];
             $reqvalue =  $_POST[$req . $i];
             if (isset($_POST[$field . $i])) {
             $fieldvalue =  $_POST[$field . $i];
-            $checkboxrep=$_POST[$checkboxrep . $i];
+            $checkboxrep=$_POST[$checkboxrep1 . $i];
             $checkboxspr= $_POST[$checkbox . $i];
             if($checkboxrep==1 && $checkboxspr==1){
                 $checkboxvalue=3;

@@ -120,7 +120,7 @@ if (isset($_GET['ID'])) {
                         echo '<label for="checkbox_' . $row['number'] . '" class="ml-1 text-sm text-neutral-600">Sprawozdanie</label>';
                         echo '<input type="hidden" name="checkboxrep_' . $row['number'] . '" value="0">';
                         echo '<input type="checkbox" id="checkboxrep_' . $row['number'] . '" name="checkboxrep_' . $row['number'] . '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1" ' . ($row['constant'] == 2 || $row['constant'] == 3 ? ' checked' : '') . '>';
-                        echo '<label for="checkbox_' . $row['number'] . '" class="ml-1 text-sm text-neutral-600">Raport</label><br />';
+                        echo '<label for="checkboxrep_' . $row['number'] . '" class="ml-1 text-sm text-neutral-600">Raport</label><br />';
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="up" onclick="upnode(this.parentNode)">↑</button>';
                         echo '<button type="button" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" name="down" onclick="downnode(this.parentNode)">↓</button>';
                         echo '<button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="removeRow(this.parentNode)">-</button>';
@@ -286,10 +286,10 @@ if (isset($_GET['ID'])) {
     function addRow() {
         var newColumn = document.createElement('div');
         newColumn.setAttribute("class", "column");
-        newColumn.innerHTML = '<br />\ <input type="hidden" name="checkbox_' + columnCounter + '" value="0">\
+        newColumn.innerHTML = '<br /> <input type="hidden" name="checkbox_' + columnCounter + '" value="0">\
 <input type="checkbox" id="checkbox_' + columnCounter + '" name="checkbox_' + columnCounter + '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1">\
 <label for="checkbox_' + columnCounter + '" class="ml-1 text-sm text-neutral-600">Sprawozdanie</label>\
-<input type="hidden" name="checkboxrep_' + columnCounter + '" value="1">\
+<input type="hidden" name="checkboxrep_' + columnCounter + '" value="0">\
 <input type="checkbox" id="checkboxrep_' + columnCounter + '" name="checkboxrep_' + columnCounter + '" class="ml-2 rounded border-neutral-200 focus:ring-neutral-600" value="1" checked>\
 <label for="checkboxrep_' + columnCounter + '" class="ml-1 text-sm text-neutral-600">Raport</label>\
 <br />\
@@ -676,7 +676,7 @@ removeButton.addEventListener("click", function () {
 textField.setAttribute("type", "text");
 textField.setAttribute("class", "py-2.5 px-3.5 text-sm w-full hover:bg-gray-50 outline-none placeholder-neutral-400 border border-neutral-200 rounded-lg focus-within:border-neutral-600");
 textField.setAttribute("name", clasa);
-textField.setAttribute("value", "Rodzaj kosztu");
+textField.setAttribute("value", "Rodzaj kosztu@=Koszta administracyjne");
 
 var textField1 = document.createElement('input');
 textField1.setAttribute("type", "text");
