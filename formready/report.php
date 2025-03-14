@@ -63,7 +63,7 @@ if (isLoggedIn()) {
 <body>
 <!-- 2024 Created by: Rafał Pezda-->
 <!-- link: https://github.com/RafixOOO -->
-<div class="wrapper fadeInDown">
+<div class="wrapper fadeInDown" style="width:90%;">
     <form method="post" action="save_read.php">
         <?php
         require_once("../dbconnect.php");
@@ -199,7 +199,7 @@ if (isLoggedIn()) {
                 for($k=0;$k<$count;$k++){
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                 echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$value.'" '.$disabled.'';
 
                 if ($req == 1) {
@@ -257,7 +257,7 @@ if (isLoggedIn()) {
                 for($k=0;$k<$count;$k++){
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     if ($k == count($columns)-1) {
                         echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="' . htmlspecialchars($value, ENT_QUOTES) . '" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]" ' . $disabled . '';
                         if ($req == 1) {
@@ -338,13 +338,15 @@ if (isLoggedIn()) {
                     $maxi=$length;
                 }
             }
+            $random_number = rand(100, 999);
+
             for ($i = 1; $i < $maxi; $i++) {
                 echo '<tr>';
                 for($k=0;$k<$count;$k++){
                     if ($k < count($columns)) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     }
                 if ($k >= count($columns)) {
                     echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
@@ -433,17 +435,17 @@ if (isLoggedIn()) {
                 } else if ($k == 1) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
                 } else if ($k == 2) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input id="input2_99_' . $number . '" value="'.$value.'" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
                 } else if ($k == 0) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" '.$disabled.'';
                 } else {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';
@@ -656,7 +658,7 @@ $gpdown=1;
                 for($k=0;$k<$count;$k++){
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                 echo '<td><input type="text" class="form-control" name="' . $number . '[]" value="'.$value.'" '.$disabled.'';
 
                 if ($req == 1) {
@@ -715,7 +717,7 @@ $gpdown=1;
                 for($k=0;$k<$count;$k++){
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     if ($k == count($columns)-1) {
                         echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="' . htmlspecialchars($value, ENT_QUOTES) . '" onchange="updateSumByTableClass4(' . $number . ')" name="' . $number . '[]" ' . $disabled . '';
                         if ($req == 1) {
@@ -801,11 +803,13 @@ $gpdown=1;
             }
             for ($i = 1; $i < $maxi; $i++) {
                 echo '<tr>';
+                $random_number = rand(100, 999);
+
                 for($k=0;$k<$count;$k++){
                     if ($k < count($columns)) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     }
                 if ($k >= count($columns)) {
                     echo '<td><input id="inputwyn_' . $random_number . '_' . $number . '" type="text" class="form-control" value="" oninput="updateSumByTableClass(' . $number . ')" ';
@@ -896,17 +900,17 @@ $gpdown=1;
                 } else if ($k == 1) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input id="input1_99_' . $number . '" type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
                 } else if ($k == 2) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input id="input2_99_' . $number . '" value="'.$value.'" placeholder="Nie więcej niż ' . $procent . '% z sumy" type="text" class="form-control" name="' . $number . '[]" onchange="delInputs1( 99, ' . $number . ', ' . $kwota . ', ' . $procent . ')" '.$disabled.'';
                 } else if ($k == 0) {
                     $parts = explode("@=", $columns[$k]);
                     $value = $parts[$i] ?? '';
-                    $disabled = ($value !== '') ? 'disabled' : '';
+                    $disabled = ($value !== '') ? 'readonly' : '';
                     echo '<td><input type="text" class="form-control" value="'.$value.'" name="' . $number . '[]" '.$disabled.'';
                 } else {
                     echo '<td><input type="text" class="form-control" name="' . $number . '[]"';

@@ -129,7 +129,7 @@ $stmt->close();
     }
         .container-fluid {
             margin-top: 20px;
-            width: 70%; /* Pełna szerokość strony */
+            width: 90%; /* Pełna szerokość strony */
         }
         .header-title {
             text-align: center; /* Wycentrowanie tytułu */
@@ -143,12 +143,12 @@ $stmt->close();
             margin-bottom: 30px;
         }
         .left-side {
-            width: 40%; /* Lewa kolumna: 40% szerokości */
+            width: 45%; /* Lewa kolumna: 40% szerokości */
             padding-right: 20px;
             border-right: 2px solid #000;
         }
         .right-side {
-            width: 60%; /* Prawa kolumna: 60% szerokości */
+            width: 54%; /* Prawa kolumna: 60% szerokości */
             padding-left: 20px;
         }
         .reason {
@@ -225,8 +225,11 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ ?>
-                            <label><?php echo htmlspecialchars($data['quest']); ?></label>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ 
+                                                        $val = explode("@=", $data['quest']);
+
+                            ?>
+                            <label><?php echo htmlspecialchars($val[0]); ?></label>
                             <div style="display: flex;">
 
                                 <?php
@@ -263,9 +266,12 @@ $stmt->close();
                 <?php if (!empty($filledAnswers)): ?>
                     <?php foreach ($filledAnswers as $questID => $data): ?>
                         <div class="form-group">
-                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ ?>
+                        <?php if($data['type']==1 || $data['type']==4 || $data['type']==5 || $data['type']==6 || $data['type']==7 || $data['type']==12){ 
+                                                        $val = explode("@=", $data['quest']);
+
+                            ?>
                         
-                            <label><?php echo htmlspecialchars($data['quest']); ?></label>
+                            <label><?php echo htmlspecialchars($val[0]); ?></label>
                             <div style="display: flex;">
 
 
